@@ -1,0 +1,19 @@
+{
+  "name": "jano",
+  "owner": {
+    "name": "jjimenezc",
+    "url": "https://github.com/ilien-dev"
+  },
+  "metadata": {
+    "description": "Marketplace for the Jano skill."
+  },
+  "plugins": [
+    {
+      "name": "jano",
+      "source": "./",
+      "description": "Gives a repository a looping animated SVG hero (dark and light), a logo and a standard README header.",
+      "category": "productivity",
+      "tags": ["readme", "svg-animation", "hero"]
+    }
+  ]
+}

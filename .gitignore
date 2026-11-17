@@ -1,0 +1,4 @@
+__pycache__/
+.muninn/
+.argoz/
+*.quiron.json
