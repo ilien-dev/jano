@@ -45,6 +45,11 @@ test("fonts are embedded", dark.count("@font-face") == 3)
 test("reduced motion rule is added", "prefers-reduced-motion" in dark)
 test("no external file is referenced", not [u for u in re.findall(r"https?://[^\"')\s]+", dark) if "w3.org" not in u])
 
+# ---- two repositories with the same folder name keep separate preview pages
+other = build(FIXTURE)[1]
+previews = [re.search(r"^preview (.+)$", o, re.M) for o in (out, other)]
+test("each source gets its own preview page", all(previews) and previews[0].group(1) != previews[1].group(1), out + other)
+
 # ---- moving text becomes outlines, still text stays text
 test("text that travels is outlined", "first line" not in dark and "third line" not in dark and "<use" in dark)
 test("text that stays still is kept", "still title" in dark)
