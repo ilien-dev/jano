@@ -1,0 +1,234 @@
+<!--palette
+bg     #0B1220 #EEF2F7
+panel  #121B30 #FFFFFF
+line   #27344F #D3DBE7
+soft   #2E3D5E #C7D1DF
+shape  #6B7C9E #7F8DA6
+ink    #EEF2F7 #1B2A4A
+body   #C5CEDC #3A4864
+muted  #9AA7BC #56637C
+accent #E8553D #E8553D
+plate  #1B2A4A #1B2A4A
+ring   #EEF2F7 #EEF2F7
+paper  #FFFFFF #FFFFFF
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-label="Jano: a wall of eight small moving pictures, each for a different project (an app, a way past a wall, a chat, a memory, a sound tool, a book converter, a map, a game), around the Jano mark and the line: every project gets its own moving picture.">
+<style>
+@keyframes lap{0.00%{transform:translate(0.0px,0.0px)}7.61%{transform:translate(38.0px,0.0px)}11.14%{transform:translate(55.0px,4.6px)}14.66%{transform:translate(67.4px,17.0px)}18.19%{transform:translate(72.0px,34.0px)}27.80%{transform:translate(72.0px,82.0px)}31.33%{transform:translate(67.4px,99.0px)}34.86%{transform:translate(55.0px,111.4px)}38.38%{transform:translate(38.0px,116.0px)}57.61%{transform:translate(-58.0px,116.0px)}61.14%{transform:translate(-75.0px,111.4px)}64.66%{transform:translate(-87.4px,99.0px)}68.19%{transform:translate(-92.0px,82.0px)}77.80%{transform:translate(-92.0px,34.0px)}81.33%{transform:translate(-87.4px,17.0px)}84.86%{transform:translate(-75.0px,4.6px)}88.38%{transform:translate(-58.0px,0.0px)}100.00%{transform:translate(0.0px,0.0px)}}
+@keyframes route{0.00%{transform:translate(0.0px,0.0px)}14.04%{transform:translate(0.0px,-64.0px)}29.39%{transform:translate(70.0px,-64.0px)}36.84%{transform:translate(70.0px,-30.0px)}57.46%{transform:translate(164.0px,-30.0px)}64.04%{transform:translate(164.0px,0.0px)}100.00%{transform:translate(0.0px,0.0px)}}
+@keyframes hop{0.00%{transform:translate(0.0px,0.0px);opacity:0}8.33%{transform:translate(33.0px,-19.2px);opacity:1}16.67%{transform:translate(66.0px,-35.2px);opacity:1}25.00%{transform:translate(99.0px,-47.8px);opacity:1}33.33%{transform:translate(132.0px,-57.2px);opacity:1}41.67%{transform:translate(165.0px,-63.3px);opacity:1}50.00%{transform:translate(198.0px,-66.1px);opacity:1}58.33%{transform:translate(231.0px,-65.6px);opacity:1}66.67%{transform:translate(264.0px,-61.8px);opacity:1}75.00%{transform:translate(297.0px,-54.8px);opacity:1}83.33%{transform:translate(330.0px,-44.5px);opacity:1}91.67%{transform:translate(363.0px,-30.9px);opacity:1}100.00%{transform:translate(396.0px,-14.0px);opacity:0}}
+@keyframes rows{to{transform:translateY(-90px)}}
+@keyframes talk{to{transform:translateY(-134px)}}
+@keyframes drop{to{transform:translateY(56px)}}
+@keyframes wave{to{transform:translateX(-112px)}}
+@keyframes belt{to{transform:translateX(100px)}}
+@keyframes ballx{0%,100%{transform:translateX(0)}50%{transform:translateX(196px)}}
+@keyframes bally{0%,100%{transform:translateY(0)}50%{transform:translateY(90px)}}
+@keyframes glow{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes ping{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.7);opacity:.25}}
+.lap{animation:lap 9s linear infinite}
+.route{animation:route 12s linear infinite}
+.hop{animation:hop 5s linear infinite}
+.rows{animation:rows 9s linear infinite}
+.talk{animation:talk 11s linear infinite}
+.drop{animation:drop 3.5s linear infinite}
+.wave{animation:wave 7s linear infinite}
+.belt{animation:belt 5s linear infinite}
+.ballx{animation:ballx 4.4s linear infinite}
+.bally{animation:bally 3s linear infinite}
+.glow{animation:glow 3.2s ease-in-out infinite}
+.ping{animation:ping 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+</style>
+<defs>
+  <clipPath id="cApp"><rect x="85" y="41" width="186" height="90"/></clipPath>
+  <linearGradient id="gChat" gradientUnits="userSpaceOnUse" x1="0" y1="16" x2="0" y2="138">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".2" stop-color="#fff"/><stop offset=".82" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </linearGradient>
+  <mask id="mChat" maskUnits="userSpaceOnUse" x="16" y="16" width="260" height="122"><rect x="16" y="16" width="260" height="122" fill="url(#gChat)"/></mask>
+  <linearGradient id="gDrop" gradientUnits="userSpaceOnUse" x1="0" y1="4" x2="0" y2="104">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".3" stop-color="#fff"/><stop offset="1" stop-color="#fff"/>
+  </linearGradient>
+  <mask id="mDrop" maskUnits="userSpaceOnUse" x="100" y="4" width="92" height="96"><rect x="100" y="4" width="92" height="96" fill="url(#gDrop)"/></mask>
+  <linearGradient id="gWave" gradientUnits="userSpaceOnUse" x1="24" y1="0" x2="268" y2="0">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".14" stop-color="#fff"/><stop offset=".86" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </linearGradient>
+  <mask id="mWave" maskUnits="userSpaceOnUse" x="24" y="10" width="244" height="124"><rect x="24" y="10" width="244" height="124" fill="url(#gWave)"/></mask>
+  <clipPath id="cWaveL"><rect x="24" y="10" width="122" height="124"/></clipPath>
+  <clipPath id="cWaveR"><rect x="146" y="10" width="122" height="124"/></clipPath>
+  <linearGradient id="gBelt" gradientUnits="userSpaceOnUse" x1="20" y1="0" x2="80" y2="0">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff"/>
+  </linearGradient>
+  <mask id="mBeltL" maskUnits="userSpaceOnUse" x="20" y="30" width="280" height="90"><rect x="20" y="30" width="280" height="90" fill="url(#gBelt)"/></mask>
+  <clipPath id="cBeltR"><rect x="300" y="30" width="190" height="90"/></clipPath>
+  <clipPath id="cMap"><rect x="20" y="14" width="252" height="122" rx="8"/></clipPath>
+
+  <g id="row">
+    <rect x="94" width="168" height="22" rx="5" fill="$panel" stroke="$line"/>
+    <circle cx="107" cy="11" r="5" fill="$soft"/>
+  </g>
+  <g id="rows3">
+    <use href="#row"/><rect x="119" y="8" width="72" height="6" rx="3" fill="$shape"/>
+    <rect x="232" y="6" width="22" height="10" rx="5" fill="$soft"/><circle cx="237" cy="11" r="4" fill="$shape"/>
+    <use href="#row" y="30"/><rect x="119" y="38" width="94" height="6" rx="3" fill="$shape"/>
+    <rect x="232" y="36" width="22" height="10" rx="5" fill="$soft"/><circle cx="249" cy="41" r="6" fill="$accent"/>
+    <use href="#row" y="60"/><rect x="119" y="68" width="54" height="6" rx="3" fill="$shape"/>
+    <rect x="232" y="66" width="22" height="10" rx="5" fill="$soft"/><circle cx="237" cy="71" r="4" fill="$shape"/>
+  </g>
+  <g id="talk1">
+    <rect x="24" y="0" width="150" height="30" rx="12" fill="$soft"/><rect x="38" y="12" width="96" height="6" rx="3" fill="$shape"/>
+    <rect x="128" y="40" width="140" height="30" rx="12" fill="$accent"/><rect x="142" y="52" width="84" height="6" rx="3" fill="$paper"/>
+    <rect x="24" y="80" width="184" height="44" rx="12" fill="$soft"/><rect x="38" y="93" width="150" height="6" rx="3" fill="$shape"/><rect x="38" y="106" width="104" height="6" rx="3" fill="$shape"/>
+  </g>
+  <g id="note">
+    <rect x="124" width="44" height="30" rx="4" fill="$panel" stroke="$shape" stroke-width="2"/>
+    <circle cx="134" cy="10" r="4" fill="$accent"/>
+    <rect x="142" y="7" width="18" height="5" rx="2.5" fill="$shape"/><rect x="132" y="18" width="28" height="5" rx="2.5" fill="$soft"/>
+  </g>
+  <g id="w8">
+    <rect x="3" y="58" width="8" height="24" rx="4"/><rect x="17" y="44" width="8" height="52" rx="4"/><rect x="31" y="30" width="8" height="80" rx="4"/><rect x="45" y="50" width="8" height="40" rx="4"/>
+    <rect x="59" y="36" width="8" height="68" rx="4"/><rect x="73" y="55" width="8" height="30" rx="4"/><rect x="87" y="24" width="8" height="92" rx="4"/><rect x="101" y="47" width="8" height="46" rx="4"/>
+  </g>
+  <g id="wv"><use href="#w8" x="24"/><use href="#w8" x="136"/><use href="#w8" x="248"/><use href="#w8" x="360"/></g>
+  <g id="bk1">
+    <rect width="44" height="58" rx="4" fill="$soft" stroke="$shape" stroke-width="2"/>
+    <path d="M8 1v56" stroke="$shape" stroke-width="2"/>
+    <rect x="17" y="28" width="18" height="14" rx="3" fill="$shape"/>
+    <path d="M21 28v-5a5 5 0 0 1 10 0v5" fill="none" stroke="$shape" stroke-width="3"/>
+  </g>
+  <g id="bk2">
+    <rect width="44" height="58" rx="4" fill="$accent"/>
+    <path d="M8 0v58" stroke="$paper" stroke-width="2" opacity=".45"/>
+    <rect x="15" y="15" width="22" height="5" rx="2.5" fill="$paper"/><rect x="15" y="25" width="14" height="5" rx="2.5" fill="$paper"/>
+  </g>
+  <g id="belt1"><use href="#bk1" x="-90"/><use href="#bk1" x="10"/><use href="#bk1" x="110"/><use href="#bk1" x="210"/><use href="#bk1" x="310"/></g>
+  <g id="belt2"><use href="#bk2" x="110"/><use href="#bk2" x="210"/><use href="#bk2" x="310"/><use href="#bk2" x="410"/><use href="#bk2" x="510"/></g>
+</defs>
+
+<rect width="1280" height="640" fill="$bg"/>
+
+<!-- an app -->
+<g transform="translate(32 32)">
+  <rect width="292" height="180" rx="14" fill="$panel" stroke="$line"/>
+  <rect x="20" y="16" width="252" height="116" rx="8" fill="$bg" stroke="$line"/>
+  <circle cx="34" cy="28" r="3.5" fill="$soft"/><circle cx="46" cy="28" r="3.5" fill="$soft"/><circle cx="58" cy="28" r="3.5" fill="$soft"/>
+  <path d="M20 40h252M84 40v92" stroke="$line"/>
+  <rect x="30" y="54" width="42" height="6" rx="3" fill="$shape"/><rect x="30" y="70" width="34" height="6" rx="3" fill="$soft"/><rect x="30" y="86" width="40" height="6" rx="3" fill="$soft"/><rect x="30" y="102" width="28" height="6" rx="3" fill="$soft"/>
+  <g clip-path="url(#cApp)"><g class="rows"><use href="#rows3" y="46"/><use href="#rows3" y="136"/><use href="#rows3" y="226"/></g></g>
+  <text x="20" y="162" class="m" font-size="14" fill="$muted">an app</text>
+</g>
+
+<!-- a way past a wall -->
+<g transform="translate(340 32)">
+  <rect width="600" height="180" rx="14" fill="$panel" stroke="$line"/>
+  <path d="M24 128h552" stroke="$line" stroke-width="2"/>
+  <path d="M74 74v-12" stroke="$shape" stroke-width="3"/><circle cx="74" cy="59" r="4.5" fill="$shape"/>
+  <rect x="44" y="74" width="60" height="50" rx="14" fill="$shape"/>
+  <circle cx="63" cy="96" r="5.5" fill="$panel"/><circle cx="85" cy="96" r="5.5" fill="$panel"/>
+  <rect x="56" y="123" width="9" height="5" fill="$shape"/><rect x="83" y="123" width="9" height="5" fill="$shape"/>
+  <circle cx="249" cy="121" r="6" fill="$soft"/><circle cx="236" cy="121" r="6" fill="$soft"/><circle cx="243" cy="110" r="6" fill="$soft"/>
+  <g fill="$shape" stroke="$panel" stroke-width="2.5">
+    <rect x="270" y="44" width="30" height="21"/><rect x="300" y="44" width="30" height="21"/>
+    <rect x="270" y="65" width="15" height="21"/><rect x="285" y="65" width="30" height="21"/><rect x="315" y="65" width="15" height="21"/>
+    <rect x="270" y="86" width="30" height="21"/><rect x="300" y="86" width="30" height="21"/>
+    <rect x="270" y="107" width="15" height="21"/><rect x="285" y="107" width="30" height="21"/><rect x="315" y="107" width="15" height="21"/>
+  </g>
+  <rect x="492" y="40" width="68" height="88" rx="6" fill="$bg" stroke="$shape" stroke-width="3"/>
+  <g fill="$shape">
+    <rect class="glow" x="504" y="56" width="44" height="5" rx="2.5"/><rect class="glow" style="animation-delay:-.6s" x="504" y="69" width="44" height="5" rx="2.5"/>
+    <rect class="glow" style="animation-delay:-1.2s" x="504" y="82" width="30" height="5" rx="2.5"/><rect class="glow" style="animation-delay:-1.8s" x="504" y="95" width="44" height="5" rx="2.5"/>
+    <rect class="glow" style="animation-delay:-2.4s" x="504" y="108" width="36" height="5" rx="2.5"/>
+  </g>
+  <g fill="$accent">
+    <circle class="hop" cx="104" cy="84" r="7"/><circle class="hop" style="animation-delay:-1s" cx="104" cy="84" r="7"/>
+    <circle class="hop" style="animation-delay:-2s" cx="104" cy="84" r="7"/><circle class="hop" style="animation-delay:-3s" cx="104" cy="84" r="7"/>
+    <circle class="hop" style="animation-delay:-4s" cx="104" cy="84" r="7"/>
+  </g>
+  <text x="20" y="162" class="m" font-size="14" fill="$muted">a way past a wall</text>
+</g>
+
+<!-- a chat -->
+<g transform="translate(956 32)">
+  <rect width="292" height="180" rx="14" fill="$panel" stroke="$line"/>
+  <g mask="url(#mChat)"><g class="talk"><use href="#talk1" y="14"/><use href="#talk1" y="148"/><use href="#talk1" y="282"/></g></g>
+  <text x="20" y="162" class="m" font-size="14" fill="$muted">a chat</text>
+</g>
+
+<!-- a memory -->
+<g transform="translate(32 230)">
+  <rect width="292" height="180" rx="14" fill="$panel" stroke="$line"/>
+  <rect x="24" y="98" width="58" height="38" rx="6" fill="$soft"/><rect x="40" y="110" width="26" height="12" rx="3" fill="$panel"/>
+  <rect x="210" y="98" width="58" height="38" rx="6" fill="$soft"/><rect x="226" y="110" width="26" height="12" rx="3" fill="$panel"/>
+  <rect x="92" y="86" width="108" height="16" rx="4" fill="$soft"/>
+  <g mask="url(#mDrop)"><g class="drop"><use href="#note" y="-106"/><use href="#note" y="-50"/><use href="#note" y="6"/><use href="#note" y="62"/></g></g>
+  <rect x="92" y="96" width="108" height="40" rx="6" fill="$shape"/><rect x="126" y="108" width="40" height="14" rx="3" fill="$panel"/>
+  <text x="20" y="162" class="m" font-size="14" fill="$muted">a memory</text>
+</g>
+
+<!-- title -->
+<g transform="translate(498 250) scale(.34375)">
+  <rect width="256" height="256" rx="56" fill="$plate"/>
+  <g transform="translate(25.6 25.6) scale(.8)">
+    <path fill="$ring" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/>
+    <circle class="lap" cx="138" cy="70" r="24" fill="$accent"/>
+  </g>
+</g>
+<text x="608" y="320" class="b" font-size="76" fill="$ink">Jano</text>
+<text x="640" y="384" class="s" font-size="24" text-anchor="middle" fill="$body">Every project gets its own moving picture.</text>
+
+<!-- a sound tool -->
+<g transform="translate(956 230)">
+  <rect width="292" height="180" rx="14" fill="$panel" stroke="$line"/>
+  <g mask="url(#mWave)">
+    <g clip-path="url(#cWaveL)" fill="$accent"><g class="wave"><use href="#wv"/></g></g>
+    <g clip-path="url(#cWaveR)" fill="$shape"><g class="wave"><use href="#wv"/></g></g>
+  </g>
+  <path d="M146 20v108" stroke="$ink" stroke-width="2"/><path d="M140 16h12l-6 8z" fill="$ink"/>
+  <text x="20" y="162" class="m" font-size="14" fill="$muted">a sound tool</text>
+</g>
+
+<!-- a book converter -->
+<g transform="translate(32 428)">
+  <rect width="600" height="180" rx="14" fill="$panel" stroke="$line"/>
+  <path d="M24 107h470" stroke="$line" stroke-width="2"/>
+  <g mask="url(#mBeltL)"><g transform="translate(0 46)"><g class="belt"><use href="#belt1"/></g></g></g>
+  <g clip-path="url(#cBeltR)"><g transform="translate(0 46)"><g class="belt"><use href="#belt2"/></g></g></g>
+  <rect x="286" y="14" width="28" height="122" rx="14" fill="$panel" stroke="$shape" stroke-width="3"/>
+  <path d="M296 66l8 9-8 9" fill="none" stroke="$shape" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="486" y="14" width="94" height="122" rx="12" fill="$panel" stroke="$shape" stroke-width="3"/>
+  <rect x="496" y="24" width="74" height="92" rx="4" fill="$bg"/>
+  <path d="M552 24h9v17l-4.5-4-4.5 4z" fill="$accent"/>
+  <g fill="$shape">
+    <rect class="glow" x="505" y="40" width="38" height="5" rx="2.5"/><rect class="glow" style="animation-delay:-.7s" x="505" y="53" width="56" height="5" rx="2.5"/>
+    <rect class="glow" style="animation-delay:-1.4s" x="505" y="66" width="56" height="5" rx="2.5"/><rect class="glow" style="animation-delay:-2.1s" x="505" y="79" width="40" height="5" rx="2.5"/>
+    <rect class="glow" style="animation-delay:-2.8s" x="505" y="92" width="50" height="5" rx="2.5"/>
+  </g>
+  <circle cx="533" cy="126" r="3.5" fill="$shape"/>
+  <text x="20" y="162" class="m" font-size="14" fill="$muted">a book converter</text>
+</g>
+
+<!-- a map -->
+<g transform="translate(648 428)">
+  <rect width="292" height="180" rx="14" fill="$panel" stroke="$line"/>
+  <rect x="20" y="14" width="252" height="122" rx="8" fill="$bg"/>
+  <g clip-path="url(#cMap)">
+    <path d="M20 46h252M20 80h252M20 110h252M60 14v122M130 14v122M180 14v122M224 14v122M20 136L110 14M150 136L272 30" fill="none" stroke="$line" stroke-width="7"/>
+    <path d="M60 110V46h70v34h94v30z" fill="none" stroke="$shape" stroke-width="4" stroke-linejoin="round"/>
+  </g>
+  <circle class="ping" cx="224" cy="80" r="9" fill="$shape"/>
+  <circle cx="224" cy="80" r="5" fill="$ink"/>
+  <circle class="route" cx="60" cy="110" r="8" fill="$accent"/>
+  <text x="20" y="162" class="m" font-size="14" fill="$muted">a map</text>
+</g>
+
+<!-- a game -->
+<g transform="translate(956 428)">
+  <rect width="292" height="180" rx="14" fill="$panel" stroke="$line"/>
+  <rect x="20" y="14" width="252" height="122" rx="8" fill="$bg"/>
+  <path d="M146 20v110" stroke="$line" stroke-width="3" stroke-dasharray="8 8"/>
+  <g class="bally">
+    <rect x="30" y="15" width="8" height="30" rx="4" fill="$shape"/><rect x="254" y="15" width="8" height="30" rx="4" fill="$shape"/>
+    <g class="ballx"><circle cx="47" cy="30" r="8" fill="$accent"/></g>
+  </g>
+  <text x="20" y="162" class="m" font-size="14" fill="$muted">a game</text>
+</g>
+</svg>

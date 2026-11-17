@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
+    <img src="assets/hero-light.svg" alt="Jano: a wall of eight small moving pictures, each for a different project (an app, a way past a wall, a chat, a memory, a sound tool, a book converter, a map, a game), around the Jano mark and the line: every project gets its own moving picture." width="100%">
+  </picture>
+</p>
+
 <p align="center"><b>English</b> · <a href="README.es.md">Español</a></p>
 
 <h1 align="center">Jano: an animated SVG hero for your GitHub README</h1>
@@ -25,8 +32,6 @@ so the first screen of the README shows what the project does.</b></p>
 </p>
 
 ---
-
-This README has no hero yet. It will get one made with Jano.
 
 ## Showroom
 

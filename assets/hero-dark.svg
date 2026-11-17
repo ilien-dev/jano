@@ -1,0 +1,223 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-label="Jano: a wall of eight small moving pictures, each for a different project (an app, a way past a wall, a chat, a memory, a sound tool, a book converter, a map, a game), around the Jano mark and the line: every project gets its own moving picture.">
+<style>@font-face{font-family:SG;src:url(data:font/woff2;base64,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) format('woff2')}@font-face{font-family:SG7;src:url(data:font/woff2;base64,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) format('woff2')}@font-face{font-family:JB;src:url(data:font/woff2;base64,d09GMgABAAAAAAgMAA4AAAAAEGQAAAe5AAJOFAAAAAAAAAAAAAAAAAAAAAAAAAAAGiIbIByEDAZgAHwRCAqRJI1pATYCJAOBEAtKAAQgBYQmByAbag2jooZRTrUA/uLANqY1dBEiYB25g1hqUTIQiEDEI+YX/kh99sdkKJqB4pU7wv7rdGxkFzz9z73dmffyYSZJAcktO0BbQlchKxNbOH6B7Qq1p0YuyXUkURWGf7f9n4G12zlSGzDJJWLQYxiHmCtwCj1eRMRf44tMHh6u+S6Il6CRVpTUekQLsIFvBmcW+xZd81N/sAv0B//W0Eh7iprZ7f/ZMtJHa63uICJRPD0h0miZdPq7e4e6J9FI/BDvEbUongiZx3A15HwWhUHp1y9DQAoAVCCMSGVEgx4IAabXPsjiXogDHSLgEgAQYA68gMpcal2xp5XAJlaAYa3T9XGMnjnLYQwvG/Ix8C31cZrcskGZtRUsNkFDpWaohsEw7pSo3PcKGrAWZakA7CXdUV2vLi1PWuBOuWJfrqFuXdfAhTHX77XkBw58BCVnsk8G31g/XBKO7BSZdkZ2iEEIykCOak0XoyNoCaJ0CSixuMiH+N++qfdrJVLdujhNElJMEAQCbUPB0av66pNEJLZhz4vdif85+Qp9HLqTU0UcRd+qTmol+MLtplTZxHRVziKBPmpZAB6X15cTgwkJUNS9AopzPZphg55i0MHZf/8S8S1nyTlrS5vyYKziz0QlWulJ2bbF/kM20IsGDRg3TbGk4kAHR6DHtyBvWW3TqON3nMZDcQ0uH9dC+6iCDd4baupMRkjQAGAUAB4AjAD6gDAAsAlwDQBACKVfkupzJ5fwCepfJKR4Aq0DqrSx19vyXqbQWe/L2yzP8rE6yUG1daq1ORvI07ZynmSkZKRb7x2KeEE/Ukk8Flhqyyv1i/uVbw6PXqtqOSJqYq+xLFhe7PCheFVXGDYscRb93RlOsaI/rPyIooUSWeD6s5bsrXRwvhaN+EckDUO+LB5dRJRCXMZiWZ8gVYeByPXsiANLN+eTrlx9zaQkI4m09Rt7Tk5cQ01SC11UpSsFk0zdWgWVkEqmzisorfjqmlk2skPp1LH0xR2qh7+6/ejsK6pNorZvfXGCHTsUR4Qnq12EaAkQ+yWb3alLhPlsazcXk/KT5sXpUPGW0vtdfHDTkGZPL5OqcFBEjkbFcYS7rImYjkbaa490nVm+sg1829deFF2XVgMp32zQeYJ6MJBNbPi07L4o75xbCjLOSduF2Tb7e/Eq5eZHC8W8Mp3c8KhVJIaQ9fEOVojJ0Iw1Ty+pHF5uXscGP+mKdbUEWbAWVQ9s5CATmCRJ/hWZDtiRO6gB/kWXpGx4qD8Y7xm5pXe5Mfz7RthClri0vMTPHDIv62pJtz1Ih4mx8FV9ct/AcyCI4lGvgqiwCa9CDkO0mA9PCEX+6mzerBJ2/ctc5f/n+hg5jl+AL6pgCJUPLIsXiC8r85qim4Vmyun0BGj8QjzAeJyUywR1s5oCVqOsWMxezQvFBB7zaQhy2FWwCVVEiXr3h52ERQY2dbr+8V/F/EsvKhyg5Y/JL5cWqIWhkQwpzg37xgPuQdK6ADv89dhbQbCHogM+Hz4bBa6KvdTG9Q8i8/pKeNiTFJazWlYoJj3hsYqOn7cmcgvzG8x+dNU8nHIe7kx/FqSbcC+SC3qIhKDM1aCE4/SokxwnsyDJPnvMnSz6xsMsmL+XPQz3M777W9hsu3BgVQFCE16oXvxJ/q7WRwbUK39b/p3Dpma4wPdPsDsI4wx2Cwu81siUzr/Wat55LSKh1hE8QlzDXWv4Y8/u3w3XTVeMd+9ZCtJWqMZgKRKKve2SVl88Qq3XZJkrq0csanUx6qEp8hwSEzxuBhlIBql7Z7EITwgFfn6doz5ZP+GBf36z/mLFClWdHPSRM+kcb4O2gxoeH0Nmwdb2tMyGoBU6+gaXuybIjgvbDvSFiEkxPtsXkyNEao+lu2/AZXZPnL751M1nhWUuDSR/PEIzV7BXXAov/Zj9mNmj230VC3pQvloRsjDrJQJjTjLgrW4q1Cvg50cswoHVq/6zk++dtRK+ZVNw8LwlMnashQMb/CP+YyELG5HxyTmL69jpjEXCD/WUNoAjgtSh4O5ib76mF45O1FdsthXpoAS/8V3Qi1peNVlet4Ci6VXwutwySE4HPJ58ROrw5OGB3LCTp102yI3UeO/Kro27IG7f3o8e5U27QO9JhvjefazBwLb+R7w20LVYDaqG0zwt+uvQTQpMwJp/oFKWfxBdPdCjdzN8shj+6wB9XWa1Q9MSoP2AolOs5FktF2X8Twa4qD5rQbt0/k/Vr00CdNPaOvvyJb7B+69jffgB+GbdL8D3IfUmvcKQugLqr6kCEPwbD9OjhLGBCb7yyh9N54AcZOgHBtIwB7PABc+1D5YEEGBfsFcumCsHVwBsAGE0eD8gEHGBqFhguTHN/GNwcQI7AQSM6qWzQN+CX+KVULVea5bXgVOQh+j1mIfKffUIbvnCI5pNjB6JxSRys4rp5BpuK6s4WI0qb5EGM8jO4zFcKyjlpyk0tCQVKL6kDj7DykrK8TG1Ml06ZclGPKWR6GK7XJOWu2zvpKmoc7OxyVOlyjeIBkhphiKbp07bse+hd0cWz1LQb0OBoGbQ5xC7EZ7Z0jy2B+jX73oaCKPEGcq4ZVWmP+ZbxuYhMUeYIVomDmUNyh/AYYCTw7DPMf1GyPMl6o42Uu8O3OUYBBA=) format('woff2')}
+text{text-rendering:geometricPrecision}.s{font-family:SG,sans-serif}.b{font-family:SG7,sans-serif;font-weight:700}.m{font-family:JB,monospace}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+
+@keyframes lap{0.00%{transform:translate(0.0px,0.0px)}7.61%{transform:translate(38.0px,0.0px)}11.14%{transform:translate(55.0px,4.6px)}14.66%{transform:translate(67.4px,17.0px)}18.19%{transform:translate(72.0px,34.0px)}27.80%{transform:translate(72.0px,82.0px)}31.33%{transform:translate(67.4px,99.0px)}34.86%{transform:translate(55.0px,111.4px)}38.38%{transform:translate(38.0px,116.0px)}57.61%{transform:translate(-58.0px,116.0px)}61.14%{transform:translate(-75.0px,111.4px)}64.66%{transform:translate(-87.4px,99.0px)}68.19%{transform:translate(-92.0px,82.0px)}77.80%{transform:translate(-92.0px,34.0px)}81.33%{transform:translate(-87.4px,17.0px)}84.86%{transform:translate(-75.0px,4.6px)}88.38%{transform:translate(-58.0px,0.0px)}100.00%{transform:translate(0.0px,0.0px)}}
+@keyframes route{0.00%{transform:translate(0.0px,0.0px)}14.04%{transform:translate(0.0px,-64.0px)}29.39%{transform:translate(70.0px,-64.0px)}36.84%{transform:translate(70.0px,-30.0px)}57.46%{transform:translate(164.0px,-30.0px)}64.04%{transform:translate(164.0px,0.0px)}100.00%{transform:translate(0.0px,0.0px)}}
+@keyframes hop{0.00%{transform:translate(0.0px,0.0px);opacity:0}8.33%{transform:translate(33.0px,-19.2px);opacity:1}16.67%{transform:translate(66.0px,-35.2px);opacity:1}25.00%{transform:translate(99.0px,-47.8px);opacity:1}33.33%{transform:translate(132.0px,-57.2px);opacity:1}41.67%{transform:translate(165.0px,-63.3px);opacity:1}50.00%{transform:translate(198.0px,-66.1px);opacity:1}58.33%{transform:translate(231.0px,-65.6px);opacity:1}66.67%{transform:translate(264.0px,-61.8px);opacity:1}75.00%{transform:translate(297.0px,-54.8px);opacity:1}83.33%{transform:translate(330.0px,-44.5px);opacity:1}91.67%{transform:translate(363.0px,-30.9px);opacity:1}100.00%{transform:translate(396.0px,-14.0px);opacity:0}}
+@keyframes rows{to{transform:translateY(-90px)}}
+@keyframes talk{to{transform:translateY(-134px)}}
+@keyframes drop{to{transform:translateY(56px)}}
+@keyframes wave{to{transform:translateX(-112px)}}
+@keyframes belt{to{transform:translateX(100px)}}
+@keyframes ballx{0%,100%{transform:translateX(0)}50%{transform:translateX(196px)}}
+@keyframes bally{0%,100%{transform:translateY(0)}50%{transform:translateY(90px)}}
+@keyframes glow{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes ping{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.7);opacity:.25}}
+.lap{animation:lap 9s linear infinite}
+.route{animation:route 12s linear infinite}
+.hop{animation:hop 5s linear infinite}
+.rows{animation:rows 9s linear infinite}
+.talk{animation:talk 11s linear infinite}
+.drop{animation:drop 3.5s linear infinite}
+.wave{animation:wave 7s linear infinite}
+.belt{animation:belt 5s linear infinite}
+.ballx{animation:ballx 4.4s linear infinite}
+.bally{animation:bally 3s linear infinite}
+.glow{animation:glow 3.2s ease-in-out infinite}
+.ping{animation:ping 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+</style>
+<defs>
+  <clipPath id="cApp"><rect x="85" y="41" width="186" height="90" /></clipPath>
+  <linearGradient id="gChat" gradientUnits="userSpaceOnUse" x1="0" y1="16" x2="0" y2="138">
+    <stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset=".2" stop-color="#fff" /><stop offset=".82" stop-color="#fff" /><stop offset="1" stop-color="#fff" stop-opacity="0" />
+  </linearGradient>
+  <mask id="mChat" maskUnits="userSpaceOnUse" x="16" y="16" width="260" height="122"><rect x="16" y="16" width="260" height="122" fill="url(#gChat)" /></mask>
+  <linearGradient id="gDrop" gradientUnits="userSpaceOnUse" x1="0" y1="4" x2="0" y2="104">
+    <stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset=".3" stop-color="#fff" /><stop offset="1" stop-color="#fff" />
+  </linearGradient>
+  <mask id="mDrop" maskUnits="userSpaceOnUse" x="100" y="4" width="92" height="96"><rect x="100" y="4" width="92" height="96" fill="url(#gDrop)" /></mask>
+  <linearGradient id="gWave" gradientUnits="userSpaceOnUse" x1="24" y1="0" x2="268" y2="0">
+    <stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset=".14" stop-color="#fff" /><stop offset=".86" stop-color="#fff" /><stop offset="1" stop-color="#fff" stop-opacity="0" />
+  </linearGradient>
+  <mask id="mWave" maskUnits="userSpaceOnUse" x="24" y="10" width="244" height="124"><rect x="24" y="10" width="244" height="124" fill="url(#gWave)" /></mask>
+  <clipPath id="cWaveL"><rect x="24" y="10" width="122" height="124" /></clipPath>
+  <clipPath id="cWaveR"><rect x="146" y="10" width="122" height="124" /></clipPath>
+  <linearGradient id="gBelt" gradientUnits="userSpaceOnUse" x1="20" y1="0" x2="80" y2="0">
+    <stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset="1" stop-color="#fff" />
+  </linearGradient>
+  <mask id="mBeltL" maskUnits="userSpaceOnUse" x="20" y="30" width="280" height="90"><rect x="20" y="30" width="280" height="90" fill="url(#gBelt)" /></mask>
+  <clipPath id="cBeltR"><rect x="300" y="30" width="190" height="90" /></clipPath>
+  <clipPath id="cMap"><rect x="20" y="14" width="252" height="122" rx="8" /></clipPath>
+
+  <g id="row">
+    <rect x="94" width="168" height="22" rx="5" fill="#121B30" stroke="#27344F" />
+    <circle cx="107" cy="11" r="5" fill="#2E3D5E" />
+  </g>
+  <g id="rows3">
+    <use href="#row" /><rect x="119" y="8" width="72" height="6" rx="3" fill="#6B7C9E" />
+    <rect x="232" y="6" width="22" height="10" rx="5" fill="#2E3D5E" /><circle cx="237" cy="11" r="4" fill="#6B7C9E" />
+    <use href="#row" y="30" /><rect x="119" y="38" width="94" height="6" rx="3" fill="#6B7C9E" />
+    <rect x="232" y="36" width="22" height="10" rx="5" fill="#2E3D5E" /><circle cx="249" cy="41" r="6" fill="#E8553D" />
+    <use href="#row" y="60" /><rect x="119" y="68" width="54" height="6" rx="3" fill="#6B7C9E" />
+    <rect x="232" y="66" width="22" height="10" rx="5" fill="#2E3D5E" /><circle cx="237" cy="71" r="4" fill="#6B7C9E" />
+  </g>
+  <g id="talk1">
+    <rect x="24" y="0" width="150" height="30" rx="12" fill="#2E3D5E" /><rect x="38" y="12" width="96" height="6" rx="3" fill="#6B7C9E" />
+    <rect x="128" y="40" width="140" height="30" rx="12" fill="#E8553D" /><rect x="142" y="52" width="84" height="6" rx="3" fill="#FFFFFF" />
+    <rect x="24" y="80" width="184" height="44" rx="12" fill="#2E3D5E" /><rect x="38" y="93" width="150" height="6" rx="3" fill="#6B7C9E" /><rect x="38" y="106" width="104" height="6" rx="3" fill="#6B7C9E" />
+  </g>
+  <g id="note">
+    <rect x="124" width="44" height="30" rx="4" fill="#121B30" stroke="#6B7C9E" stroke-width="2" />
+    <circle cx="134" cy="10" r="4" fill="#E8553D" />
+    <rect x="142" y="7" width="18" height="5" rx="2.5" fill="#6B7C9E" /><rect x="132" y="18" width="28" height="5" rx="2.5" fill="#2E3D5E" />
+  </g>
+  <g id="w8">
+    <rect x="3" y="58" width="8" height="24" rx="4" /><rect x="17" y="44" width="8" height="52" rx="4" /><rect x="31" y="30" width="8" height="80" rx="4" /><rect x="45" y="50" width="8" height="40" rx="4" />
+    <rect x="59" y="36" width="8" height="68" rx="4" /><rect x="73" y="55" width="8" height="30" rx="4" /><rect x="87" y="24" width="8" height="92" rx="4" /><rect x="101" y="47" width="8" height="46" rx="4" />
+  </g>
+  <g id="wv"><use href="#w8" x="24" /><use href="#w8" x="136" /><use href="#w8" x="248" /><use href="#w8" x="360" /></g>
+  <g id="bk1">
+    <rect width="44" height="58" rx="4" fill="#2E3D5E" stroke="#6B7C9E" stroke-width="2" />
+    <path d="M8 1v56" stroke="#6B7C9E" stroke-width="2" />
+    <rect x="17" y="28" width="18" height="14" rx="3" fill="#6B7C9E" />
+    <path d="M21 28v-5a5 5 0 0 1 10 0v5" fill="none" stroke="#6B7C9E" stroke-width="3" />
+  </g>
+  <g id="bk2">
+    <rect width="44" height="58" rx="4" fill="#E8553D" />
+    <path d="M8 0v58" stroke="#FFFFFF" stroke-width="2" opacity=".45" />
+    <rect x="15" y="15" width="22" height="5" rx="2.5" fill="#FFFFFF" /><rect x="15" y="25" width="14" height="5" rx="2.5" fill="#FFFFFF" />
+  </g>
+  <g id="belt1"><use href="#bk1" x="-90" /><use href="#bk1" x="10" /><use href="#bk1" x="110" /><use href="#bk1" x="210" /><use href="#bk1" x="310" /></g>
+  <g id="belt2"><use href="#bk2" x="110" /><use href="#bk2" x="210" /><use href="#bk2" x="310" /><use href="#bk2" x="410" /><use href="#bk2" x="510" /></g>
+</defs>
+
+<rect width="1280" height="640" fill="#0B1220" />
+
+
+<g transform="translate(32 32)">
+  <rect width="292" height="180" rx="14" fill="#121B30" stroke="#27344F" />
+  <rect x="20" y="16" width="252" height="116" rx="8" fill="#0B1220" stroke="#27344F" />
+  <circle cx="34" cy="28" r="3.5" fill="#2E3D5E" /><circle cx="46" cy="28" r="3.5" fill="#2E3D5E" /><circle cx="58" cy="28" r="3.5" fill="#2E3D5E" />
+  <path d="M20 40h252M84 40v92" stroke="#27344F" />
+  <rect x="30" y="54" width="42" height="6" rx="3" fill="#6B7C9E" /><rect x="30" y="70" width="34" height="6" rx="3" fill="#2E3D5E" /><rect x="30" y="86" width="40" height="6" rx="3" fill="#2E3D5E" /><rect x="30" y="102" width="28" height="6" rx="3" fill="#2E3D5E" />
+  <g clip-path="url(#cApp)"><g class="rows"><use href="#rows3" y="46" /><use href="#rows3" y="136" /><use href="#rows3" y="226" /></g></g>
+  <text x="20" y="162" class="m" font-size="14" fill="#9AA7BC">an app</text>
+</g>
+
+
+<g transform="translate(340 32)">
+  <rect width="600" height="180" rx="14" fill="#121B30" stroke="#27344F" />
+  <path d="M24 128h552" stroke="#27344F" stroke-width="2" />
+  <path d="M74 74v-12" stroke="#6B7C9E" stroke-width="3" /><circle cx="74" cy="59" r="4.5" fill="#6B7C9E" />
+  <rect x="44" y="74" width="60" height="50" rx="14" fill="#6B7C9E" />
+  <circle cx="63" cy="96" r="5.5" fill="#121B30" /><circle cx="85" cy="96" r="5.5" fill="#121B30" />
+  <rect x="56" y="123" width="9" height="5" fill="#6B7C9E" /><rect x="83" y="123" width="9" height="5" fill="#6B7C9E" />
+  <circle cx="249" cy="121" r="6" fill="#2E3D5E" /><circle cx="236" cy="121" r="6" fill="#2E3D5E" /><circle cx="243" cy="110" r="6" fill="#2E3D5E" />
+  <g fill="#6B7C9E" stroke="#121B30" stroke-width="2.5">
+    <rect x="270" y="44" width="30" height="21" /><rect x="300" y="44" width="30" height="21" />
+    <rect x="270" y="65" width="15" height="21" /><rect x="285" y="65" width="30" height="21" /><rect x="315" y="65" width="15" height="21" />
+    <rect x="270" y="86" width="30" height="21" /><rect x="300" y="86" width="30" height="21" />
+    <rect x="270" y="107" width="15" height="21" /><rect x="285" y="107" width="30" height="21" /><rect x="315" y="107" width="15" height="21" />
+  </g>
+  <rect x="492" y="40" width="68" height="88" rx="6" fill="#0B1220" stroke="#6B7C9E" stroke-width="3" />
+  <g fill="#6B7C9E">
+    <rect class="glow" x="504" y="56" width="44" height="5" rx="2.5" /><rect class="glow" style="animation-delay:-.6s" x="504" y="69" width="44" height="5" rx="2.5" />
+    <rect class="glow" style="animation-delay:-1.2s" x="504" y="82" width="30" height="5" rx="2.5" /><rect class="glow" style="animation-delay:-1.8s" x="504" y="95" width="44" height="5" rx="2.5" />
+    <rect class="glow" style="animation-delay:-2.4s" x="504" y="108" width="36" height="5" rx="2.5" />
+  </g>
+  <g fill="#E8553D">
+    <circle class="hop" cx="104" cy="84" r="7" /><circle class="hop" style="animation-delay:-1s" cx="104" cy="84" r="7" />
+    <circle class="hop" style="animation-delay:-2s" cx="104" cy="84" r="7" /><circle class="hop" style="animation-delay:-3s" cx="104" cy="84" r="7" />
+    <circle class="hop" style="animation-delay:-4s" cx="104" cy="84" r="7" />
+  </g>
+  <text x="20" y="162" class="m" font-size="14" fill="#9AA7BC">a way past a wall</text>
+</g>
+
+
+<g transform="translate(956 32)">
+  <rect width="292" height="180" rx="14" fill="#121B30" stroke="#27344F" />
+  <g mask="url(#mChat)"><g class="talk"><use href="#talk1" y="14" /><use href="#talk1" y="148" /><use href="#talk1" y="282" /></g></g>
+  <text x="20" y="162" class="m" font-size="14" fill="#9AA7BC">a chat</text>
+</g>
+
+
+<g transform="translate(32 230)">
+  <rect width="292" height="180" rx="14" fill="#121B30" stroke="#27344F" />
+  <rect x="24" y="98" width="58" height="38" rx="6" fill="#2E3D5E" /><rect x="40" y="110" width="26" height="12" rx="3" fill="#121B30" />
+  <rect x="210" y="98" width="58" height="38" rx="6" fill="#2E3D5E" /><rect x="226" y="110" width="26" height="12" rx="3" fill="#121B30" />
+  <rect x="92" y="86" width="108" height="16" rx="4" fill="#2E3D5E" />
+  <g mask="url(#mDrop)"><g class="drop"><use href="#note" y="-106" /><use href="#note" y="-50" /><use href="#note" y="6" /><use href="#note" y="62" /></g></g>
+  <rect x="92" y="96" width="108" height="40" rx="6" fill="#6B7C9E" /><rect x="126" y="108" width="40" height="14" rx="3" fill="#121B30" />
+  <text x="20" y="162" class="m" font-size="14" fill="#9AA7BC">a memory</text>
+</g>
+
+
+<g transform="translate(498 250) scale(.34375)">
+  <rect width="256" height="256" rx="56" fill="#1B2A4A" />
+  <g transform="translate(25.6 25.6) scale(.8)">
+    <path fill="#EEF2F7" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z" />
+    <circle class="lap" cx="138" cy="70" r="24" fill="#E8553D" />
+  </g>
+</g>
+<text x="608" y="320" class="b" font-size="76" fill="#EEF2F7">Jano</text>
+<text x="640" y="384" class="s" font-size="24" text-anchor="middle" fill="#C5CEDC">Every project gets its own moving picture.</text>
+
+
+<g transform="translate(956 230)">
+  <rect width="292" height="180" rx="14" fill="#121B30" stroke="#27344F" />
+  <g mask="url(#mWave)">
+    <g clip-path="url(#cWaveL)" fill="#E8553D"><g class="wave"><use href="#wv" /></g></g>
+    <g clip-path="url(#cWaveR)" fill="#6B7C9E"><g class="wave"><use href="#wv" /></g></g>
+  </g>
+  <path d="M146 20v108" stroke="#EEF2F7" stroke-width="2" /><path d="M140 16h12l-6 8z" fill="#EEF2F7" />
+  <text x="20" y="162" class="m" font-size="14" fill="#9AA7BC">a sound tool</text>
+</g>
+
+
+<g transform="translate(32 428)">
+  <rect width="600" height="180" rx="14" fill="#121B30" stroke="#27344F" />
+  <path d="M24 107h470" stroke="#27344F" stroke-width="2" />
+  <g mask="url(#mBeltL)"><g transform="translate(0 46)"><g class="belt"><use href="#belt1" /></g></g></g>
+  <g clip-path="url(#cBeltR)"><g transform="translate(0 46)"><g class="belt"><use href="#belt2" /></g></g></g>
+  <rect x="286" y="14" width="28" height="122" rx="14" fill="#121B30" stroke="#6B7C9E" stroke-width="3" />
+  <path d="M296 66l8 9-8 9" fill="none" stroke="#6B7C9E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="486" y="14" width="94" height="122" rx="12" fill="#121B30" stroke="#6B7C9E" stroke-width="3" />
+  <rect x="496" y="24" width="74" height="92" rx="4" fill="#0B1220" />
+  <path d="M552 24h9v17l-4.5-4-4.5 4z" fill="#E8553D" />
+  <g fill="#6B7C9E">
+    <rect class="glow" x="505" y="40" width="38" height="5" rx="2.5" /><rect class="glow" style="animation-delay:-.7s" x="505" y="53" width="56" height="5" rx="2.5" />
+    <rect class="glow" style="animation-delay:-1.4s" x="505" y="66" width="56" height="5" rx="2.5" /><rect class="glow" style="animation-delay:-2.1s" x="505" y="79" width="40" height="5" rx="2.5" />
+    <rect class="glow" style="animation-delay:-2.8s" x="505" y="92" width="50" height="5" rx="2.5" />
+  </g>
+  <circle cx="533" cy="126" r="3.5" fill="#6B7C9E" />
+  <text x="20" y="162" class="m" font-size="14" fill="#9AA7BC">a book converter</text>
+</g>
+
+
+<g transform="translate(648 428)">
+  <rect width="292" height="180" rx="14" fill="#121B30" stroke="#27344F" />
+  <rect x="20" y="14" width="252" height="122" rx="8" fill="#0B1220" />
+  <g clip-path="url(#cMap)">
+    <path d="M20 46h252M20 80h252M20 110h252M60 14v122M130 14v122M180 14v122M224 14v122M20 136L110 14M150 136L272 30" fill="none" stroke="#27344F" stroke-width="7" />
+    <path d="M60 110V46h70v34h94v30z" fill="none" stroke="#6B7C9E" stroke-width="4" stroke-linejoin="round" />
+  </g>
+  <circle class="ping" cx="224" cy="80" r="9" fill="#6B7C9E" />
+  <circle cx="224" cy="80" r="5" fill="#EEF2F7" />
+  <circle class="route" cx="60" cy="110" r="8" fill="#E8553D" />
+  <text x="20" y="162" class="m" font-size="14" fill="#9AA7BC">a map</text>
+</g>
+
+
+<g transform="translate(956 428)">
+  <rect width="292" height="180" rx="14" fill="#121B30" stroke="#27344F" />
+  <rect x="20" y="14" width="252" height="122" rx="8" fill="#0B1220" />
+  <path d="M146 20v110" stroke="#27344F" stroke-width="3" stroke-dasharray="8 8" />
+  <g class="bally">
+    <rect x="30" y="15" width="8" height="30" rx="4" fill="#6B7C9E" /><rect x="254" y="15" width="8" height="30" rx="4" fill="#6B7C9E" />
+    <g class="ballx"><circle cx="47" cy="30" r="8" fill="#E8553D" /></g>
+  </g>
+  <text x="20" y="162" class="m" font-size="14" fill="#9AA7BC">a game</text>
+</g>
+</svg>
