@@ -33,9 +33,12 @@ build measures, so you know which rules are checked for you and which you check 
 
 ## Staging: where the eye goes
 
-4. **One thing leads.** Two or three things move at a time; the rest is still or nearly still.
-   When eight things move with eight timings, there is nowhere for the eye to land. [field-guide §7]
-   [12-principles]
+4. **One thing leads, in three layers.** The lead is what travels through the flow: large, in
+   the accent, the only thing that crosses the stage. Followers answer it in turn (a counter, a
+   row that lights, a bar that fills). The ambient layer never stops and never asks to be looked
+   at (the backdrop, the strip, walking dashes, a caret). A poster where only two things move
+   looks switched off; one where eight things lead at once has nowhere for the eye to land.
+   [field-guide §7] [12-principles]
 5. **A follower starts after its leader is mostly done** (about 60% through), never at the same
    instant. That is what makes one thing read as the cause of the next. [12-principles]
 6. **Ambient motion stays low**: a drift of a few pixels, a pulse between 0.55 and 1 opacity, a
@@ -128,17 +131,25 @@ Errors stop the build. Warnings are printed with the fix.
 
 | Measured | Limit |
 |---|---|
-| `id="logo"`, `id="name"`, `id="tagline"`, `id="stage"` exist; name and tagline are not animated | error |
-| Name size | 44-96 px, the largest text on the canvas, at most 60% of its width |
-| Logo, shorter side | 56-220 px, within 64 px of the name |
-| Tagline | 20-36 px, 12 words or fewer |
-| Picture (`#stage`), what can be seen of it | 30% of the canvas or more |
-| Text size | 13 px or more, and at most 40% of the lines under 16 px; 6 sizes or fewer |
+| `id="name"`, `id="tagline"`, `id="stage"` exist; name, key phrase and description are not animated | error |
+| `id="about"`, `id="ticker"`, `id="backdrop"` exist (`#facts` is optional) | warning |
+| Name size | 26-64 px, at most 45% of the canvas width |
+| Logo (when there is one), shorter side | 32-160 px, within 64 px of the name |
+| Key phrase (`#tagline`) | 38-68 px, the largest text on the canvas, 10 words or fewer |
+| Description (`#about`) | 18-26 px, 8 to 24 words |
+| Highlights (`#facts`) | at most 4 figures of 24 px or more; features take turns instead of standing as a block |
+| Strip (`#ticker`) | text that travels in it |
+| Background (`#backdrop`) | something in it is animated |
+| Picture (`#stage`), what can be seen of it | 34% of the canvas or more |
+| Text block against text block + picture (words in the picture count as picture) | reported; a warning under 25% or over 55%, and when the two overlap |
+| Parts of the picture | 24 or more; one 140 px or more on its shorter side; 6 or more of 48 px or less |
+| Things that move in the picture | 5 or more |
+| Text size | 13 px or more, and at most half of the lines under 16 px; 7 sizes or fewer |
 | Text and the canvas | off the canvas: error; closer than 24 px to its edge: warning |
 | Text and its box | out of the box: error; closer than 8 px to its side: warning |
 | Text over text (two texts that take turns by fading are exempt) | error |
 | Contrast of text on what is behind it, both themes | 4.5, or 3 for large text |
-| Words standing still, besides name and tagline | 36 in all, 7 in one line |
+| Words standing still in the picture | 48 in all, 10 in one line |
 | Strokes | 1 px or more |
 | Animated properties | `transform`, `opacity`, `stroke-dashoffset`, `offset-distance`; geometry: error |
 | Loop closes: equal ends, a repeat, hidden ends or whole turns | travel that jumps back in view: error |
@@ -161,7 +172,8 @@ Errors stop the build. Warnings are printed with the fix.
 Speed along an `offset-path` is not measured; keep it under the limit yourself.
 
 What it cannot measure, and you check in the pictures: whether the picture says what the
-repository does, whether a step is missing, whether two shapes touch by accident, whether
+repository does, whether it shows a real example or only two shapes that stand for one, whether
+text and picture weigh the same to the eye, whether a step is missing, whether two shapes touch by accident, whether
 something that travels passes over a label, whether a panel sits empty for most of the loop,
 whether the finished frame tells the story, whether panels and bars stand out from the
 background in both themes (the blurred picture shows it).

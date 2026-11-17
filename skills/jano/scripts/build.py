@@ -286,7 +286,7 @@ def main():
         f"@font-face{{font-family:SG;src:url(data:font/woff2;base64,{subset_font('s', chars)}) format('woff2')}}"
         f"@font-face{{font-family:SG7;src:url(data:font/woff2;base64,{subset_font('b', chars)}) format('woff2')}}"
         f"@font-face{{font-family:JB;src:url(data:font/woff2;base64,{subset_font('m', chars)}) format('woff2')}}\n"
-        "text{text-rendering:geometricPrecision}.s{font-family:SG,sans-serif}.b{font-family:SG7,sans-serif;font-weight:700}.m{font-family:JB,monospace}\n"
+        "text{text-rendering:geometricPrecision}.s{font-family:SG,sans-serif}.b{font-family:SG7,sans-serif;font-weight:700}.m{font-family:JB,monospace;font-variant-ligatures:none}\n"
         "@media (prefers-reduced-motion:reduce){*{animation:none!important}}\n"
     )
     body = body.replace("<style>", "<style>" + faces, 1)

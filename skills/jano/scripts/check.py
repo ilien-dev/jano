@@ -35,17 +35,26 @@ NAMED = {"white": "#ffffff", "black": "#000000"}
 # ---- limits, in canvas pixels unless said otherwise
 MIN_TEXT = 13          # 8.5 px at README width
 LABEL_TEXT = 16        # most of the text is at least this: 10.5 px at README width
-SMALL_SHARE = 0.4      # share of the lines of text that may be smaller than LABEL_TEXT
-NAME_SIZE = (44, 96)   # the repository name
-LOGO_SIZE = (56, 220)  # the shorter side of the logo
-TAGLINE_SIZE = (20, 36)
-TAGLINE_WORDS = 12
-STAGE_SHARE = 0.30     # of the canvas
+SMALL_SHARE = 0.5      # share of the lines of text that may be smaller than LABEL_TEXT
+NAME_SIZE = (26, 64)   # the repository name
+LOGO_SIZE = (32, 160)  # the shorter side of the logo
+TAGLINE_SIZE = (38, 68)  # the key phrase: the largest text on the canvas
+TAGLINE_WORDS = 10
+ABOUT_SIZE = (18, 26)  # the description under the key phrase
+ABOUT_WORDS = (8, 24)
+FACT_SIZE = 24         # a figure in #facts is at least this large
+FACTS = 4              # figures at most; none is fine when features or nothing stand there
+STAGE_SHARE = 0.34     # of the canvas
+COPY_SHARE = (0.25, 0.55)  # the text block against text block + picture: only the extremes are reported
+STAGE_PARTS = 24       # shapes and lines of text the picture is made of
+STAGE_LARGE = 140      # px: the shorter side of the object that anchors the picture
+STAGE_SMALL = (48, 6)  # px, count: details whose shorter side is this or less
+STAGE_MOVING = 5       # animated elements in the picture
 EDGE = 24              # still text keeps this far from the canvas edge
 BOX_PAD = 8            # and this far from the sides of the box it sits in
-STILL_WORDS = 36       # words standing still, name and tagline apart
-LABEL_WORDS = 7        # in one still line
-SIZES = 6              # distinct font sizes
+STILL_WORDS = 48       # words standing still in the picture
+LABEL_WORDS = 10        # in one still line
+SIZES = 7              # distinct font sizes
 MIN_TRAVEL, MIN_SCALE, MIN_TURN, MIN_FADE = 6, 0.03, 2, 0.12
 MAX_SPEED = 700        # px/s: faster than this cannot be followed
 MAX_TEXT_SPEED = 130   # px/s for text that travels
@@ -198,7 +207,7 @@ def declarations(body):
 
 def parse_css(css):
     css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
-    keyframes = {}
+    keyframes, twice = {}, set()
 
     def take(m):
         stops = {}
@@ -208,12 +217,15 @@ def parse_css(css):
                 p = 0.0 if s == "from" else 100.0 if s == "to" else num(s, -1)
                 if p >= 0:
                     stops.setdefault(p, {}).update(declarations(body))
+        if m.group(1) in keyframes and keyframes[m.group(1)] != sorted(stops.items()):
+            twice.add(m.group(1))
         keyframes[m.group(1)] = sorted(stops.items())
         return ""
 
     css = re.sub(r"@keyframes\s+([\w-]+)\s*\{((?:[^{}]*\{[^{}]*\})*)\s*\}", take, css)
     css = re.sub(r"@[\w-]+[^{;]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}", "", css)  # @media, @font-face, @supports
     rules = [(sel.strip(), declarations(body)) for sel, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css)]
+    keyframes["__twice__"] = sorted(twice)
     return keyframes, rules
 
 
@@ -290,6 +302,7 @@ class Hero:
         self.order = {e: i for i, e in enumerate(root.iter())}
         css = "".join(e.text or "" for e in root.iter(f"{{{SVG}}}style"))
         self.keyframes, self.rules = parse_css(css)
+        self.twice = self.keyframes.pop("__twice__")
         self._style, self._anims = {}, {}
         self.M, self.box, self.texts, self.shapes = {}, {}, [], []
         self.measure(root, IDENT, True)
@@ -452,7 +465,7 @@ class Hero:
             box = union(box, (x0, cy - 0.74 * fs, x0 + w, cy + 0.2 * fs))
         box = tbox(M, box)
         if record:
-            s = "".join(t for t, _ in runs).strip()
+            s = "".join((" " if n is not el and any(n.get(k) is not None for k in ("x", "y", "dy")) else "") + t for t, n in runs).strip()
             self.texts.append({"el": el, "s": s, "box": box, "fs": biggest * mscale(M), "words": len(s.split()),
                                "lost": lost, "classed": self.face(el) is not None})
         return box
@@ -496,11 +509,31 @@ class Hero:
             el = None
         return el
 
+    def part(self, name, what):
+        el = self.byid.get(name)
+        if el is None:
+            self.warns.append(f'no element with id="{name}": {what}')
+        elif self.box.get(el) is None:
+            self.warns.append(f'id="{name}" has nothing drawn in it')
+            el = None
+        return el
+
     def check_slots(self):
-        logo = self.slot("logo", "the group that draws the logo")
+        for k in self.twice:
+            self.errors.append(f"@keyframes {k} is written twice, differently: the last one replaces the first for every element that uses it. Give each its own name")
+        logo = self.byid.get("logo")  # a repository without a mark has none
+        if logo is not None and self.box.get(logo) is None:
+            self.errors.append('id="logo" has nothing drawn in it')
+            logo = None
         name = self.slot("name", "the repository name")
-        tagline = self.slot("tagline", "the one-line sentence")
+        tagline = self.slot("tagline", "the key phrase")
         stage = self.slot("stage", "the group that holds the picture of what the tool does")
+        about = self.part("about", "under the key phrase goes a description of one or two lines that says what is worth knowing")
+        facts = self.byid.get("facts")  # the highlights are optional
+        if facts is not None and self.box.get(facts) is None:
+            facts = None
+        ticker = self.part("ticker", "along the bottom runs a strip of moving text with more facts from the repository")
+        backdrop = self.part("backdrop", "the background is a quiet pattern that moves all the time")
         f = self.facts
         if name is not None:
             b = self.box[name]
@@ -508,12 +541,9 @@ class Hero:
             size = t["fs"] if t else (b[3] - b[1]) / 0.72  # a wordmark drawn as shapes: from its height
             f["name_px"] = round(size)
             if not NAME_SIZE[0] <= size <= NAME_SIZE[1]:
-                self.warns.append(f"the name is {size:.0f} px tall; keep it between {NAME_SIZE[0]} and {NAME_SIZE[1]} so it leads without shouting")
-            rivals = [x for x in self.texts if not self.inside(x["el"], name) and x["fs"] > 0.85 * size]
-            if rivals:
-                self.warns.append(f"{self.describe(rivals[0]['el'])} is {rivals[0]['fs']:.0f} px, as large as the name ({size:.0f} px): the name is the largest text on the canvas")
-            if b[2] - b[0] > 0.6 * W:
-                self.warns.append(f"the name is {b[2] - b[0]:.0f} px wide, more than 60% of the canvas: make it smaller")
+                self.warns.append(f"the name is {size:.0f} px tall; keep it between {NAME_SIZE[0]} and {NAME_SIZE[1]}: it signs the poster, the key phrase leads")
+            if b[2] - b[0] > 0.45 * W:
+                self.warns.append(f"the name is {b[2] - b[0]:.0f} px wide, more than 45% of the canvas: make it smaller")
         if logo is not None:
             b = self.box[logo]
             side = min(b[2] - b[0], b[3] - b[1])
@@ -538,28 +568,79 @@ class Hero:
                 size = max(t["fs"] for t in lines)
                 f["tagline_px"] = round(size)
                 if not TAGLINE_SIZE[0] <= size <= TAGLINE_SIZE[1]:
-                    self.warns.append(f"the tagline is {size:.0f} px; keep it between {TAGLINE_SIZE[0]} and {TAGLINE_SIZE[1]}")
+                    self.warns.append(f"the tagline is {size:.0f} px; keep it between {TAGLINE_SIZE[0]} and {TAGLINE_SIZE[1]}: it is the key phrase, the first thing read")
+                rivals = [x for x in self.texts if not self.inside(x["el"], tagline) and x["fs"] >= size]
+                if rivals:
+                    self.warns.append(f"{self.describe(rivals[0]['el'])} is {rivals[0]['fs']:.0f} px, as large as the tagline ({size:.0f} px): the tagline is the largest text on the canvas")
             if words > TAGLINE_WORDS:
-                self.warns.append(f"the tagline has {words} words; say it in {TAGLINE_WORDS} or fewer")
-        for el, label in ((name, "name"), (tagline, "tagline")):
+                self.warns.append(f"the tagline has {words} words; say it in {TAGLINE_WORDS} or fewer, on one or two lines")
+        if about is not None:
+            lines = [t for t in self.texts if self.inside(t["el"], about)]
+            words = sum(t["words"] for t in lines)
+            f["about_words"] = words
+            if lines:
+                size = max(t["fs"] for t in lines)
+                if not ABOUT_SIZE[0] <= size <= ABOUT_SIZE[1]:
+                    self.warns.append(f"the description in #about is {size:.0f} px; keep it between {ABOUT_SIZE[0]} and {ABOUT_SIZE[1]}")
+            if not ABOUT_WORDS[0] <= words <= ABOUT_WORDS[1]:
+                self.warns.append(f"the description in #about has {words} words; write {ABOUT_WORDS[0]} to {ABOUT_WORDS[1]}, on one or two lines")
+        if facts is not None:
+            figures = [t for t in self.texts if self.inside(t["el"], facts) and t["fs"] >= FACT_SIZE]
+            f["facts"] = len(figures)
+            turns = [t for t in self.texts if self.inside(t["el"], facts) and (self.mover(t["el"]) is not None or self.fades(t["el"]))]
+            if len(figures) > FACTS:
+                self.warns.append(f"#facts shows {len(figures)} figures: keep the {FACTS} or fewer a person would repeat to a friend, or none")
+            if not figures and not turns and sum(t["words"] for t in self.texts if self.inside(t["el"], facts)) > 24:
+                self.warns.append("#facts is a block of still text: show features one at a time, taking turns in one place, or leave it out")
+        for el, label in ((name, "name"), (tagline, "tagline"), (about, "description")):
             if el is not None and (self.mover(el) is not None or self.fades(el)):
                 self.errors.append(f"the {label} is animated: it stays still, so it can be read at any moment")
+        if ticker is not None and not any(self.inside(t["el"], ticker) and self.mover(t["el"]) is not None for t in self.texts):
+            self.warns.append("no text travels in #ticker: it is a strip of text that never stops, behind a clip")
+        if backdrop is not None and not any(self.anims(e) for e in backdrop.iter()):
+            self.warns.append("nothing in #backdrop is animated: the background drifts all the time, slowly")
         if stage is not None:
             b = None  # what can be seen of the picture: each part cut by the canvas and by its clip or mask
-            for x in self.shapes + self.texts:
-                if self.inside(x["el"], stage) and area(x["box"]) < 0.9 * W * H:
+            parts = [x for x in self.shapes + self.texts if self.inside(x["el"], stage)]
+            parts += [{"el": e, "box": self.box[e]} for e in stage.iter() if local(e.tag) == "use" and self.box.get(e)]
+            for x in parts:
+                if area(x["box"]) < 0.9 * W * H:
                     b = union(b, inter(x["box"], self.region(x["el"])))
             share = area(b) / (W * H)
             f["stage_share"] = round(share, 2)
             if share < STAGE_SHARE:
                 self.warns.append(f"the picture in #stage covers {share:.0%} of the canvas; give it at least {STAGE_SHARE:.0%}, it is what explains the repository")
-            for el in (logo, name, tagline):
+            for el in (logo, name, tagline, about, facts, ticker, backdrop):
                 if el is not None and self.inside(el, stage):
-                    self.errors.append(f'id="{el.get("id")}" is inside #stage: the identity and the picture are separate groups')
+                    self.errors.append(f'id="{el.get("id")}" is inside #stage: the text, the picture, the strip and the background are separate groups')
+            copy = None
+            for el in (logo, name, tagline, about, facts):
+                copy = union(copy, self.box.get(el) if el is not None else None)
+            if copy and b:
+                ratio = area(copy) / (area(copy) + area(b))
+                f["copy_share"] = round(ratio, 2)
+                if not COPY_SHARE[0] <= ratio <= COPY_SHARE[1]:
+                    much = "the text block is too small beside the picture and gets lost" if ratio < COPY_SHARE[0] else "the text block crowds out the picture"
+                    self.warns.append(f"text and picture are {ratio:.0%} / {1 - ratio:.0%}: {much}. Most heroes sit between 35 / 65 and 45 / 55; keep this one only when the picture needs it")
+                hit = inter(copy, b)
+                if hit and area(hit) > 0.05 * area(copy):
+                    self.warns.append("the picture in #stage runs under the text block: give each its own side of the canvas")
+            sides = [min(x["box"][2] - x["box"][0], x["box"][3] - x["box"][1]) for x in parts if "s" not in x]
+            small = sum(1 for s in sides if s <= STAGE_SMALL[0])
+            moving = sum(1 for e in stage.iter() if self.anims(e))
+            f["stage_parts"], f["stage_moving"] = len(parts), moving
+            if len(parts) < STAGE_PARTS:
+                self.warns.append(f"the picture in #stage is made of {len(parts)} parts: it reads as empty. Draw the real thing with its detail ({STAGE_PARTS} parts or more): rows, chips, counters, sample content")
+            if not any(s >= STAGE_LARGE for s in sides):
+                self.warns.append(f"nothing in #stage is large: one object {STAGE_LARGE} px or more on its shorter side anchors the picture")
+            if small < STAGE_SMALL[1]:
+                self.warns.append(f"#stage has {small} small detail(s): mix sizes, a large object with medium ones and {STAGE_SMALL[1]} or more small ones ({STAGE_SMALL[0]} px or less)")
+            if moving < STAGE_MOVING:
+                self.warns.append(f"{moving} thing(s) move in #stage: a picture that is alive has {STAGE_MOVING} or more, one leading and the others following or ambient")
 
     def check_text(self):
         f, canvas = self.facts, (0, 0, W, H)
-        name, tagline = self.byid.get("name"), self.byid.get("tagline")
+        apart = [self.byid.get(i) for i in ("name", "tagline", "about", "facts")]
         still = [t for t in self.texts if self.mover(t["el"]) is None]
         for t in self.texts:
             if not t["classed"]:
@@ -569,9 +650,10 @@ class Hero:
         small = sorted({round(t["fs"], 1) for t in self.texts if t["fs"] < MIN_TEXT})
         if small:
             self.warns.append(f"font-size below {MIN_TEXT} ({small}): unreadable at README width, where the hero is shown at ~65%")
-        tiny = [t for t in self.texts if t["fs"] < LABEL_TEXT]
-        if len(self.texts) >= 5 and len(tiny) > SMALL_SHARE * len(self.texts):
-            self.warns.append(f"{len(tiny)} of {len(self.texts)} lines of text are under {LABEL_TEXT} px, which is {LABEL_TEXT * README:.0f} px in a README: say less and say it larger. Labels that name a step are 18 px or more; only texture goes smaller")
+        counted = [t for t in self.texts if not any(self.inside(t["el"], self.byid.get(i)) for i in ("facts", "ticker"))]
+        tiny = [t for t in counted if t["fs"] < LABEL_TEXT]  # the labels of the figures and the strip are small by design
+        if len(counted) >= 5 and len(tiny) > SMALL_SHARE * len(counted):
+            self.warns.append(f"{len(tiny)} of {len(counted)} lines of text are under {LABEL_TEXT} px, which is {LABEL_TEXT * README:.0f} px in a README: say less and say it larger. Labels that name a step are 16 px or more; only texture goes smaller")
         sizes = sorted({round(t["fs"]) for t in self.texts})
         f["text_sizes"] = sizes
         if len(sizes) > SIZES:
@@ -606,11 +688,11 @@ class Hero:
                     msg = f"{self.describe(a['el'])} and {self.describe(b['el'])} overlap"
                     (self.errors if area(hit) > 0.25 * min(area(a["box"]), area(b["box"])) else self.warns).append(msg)
         # how much there is to read
-        extra = [t for t in still if not self.inside(t["el"], name) and not self.inside(t["el"], tagline)]
+        extra = [t for t in still if not any(self.inside(t["el"], a) for a in apart)]
         words = sum(t["words"] for t in extra)
         f["still_words"] = words
         if words > STILL_WORDS:
-            self.warns.append(f"{words} words stand still on the canvas besides the name and the tagline; keep it to {STILL_WORDS}, the picture tells the story and the README says the rest")
+            self.warns.append(f"{words} words stand still in the picture; keep it to {STILL_WORDS}, shapes and motion tell the story")
         for t in extra:
             if t["words"] > LABEL_WORDS:
                 self.warns.append(f"{self.describe(t['el'])} is a sentence of {t['words']} words: a label names a thing in {LABEL_WORDS} words or fewer")
@@ -620,6 +702,9 @@ class Hero:
         for t in self.texts:
             fill = self.inherit(t["el"], "fill", "#000000")
             c = self.container(t, together=False)  # a button that dips is still what its label is read on
+            mid = (t["box"][0] + t["box"][2]) / 2
+            if c is None and not 0 <= mid <= W:
+                continue  # a copy of running text that waits outside the canvas: its twin in view is measured
             behind = self.inherit(c["el"], "fill") if c else "$bg"
             opacity = 1.0  # as it is when shown: an animated opacity replaces the attribute, so that one is skipped
             for a in self.chain(t["el"]):
@@ -797,7 +882,7 @@ class Hero:
                     Wn.append(f"{who} follows an open path and is visible at both ends: fade it to opacity 0 at 0% and 100%, or close the path")
 
             # what is seen when motion is off, and what a connector looks like at rest
-            if hidden_ends and far >= LEAD_TRAVEL and num(el.get("opacity"), 1) > 0.02:
+            if hidden_ends and far >= LEAD_TRAVEL and num(el.get("opacity"), 1) > 0.02 and not self.inside(el, self.byid.get("facts")):
                 Wn.append(f"{who} exists only while it travels, but with motion off it sits frozen where it starts. Give the element opacity=\"0\" as an attribute: the animation overrides it while it runs")
             if first and "stroke-dashoffset" in props:
                 stroke, width = self.inherit(el, "stroke", "none"), num(self.inherit(el, "stroke-width"), 1) * mscale(self.M.get(el, IDENT))
@@ -915,8 +1000,12 @@ def summary(facts):
     if "tagline_px" in f:
         bits.append(f"tagline {f['tagline_px']} px, {f.get('tagline_words', 0)} words")
     if "stage_share" in f:
-        bits.append(f"picture {f['stage_share']:.0%} of the canvas")
-    bits.append(f"{f.get('still_words', 0)} other still words")
+        bits.append(f"picture {f['stage_share']:.0%} of the canvas, {f.get('stage_parts', 0)} parts, {f.get('stage_moving', 0)} moving")
+    if "copy_share" in f:
+        bits.append(f"text / picture {f['copy_share']:.0%} / {1 - f['copy_share']:.0%}")
+    if "facts" in f:
+        bits.append(f"{f['facts']} figures")
+    bits.append(f"{f.get('still_words', 0)} still words in the picture")
     if f.get("text_sizes"):
         bits.append(f"text {f['text_sizes'][0]}-{f['text_sizes'][-1]} px in {len(f['text_sizes'])} sizes")
     bits.append(f"{f.get('animations', 0)} animations on {f.get('animated_elements', 0)} elements")

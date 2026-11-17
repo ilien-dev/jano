@@ -8,6 +8,12 @@ Whatever the kind, the picture is built from the flow you wrote in step 1: what 
 it passes through, what comes out. Every step is on the canvas the whole time, in reading order
 (left to right, or top to bottom), and motion is what goes from one step to the next.
 
+The stage has about 60% of the canvas, beside or under the text block. Fill it in three sizes:
+one or two large objects that hold the scene, medium ones inside them, and small details that
+carry real content (a count on a card, a chip with a real word, a badge, a progress tick). The
+two failures to avoid are the same in every kind: two big shapes with a label each, which say
+nothing, and a crowd of equal small things, which says nothing either.
+
 ## An app with a screen (web, mobile, desktop, extension popup)
 
 **Read:** the main view's component and its styles, the design tokens (`tokens.css`,
@@ -112,9 +118,10 @@ step and what they get back as the last.
 
 ## A tool whose point is a number (faster, smaller, cheaper, more)
 
-**Draw:** the quantity against something familiar: two bars, two stacks, two clocks, with the
-measured figure from the repo beside them. Combine it with the kind above that fits the tool; the
-measure alone says how much, the flow says of what.
+**Draw:** the kind above that fits the tool, with the quantity shown on the real things: the
+long output and the short one, each with its count; the slow run and the fast one, each with its
+clock. The measured figures go in the text block (`#facts`), where they are read. Two bars alone
+are never the picture: they say how much and nothing about of what.
 
 **Move:** both run, one finishes first; or one stack grows while the other stays small.
 
@@ -235,12 +242,14 @@ each one go just before the next arrives, never all together.
 
 The text does not animate. A cover in the terminal's colour slides off it one character at a time
 (`steps`, one step per character: 18 characters of 16 px mono are 18 x 9.6 = 173 px), rests, and
-slides back as the cycle closes. The output appears once the command is typed. The caret blinks
+slides back as the cycle closes. The cover is drawn where it rests, off the text, and the
+keyframes bring it back over the command: with motion off the command is there to read. Anything
+revealed by a cover is drawn this way. The output appears once the command is typed. The caret blinks
 with `steps(1,end)` between equal first and last keyframes.
 
 ```svg
 <style>
-@keyframes type{0%,6%{transform:translateX(0);animation-timing-function:steps(18,end)}28%,90%{transform:translateX(173px);animation-timing-function:steps(18,end)}100%{transform:translateX(0)}}
+@keyframes type{0%,6%{transform:translateX(-173px);animation-timing-function:steps(18,end)}28%,90%{transform:translateX(0);animation-timing-function:steps(18,end)}100%{transform:translateX(-173px)}}
 @keyframes out{0%,32%{opacity:0}36%,90%{opacity:1}96%,100%{opacity:0}}
 @keyframes caret{0%,100%{opacity:1}50%{opacity:0}}
 .type{animation:type 8s linear infinite}
@@ -252,7 +261,7 @@ with `steps(1,end)` between equal first and last keyframes.
 <circle cx="104" cy="262" r="5" fill="$muted"/><circle cx="122" cy="262" r="5" fill="$muted"/><circle cx="140" cy="262" r="5" fill="$muted"/>
 <text class="m" x="100" y="316" font-size="16" fill="$accent">$</text>
 <text class="m" x="120" y="316" font-size="16" fill="$ink">tool build ./site</text>
-<g clip-path="url(#row)"><rect class="type" x="120" y="298" width="290" height="26" fill="$panel"/></g>
+<g clip-path="url(#row)"><rect class="type" x="293" y="298" width="290" height="26" fill="$panel"/></g>
 <rect class="caret" x="100" y="340" width="9" height="18" fill="$accent"/>
 <text class="m out" x="120" y="355" font-size="14" fill="$body">12 pages written</text>
 <text class="m out" style="animation-delay:-7.6s" x="120" y="381" font-size="14" fill="$body">ready in 0.4 s</text>
@@ -260,7 +269,8 @@ with `steps(1,end)` between equal first and last keyframes.
 
 ### G. A measure
 
-Two bars that fill from the left to their real proportion and rest. `transform-origin:0 50%`
+A detail for inside a card or under a figure, never the whole picture. Two bars that fill from
+the left to their real proportion and rest. `transform-origin:0 50%`
 makes them grow from their left end.
 
 ```svg
@@ -271,3 +281,61 @@ makes them grow from their left end.
 <rect class="fill" x="700" y="520" width="420" height="18" rx="9" fill="$muted"/>
 <rect class="fill" x="700" y="552" width="140" height="18" rx="9" fill="$accent"/>
 ```
+
+### H. A strip of running text and a backdrop that drifts
+
+The two ambient parts every hero has. The strip is the same line written three times, one period
+apart, moved by exactly one period behind a clip: here 80 characters of 14 px mono, 80 x 8.4 =
+672 px, in 12 s (56 px/s). Pad the line with spaces to the length you want (`xml:space`). The
+backdrop is a pattern on a rectangle one tile larger than the canvas, moved by one tile.
+
+```svg
+<style>
+@keyframes tick{to{transform:translateX(-672px)}}
+@keyframes drift{to{transform:translate(24px,24px)}}
+.tick{animation:tick 12s linear infinite}
+.drift{animation:drift 4s linear infinite}
+</style>
+<defs>
+<pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.5" fill="$line"/></pattern>
+<clipPath id="band"><rect x="0" y="596" width="1280" height="44"/></clipPath>
+</defs>
+<rect class="drift" x="-24" y="-24" width="1328" height="688" fill="url(#grid)"/>
+<rect x="0" y="596" width="1280" height="44" fill="$panel"/>
+<g clip-path="url(#band)"><g class="tick" fill="$body">
+<text x="24" y="623" class="m" font-size="14" xml:space="preserve">reads <tspan fill="$accent">12 formats</tspan>      runs <tspan fill="$accent">offline</tspan>      one file to install      MIT licence      </text>
+<text x="696" y="623" class="m" font-size="14" xml:space="preserve">reads <tspan fill="$accent">12 formats</tspan>      runs <tspan fill="$accent">offline</tspan>      one file to install      MIT licence      </text>
+<text x="1368" y="623" class="m" font-size="14" xml:space="preserve">reads <tspan fill="$accent">12 formats</tspan>      runs <tspan fill="$accent">offline</tspan>      one file to install      MIT licence      </text>
+</g></g>
+```
+
+In a hero the backdrop rectangle goes inside `<g id="backdrop">`, right after the background, and
+the strip inside `<g id="ticker">`. Give the strip's `<g>` or `<text>` a `fill` of its own even
+when every word is coloured by a `<tspan>`: the build reads the colour of a line from the text,
+not from its spans.
+
+### I. Features that take turns
+
+For the highlights when no number sells the tool: three to five features in one place, one shown
+at a time. Each slides up into place, rests, and leaves upwards as the next arrives,
+the next rising in as it rises out, so the place is never empty. All share one duration (here
+4 features x 3 s = 12 s, the same as the story or a multiple of it, or the build sees two stories
+that drift) and each is shifted by a quarter of it. The window is a clip. With motion off one feature stands
+there: the others carry `opacity="0"` as an attribute, which the animation overrides.
+
+```svg
+<style>
+@keyframes turn{0%{transform:translateY(32px);opacity:0}4%,25%{transform:translateY(0);opacity:1}29%,100%{transform:translateY(-32px);opacity:0}}
+.turn{animation:turn 12s cubic-bezier(.4,0,.2,1) infinite}
+</style>
+<defs><clipPath id="feat"><rect x="72" y="380" width="460" height="48"/></clipPath></defs>
+<g clip-path="url(#feat)">
+<g class="turn" opacity="0" style="animation-delay:-9s"><circle cx="84" cy="404" r="6" fill="$accent"/><text x="104" y="411" class="s" font-size="20" fill="$ink">Works offline</text></g>
+<g class="turn" opacity="0" style="animation-delay:-6s"><circle cx="84" cy="404" r="6" fill="$accent"/><text x="104" y="411" class="s" font-size="20" fill="$ink">Your books stay yours</text></g>
+<g class="turn" opacity="0" style="animation-delay:-3s"><circle cx="84" cy="404" r="6" fill="$accent"/><text x="104" y="411" class="s" font-size="20" fill="$ink">One click to install</text></g>
+<g class="turn" style="animation-delay:0s"><circle cx="84" cy="404" r="6" fill="$accent"/><text x="104" y="411" class="s" font-size="20" fill="$ink">Free, for good</text></g>
+</g>
+```
+
+In a hero this goes inside `<g id="facts">`, under the description.
+
