@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.0](https://github.com/ilien-dev/jano/compare/v0.3.0...v0.4.0) (2026-11-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* draw the repository's flow and measure the hero in the build ([#8](https://github.com/ilien-dev/jano/issues/8))
+
+### Features
+
+* draw the repository's flow and measure the hero in the build ([#8](https://github.com/ilien-dev/jano/issues/8)) ([1a39e45](https://github.com/ilien-dev/jano/commit/1a39e4568f97c0a59a525efae154ef2c27fde5de))
+
 ## [0.3.0](https://github.com/ilien-dev/jano/compare/v0.2.1...v0.3.0) (2026-11-17)
 
 
