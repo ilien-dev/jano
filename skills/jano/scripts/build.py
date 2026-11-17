@@ -20,7 +20,7 @@ per theme, embeds subsets of the fonts (classes .s text, .b bold, .m mono),
 turns text that moves into outlines so it travels without pixel jumps, adds the
 reduced-motion rule, checks the result and writes a preview page.
 """
-import base64, html, io, re, sys, tempfile
+import base64, hashlib, html, io, re, sys, tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -310,7 +310,9 @@ def main():
     page = "<!doctype html><meta charset=utf-8><title>hero preview</title><style>body{margin:0;font:14px system-ui}section{padding:32px}img{display:block;margin:0 0 24px}.l img{display:inline-block;margin-right:16px;vertical-align:middle}</style>"
     for f, bg, fg in ((names[0], "#0d1117", "#f0f6fc"), (names[1], "#ffffff", "#1f2328")):
         page += f'<section style="background:{bg};color:{fg}"><p>{f.name} at README width (838px)</p><img src="{f.as_uri()}" width="838"><p>phone (360px)</p><img src="{f.as_uri()}" width="360"><p class="l">logo {logos}</p></section>'
-    prev = Path(tempfile.gettempdir()) / f"hero-preview-{src.parent.parent.name}.html"
+    # one preview per source path, so two repos with the same name do not overwrite each other
+    tag = hashlib.sha1(str(src).encode()).hexdigest()[:8]
+    prev = Path(tempfile.gettempdir()) / f"hero-preview-{src.parent.parent.name}-{tag}.html"
     prev.write_text(page, encoding="utf-8")
     print(f"preview {prev}")
     print("\n".join("warning: " + w for w in dict.fromkeys(warns)) or "checks passed")
