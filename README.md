@@ -15,6 +15,7 @@ so the first screen of the README shows what the project does.</b></p>
 </p>
 
 <p align="center">
+  <a href="#showroom"><b>Showroom</b></a> ·
   <a href="#install"><b>Install</b></a> ·
   <a href="#use"><b>Use</b></a> ·
   <a href="#what-you-get"><b>What you get</b></a> ·
@@ -26,6 +27,55 @@ so the first screen of the README shows what the project does.</b></p>
 ---
 
 This README has no hero yet. It will get one made with Jano.
+
+## Showroom
+
+Heroes made with Jano for real repositories. Each one was drawn by an agent that had only the repository and the skill. Open a repository to see its hero in place.
+
+**[Svipall](https://github.com/ilien-dev/svipall)**: Your assistant reads the real page, not the “checking your browser” screen.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/svipall/hero-dark.svg">
+    <img src="examples/svipall/hero-light.svg" alt="Svipall: an assistant asks a website for a price. Without Svipall a waiting screen comes back; with it, the real page arrives." width="100%">
+  </picture>
+</p>
+
+**[Muninn](https://github.com/ilien-dev/muninn)**: Your assistant remembers your decisions, and lets go of the ones you changed.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/muninn/hero-dark.svg">
+    <img src="examples/muninn/hero-light.svg" alt="Muninn: notes travel from a person to their assistant through a ring called the memory; a replaced decision is crossed out and put away." width="100%">
+  </picture>
+</p>
+
+**[Anzu](https://github.com/ilien-dev/anzu)**: Your Kindle books, open on any reader.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/anzu/hero-dark.svg">
+    <img src="examples/anzu/hero-light.svg" alt="Anzu: locked Kindle books pass under the Anzu mark, lose their padlock and reach an e-reader, a phone and a tablet." width="100%">
+  </picture>
+</p>
+
+**[Quirón](https://github.com/ilien-dev/quiron)**: Makes a chatbot's draft read like a person wrote it, and measures it.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/quiron/hero-dark.svg">
+    <img src="examples/quiron/hero-light.svg" alt="Quirón: pages written by a chatbot cross a line under a star and come out rewritten; a ruler goes from 13 of 23 to 23 of 23." width="100%">
+  </picture>
+</p>
+
+**[themis](https://github.com/ilien-dev/themis)**: The page of rules you give your AI assistants, kept short and identical in both copies.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/themis/hero-dark.svg">
+    <img src="examples/themis/hero-light.svg" alt="themis: a long page of rules is filtered line by line; only the lines that matter come out, as two short identical pages." width="100%">
+  </picture>
+</p>
 
 ## Install
 
