@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/ilien-dev/jano/compare/v0.4.0...v0.5.0) (2026-11-17)
+
+
+### Features
+
+* draw the hero as a poster with a text block and a live picture ([#10](https://github.com/ilien-dev/jano/issues/10)) ([b3a3946](https://github.com/ilien-dev/jano/commit/b3a394699b49de30102e776cbd70aedf11737206))
+
 ## [0.4.0](https://github.com/ilien-dev/jano/compare/v0.3.0...v0.4.0) (2026-11-17)
 
 
