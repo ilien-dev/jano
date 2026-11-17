@@ -1,19 +1,19 @@
 ---
 name: jano
-description: "Draw a repository its README hero: a looping animated SVG, in dark and light, that shows what the project does before a word of the README is read."
+description: "Draw a repository its README hero: a looping animated poster in SVG, dark and light, that says what the project is and shows it working before a word of the README is read."
 disable-model-invocation: true
 ---
 
 # jano
 
-Draw this repository an animated hero for the top of its README. The hero has one job: a person
-who has read nothing yet looks at it and knows what this repository is and what it does. The
-hero is the whole job: do not rewrite the README's title, text, badges or links, and do not
+Draw this repository an animated hero for the top of its README. The hero is a poster that
+moves: a person who has read nothing yet looks at it and knows the name of the tool, what it is
+for, what is worth knowing about it, and sees it doing its job. The hero is the whole job: do not rewrite the README's title, text, badges or links, and do not
 commit.
 
 ## 1. Learn the repo
 
-Read the README, docs and code until you can write down four things.
+Read the README, docs and code until you can write down six things.
 
 **The sentence.** Who uses it and at what moment, what was slow, risky, tedious or impossible for
 them before, and what they have after, joined into one sentence with no word of the trade in it:
@@ -28,12 +28,37 @@ will show, so it has to be true: follow it in the code, do not guess it from the
 **The kind.** How a person meets it: a screen, a terminal, a call from their own code, something
 that works unseen inside another tool, a set of files. The kind decides the picture (step 3).
 
-**The proof.** The number, before/after or real output that makes the sentence believable, said
-the way that person would say it ("9 times out of 9", "half the size"). Use only facts the repo
-backs (benchmarks, tests, real output). A hero with an invented number is worse than no hero.
-When the repo measures nothing, or marks its numbers as old or as targets, the proof is its own
-sample output and the hero carries no figure. In the hero the proof is one small figure beside
-the step it proves, never a row of numbers.
+**The audience.** Who the README is written for. Most tools are for people who do not care how
+they work: someone who reads books, learns a language, writes, saves money. Some are for
+professionals who speak the trade (an SSH library for cloud machines, a database driver, a build
+tool for a compiler team). Everything the hero says beyond the name is written for that person:
+in the first case in plain words, in the second the trade's own words are fine.
+
+**The highlights.** What would make that person want it, as one of two things, or neither:
+
+- **Figures**, one to four, only when a number is the selling point and that person feels it:
+  how much faster, smaller or cheaper it is, measured ("48% fewer tokens", "half the size",
+  "in 3 seconds"). Use only what the repo backs (benchmarks, tests, real output). A hero with
+  an invented number is worse than no hero; a number that is old or a target is left out.
+- **Features**, three to five, when no number sells it: what the person gets, each in two to
+  five plain words ("Works offline", "Your books stay yours", "Feedback after you speak").
+
+Test each one by asking whether a person who has never seen the repo would repeat it to a
+friend. Counts of the tool's own insides fail that test whatever their size: tests, checks,
+files, fonts, stages, review intervals, lines of code, settings. So do numbers that only make
+sense once you know the tool ("0 corrections while you talk", "4 stages to mastered"). When
+nothing passes, the hero has no highlights: the key phrase and the picture carry it. Fewer and
+true beats a full row.
+
+**The key phrase and the description.** The key phrase is your sentence cut down to what a
+poster says: ten words or fewer, on one or two lines, the benefit first ("Shorter replies. Up
+to 48% fewer tokens."). The description is one or two lines under it, 8 to 24 words, that add
+what the phrase leaves out: what kind of thing this is, where it runs, the one detail worth
+knowing. When the repo already has a tagline in plain words, it is the key phrase.
+
+**The strip.** Five to eight more short facts for a line of text that runs along the bottom:
+where it runs, what it works with, what it needs, how it is installed, that it is free. Each is a
+few words, true, and written for the audience above; none repeats the highlights.
 
 Look for an existing identity (logo, wordmark, `DESIGN.md`, brand folder, site, design tokens,
 badge colors) and reuse its colors, mark and rules. The accent is the one the identity declares;
@@ -43,9 +68,11 @@ the same hues, background and ink swapped, the accent darkened or lightened unti
 passes contrast. The fonts are the skill's in every hero, whatever the brand uses; the one
 exception is a wordmark the repo ships as a file, which is used as shapes.
 
-When the repo already has a tagline that says this in plain words, keep it as the tagline. A
-brand rule that cannot hold at hero size (interface text of 11 px) gives way to the sizes below;
-its rules on color and on the mark always hold.
+A brand rule that cannot hold at hero size (interface text of 11 px) gives way to the sizes
+below; its rules on color and on the mark always hold. Where the brand keeps its accent off
+text, or the accent is too pale to read, the words this skill puts "in the accent" take a
+darker or lighter tone of the same hue that passes contrast, and the pure accent stays on
+shapes.
 
 The hero speaks the language of the main README. Sample content may be shortened; it is never
 something the tool would not produce, and it names no real third party (`example.com`, not a
@@ -56,40 +83,72 @@ real shop).
 If the repo has a mark, use it as it is, whatever its shape or detail: copy it to
 `assets/logo.svg` (the variant made for light backgrounds, when there are two). From a lockup,
 take the symbol and leave the wordmark out. A mark that exists only as a raster (`.ico`, `.png`)
-is traced or redrawn as a faithful vector, never replaced with a new idea. Otherwise draw a
-160×160 mark from the name, from what the tool does, or both: two or three thick shapes, ink plus
-the accent, on a rounded square of the dark background. It has to survive 16 px, so no thin
-strokes, no text, no detail.
+is traced or redrawn as a faithful vector, never replaced with a new idea.
+
+A repository with no mark gets none: the name stands alone in the hero and this step is skipped.
+Draw a mark only when the user asks for one: 160×160, from the name, from what the tool does, or
+both, two or three thick shapes, ink plus the accent, on a rounded square of the dark
+background. It has to survive 16 px, so no thin strokes, no text, no detail.
 
 ## 3. Hero: `assets/hero.src.svg`
 
-What is standard is the quality bar, never the composition. Two heroes made with this skill share
-fonts and care and look nothing alike, because the tools are not alike.
+The hero is a poster. A poster has a text block that can be read in three seconds and a picture
+that makes a person stay, and neither wins: a canvas that is all picture with a name lost in a
+corner belongs to nobody, and a headline beside two big shapes explains nothing. What is standard
+is the anatomy and the quality bar. The picture is never standard: two heroes made with this
+skill share fonts, anatomy and care, and their pictures look nothing alike, because the tools are
+not alike.
 
-### The four parts
+### The anatomy
 
-Every hero has these, marked with these ids so the build can measure them:
+Every hero has these parts, marked with these ids so the build can measure them:
 
 ```
-<g id="logo">...</g>            the mark, drawn inline, its colors as palette roles so it holds in both themes
+<g id="backdrop">...</g>        a quiet pattern over the whole canvas that drifts all the time
+<g id="logo">...</g>            the mark, drawn inline, its colors as palette roles (left out when the repo has none)
 <text id="name">...</text>      the repository name in class b (a <g> of shapes when the repo ships a wordmark file)
-<text id="tagline">...</text>   your sentence, shortened to one line of 12 words or fewer
+<text id="tagline">...</text>   the key phrase, one or two lines; the second may be in the accent
+<text id="about">...</text>     the description, one or two lines
+<g id="facts">...</g>           the highlights: 1-4 figures with a label each, or 3-5 features taking turns (left out when nothing passes)
+<g id="ticker">...</g>          a strip along the bottom edge where the facts of the strip run without stopping
 <g id="stage">...</g>           the picture of the repository doing its job
 ```
 
-**Logo and name are what the eye lands on first, and they do not shout.** They sit together
-(within 64 px), still, with clear space around them. The name is the largest text on the canvas,
-between 44 and 96 px; the logo is between 56 and 220 px on its shorter side. A name that fills the
-canvas leaves no room for the picture, and a picture with a name lost in a corner belongs to
-nobody. A mark too heavy to type is spliced in by a small script; keep the part you write by hand
-as its own file next to the source.
+**Text and picture share the canvas, and the picture gets the larger part.** Logo, name, key
+phrase, description and figures are one block, read from top to bottom, on one side of the canvas
+(usually the left, or across the top when the picture is wide and low). The picture has the other
+side to itself and may run off the edges of the canvas. They never overlap.
 
-**The stage explains.** It takes at least 30% of the canvas and usually more than half. Cover the
-name and the tagline: the stage alone still says what the repository does.
+How much each takes follows from two needs, never from a quota. The text block needs a column
+wide enough for the key phrase on two lines and the description at 40 to 60 characters a line,
+which is 440 to 560 px; narrower and it breaks into a ragged stack, wider and the lines grow too
+long to take in at a glance. The picture needs everything else, because it is shown at two
+thirds of its size and its detail has to survive that. That usually lands near 40 / 60, between
+35 / 65 and 45 / 55. A picture that is one tall object (a phone, a page) can give the text more;
+a wide flow with many stations can take more and put the text block across the top. Only the
+text block counts as text here: words inside the stage (a terminal's output, a reply, a label on
+a card) are part of the picture. The build reports the two as `text / picture` and speaks up
+only at the extremes; judge the balance in `look.png`, by eye: when you squint, neither side
+disappears.
+
+| Part | Size | Rule |
+|---|---|---|
+| logo + name | name 26-64 px, logo 32-160 px, within 64 px of each other | Together at the top of the block, still. They sign the poster; they do not lead it. |
+| key phrase | 38-68 px, bold | The largest text on the canvas and the first thing read. |
+| description | 18-26 px | Under the key phrase, in the body color. |
+| highlights: figures | number 24-40 px and smaller than the key phrase, label 13-16 px | In a row. The strongest first, in the accent; a thin bar or mark under a number may show its proportion. One line under the row may say what they measure. One figure alone is fine, larger. |
+| highlights: features | 18-24 px, with a small mark or icon | One at a time in one place, each resting 2 s or more, taking turns by sliding up or fading (device I); or a short list where a highlight walks down, lighting one at a time. Never more than five. |
+| strip | 30-44 px tall, text 14-16 px in mono | Text that travels at 40-110 px/s behind a clip, written twice or more so the loop cannot be seen. Names in ink, values in the accent. |
+| backdrop | whole canvas | A dot grid, lines or the brand's own texture, barely darker or lighter than the background, moving 4-10 px/s. Never a second picture. |
+
+The text block is still: nothing in it travels or fades, so it can be read at any moment. Inside
+it only small things live (the mark moving within itself, a sheen on a figure's bar), and the
+features, which take turns in their own place.
 
 ### The picture
 
-It comes from the kind of repository and the flow you wrote in step 1:
+**The stage explains.** Cover the text block: the stage alone still says what the repository
+does. It comes from the kind of repository and the flow you wrote in step 1:
 
 | The repository is | The stage shows |
 |---|---|
@@ -104,35 +163,42 @@ It comes from the kind of repository and the flow you wrote in step 1:
 **Read the section for your kind in `references/pictures.md` before you draw.** It says what to
 read in the repo, what to draw, what moves and the traps of that kind, and it has devices that
 already pass the build: a connector with direction, a parcel between steps, a conveyor, a
-cursor on a skeleton screen, a terminal that types.
+cursor on a skeleton screen, a terminal that types, a strip of running text, a backdrop.
 
 Whatever the kind:
 
+- **Show an example, not a symbol of one.** The stage holds a real case from the repo with its
+  content: the actual reply, the actual command and its output, the actual page, row or file,
+  shortened. Two bars, two boxes or one big icon say that something is larger than something
+  else and nothing about what the tool does; when a comparison is the point, it is drawn on the
+  real things (the long reply and the short one, each with its count), never instead of them.
+- **Three sizes of thing.** One or two large objects anchor the stage (a window, a page, a
+  device, 140 px or more on the shorter side). Inside and around them are medium ones (cards,
+  rows, panels) and many small ones (chips, counters, ticks, cursors, badges, skeleton lines).
+  The large ones give the picture its shape from across the room; the small ones are what a
+  person finds on a second look. Only large shapes read as empty; only small ones read as noise.
 - **Every step of the flow is on the canvas the whole time**, in reading order, as an object a
-  person recognises: a window, a box, a slot. What a step holds may arrive on its turn; the step
-  itself never appears from nothing. Motion is what goes from one step to the next: a parcel, a
-  cursor, a highlight.
-- **Few things, drawn large.** A README shows the hero at two thirds of its size. Labels that
-  name a step are 18 px or more and most text is 16 or more; what travels through the flow is
-  24 px or more; a connector is 2 px or more and ends in an arrowhead. Three panels with one real
-  line each say more than six panels of small print.
+  person recognises. What a step holds may arrive on its turn; the step itself never appears
+  from nothing. Motion is what goes from one step to the next: a parcel, a cursor, a highlight.
+- **It is alive in layers.** One thing leads (what travels through the flow). Around it, things
+  follow (a counter that ticks, a row that lights, a bar that fills), and under it all the
+  ambient layer never stops (the backdrop, the strip, walking dashes, a caret). Five or more
+  things move in the stage, and no region of it sits still for the whole loop.
+- **Readable at two thirds.** A README shows the hero at 65% of its size. Labels that name a
+  step are 16 px or more; sample content is 14 to 16; nothing is under 13; what travels through
+  the flow is 24 px or more; a connector is 2 px or more and ends in an arrowhead.
 - **The picture works with every word blurred.** Shapes, direction and color say what goes in,
-  what changes and what comes out; words only name things. The moment of change is the most
-  interesting thing on the canvas, so it happens in plain sight.
-- **Every word is one the viewer already knows.** A label names a thing in a few words. A real
-  command, file name or term of the trade appears as texture, never as the explanation. No
-  sentences besides the tagline: the README says the rest.
-- **It looks like this product.** Its tokens, its screen, its mark. Sample content (a chat, a
-  page, a list) is real content from the repo, large enough to recognise and short enough to
-  take in while it passes.
-- **Let the picture decide the layout**: full-bleed with the identity over a quiet corner,
-  centered, stacked, split, one big object or many small ones. If you catch yourself drawing a
-  headline on the left, a row of numbers under it, two cards on the right and a strip along the
-  bottom, stop: that is a template, and it is the result this skill exists to avoid.
+  what changes and what comes out. The moment of change is the most interesting thing on the
+  canvas, so it happens in plain sight.
+- **Every word is one the viewer already knows.** A label names a thing in a few words. No
+  sentences in the stage besides the sample content itself: the text block says it, and the
+  README says the rest. The stage holds about 48 words standing still, 10 to a line.
+- **It looks like this product.** Its tokens, its screen, its mark.
 
-Before you build, write down what a person would say the repository does after seeing your stage
-with the name and the tagline covered. When it does not match your sentence, draw a different
-picture.
+Before you build, do two things. Write down what a person would say the repository does after
+seeing your stage with the text block covered; when it does not match your sentence, draw a
+different picture. Then cover the stage: the text block alone gives the name, what it is for and
+why to believe it.
 
 ### Format
 
@@ -160,8 +226,9 @@ The hero is a place that is always running, never a video that starts and ends. 
 `references/motion.md` before you write keyframes**: the rules, their sources, and what the build
 measures. The ones that shape the drawing:
 
-- **One thing leads**: what travels through the flow. Two or three things move at a time; the
-  rest is still or nearly still.
+- **One thing leads**: what travels through the flow. Followers answer it one after another,
+  and the ambient layer (backdrop, strip, dashes) stays low and constant. Many things move, and
+  the eye still knows where to go, because only the lead is large, in the accent and travelling.
 - **A flow is a cycle of three to five beats** on one duration of 6 to 12 s. Each part takes its
   place in it with a negative `animation-delay` (in its class or inline), so the first frame is
   already mid-story. Ambient loops (walking dashes, a pulse, a caret) keep their own short
@@ -178,9 +245,11 @@ measures. The ones that shape the drawing:
   out and departures in; `linear` is for what never stops (a conveyor, walking dashes).
 - **Animate `transform` and `opacity`**, plus `stroke-dashoffset` for connector lines. Scale and
   rotation need `transform-box:fill-box;transform-origin:center`. An animated element has no
-  `transform` attribute of its own: position it with a parent `<g>`.
-- **Name, tagline and labels stay still.** Text that travels moves at a constant speed inside a
-  `<g>`, 10-30 px/s for lines to read in passing, and the build turns it into outlines.
+  `transform` attribute of its own: position it with a parent `<g>`, and keep its keyframes
+  relative to that place (the build measures an element where its parent puts it).
+- **The text block and the labels stay still.** Text that travels moves at a constant speed
+  inside a `<g>`: 10-30 px/s for lines read in passing, 40-110 px/s for the strip. The build
+  turns it into outlines.
 
 ## 4. Build, measure, look
 
@@ -196,15 +265,18 @@ It writes `assets/hero-dark.svg` and `assets/hero-light.svg` and prints four thi
    fonts: text out of its box or over other text, sizes, contrast, loops that jump, motion too
    fast or too small. Fix every one by changing the drawing. When a warning is wrong for this
    hero, leave it and tell the user which one and why.
-2. **`measured:`**, the figures of this hero: sizes of name, logo and tagline, the share of the
-   canvas the picture takes, words, loop lengths, top speed.
+2. **`measured:`**, the figures of this hero: sizes of name, logo and key phrase, the share of
+   the canvas the picture takes, how many parts it has and how many move, text against picture,
+   words, loop lengths, top speed.
 3. **`pictures`**, two PNG files. Read both, every build:
    - `loop.png`: the loop stopped at eight moments. Follow the thing that leads from frame to
      frame: does it go through every step, in order? Is any frame empty or crowded? Does the last
      frame lead back into the first?
    - `look.png`: the finished frame (motion off) in both themes at README width, on a phone and
-     blurred. Is the name the first thing you see? Is every step there with its result, and
-     nothing left over from an earlier moment? Can you read the labels at this size? Does the
+     blurred. Is the key phrase the first thing you read, and does the picture hold you next? Do
+     text and picture weigh the same, or does one swallow the other? Is any part of the stage a
+     large empty shape? Is every step there with its result, and nothing left over from an
+     earlier moment? Can you read the labels at this size? Does the
      blurred one still show what goes in and what comes out (when it looks empty, the shapes are too
      faint against the background)? Do shapes touch or overlap by
      accident, does anything that travels pass over a label? Did the light theme come out weak?

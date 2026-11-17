@@ -1,50 +1,72 @@
 <!--palette
 bg     #0F1115 #F0F5FB
 panel  #171A20 #FFFFFF
+line   #2A2F37 #DCE3EC
 ink    #F2F0EA #0F1115
 body   #C9CDD3 #3A3F48
 muted  #A3A8B0 #555B64
 accent #4FD1C5 #0B7A70
 -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-label="Test hero: a logo, a name and a tagline that stay still, and a stage where lines scroll and a parcel travels.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-label="Test hero: a logo, a name, a key phrase, a description and three figures that stay still, a strip of text that runs along the bottom, and a stage where lines scroll and a parcel travels.">
 <style>
 @keyframes scroll{to{transform:translateY(-96px)}}
 @keyframes drift{to{transform:translate(24px,24px)}}
 @keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(.8)}}
-@keyframes send{0%{transform:translateX(0);opacity:0}10%,90%{opacity:1}100%{transform:translateX(280px);opacity:0}}
+@keyframes send{0%{transform:translateX(0);opacity:0}10%,90%{opacity:1}100%{transform:translateX(60px);opacity:0}}
 @keyframes flow{to{stroke-dashoffset:-24}}
+@keyframes tick{to{transform:translateX(-672px)}}
 .scroll{animation:scroll 8s linear infinite}
 .drift{animation:drift 4s linear infinite}
 .pulse{animation:pulse 2s ease-in-out infinite}
 .breathe{animation:breathe 2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 .send{animation:send 4s ease-in-out infinite}
 .flow{animation:flow 2s linear infinite}
+.tick{animation:tick 12s linear infinite}
 </style>
 <defs>
 <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="2" fill="$panel"/></pattern>
-<clipPath id="win"><rect x="600" y="230" width="560" height="300"/></clipPath>
+<clipPath id="win"><rect x="900" y="132" width="308" height="96"/></clipPath>
+<clipPath id="strip"><rect x="0" y="596" width="1280" height="44"/></clipPath>
 </defs>
 <rect width="1280" height="640" fill="$bg"/>
-<rect class="drift" x="-24" y="-24" width="1328" height="688" fill="url(#dots)"/>
+<g id="backdrop"><rect class="drift" x="-24" y="-24" width="1328" height="688" fill="url(#dots)"/></g>
 <g id="identity">
-<g id="logo"><rect x="72" y="60" width="72" height="72" rx="16" fill="$panel"/><rect class="breathe" x="92" y="80" width="32" height="32" rx="8" fill="$accent"/></g>
-<text id="name" x="164" y="116" class="b" font-size="56" fill="$ink">still title</text>
-<text id="tagline" x="72" y="176" class="s" font-size="24" fill="$body">It sends lines from here to there.</text>
+<g id="logo"><rect x="72" y="60" width="48" height="48" rx="12" fill="$panel"/><rect class="breathe" x="86" y="74" width="20" height="20" rx="5" fill="$accent"/></g>
+<text id="name" x="136" y="98" class="b" font-size="36" fill="$ink">still title</text>
+<text id="tagline" class="b" font-size="52" fill="$ink"><tspan x="72" y="196">It sends lines</tspan><tspan x="72" y="254" fill="$accent">from here to there.</tspan></text>
+<text id="about" x="72" y="306" class="s" font-size="20" fill="$body">A fixture the tests bend until the build objects.</text>
+<g id="facts">
+<text x="72" y="400" class="b" font-size="32" fill="$accent">3</text><text x="72" y="426" class="m" font-size="14" fill="$muted">lines</text>
+<text x="212" y="400" class="b" font-size="32" fill="$ink">1</text><text x="212" y="426" class="m" font-size="14" fill="$muted">parcel</text>
+<text x="352" y="400" class="b" font-size="32" fill="$ink">8 s</text><text x="352" y="426" class="m" font-size="14" fill="$muted">a loop</text>
 </g>
+</g>
+<g id="ticker"><rect x="0" y="596" width="1280" height="44" fill="$panel"/><g clip-path="url(#strip)"><g class="tick" fill="$body">
+<text x="24" y="623" class="m" font-size="14" xml:space="preserve">one fact from the repository      another fact from it      and one fact more      </text>
+<text x="696" y="623" class="m" font-size="14" xml:space="preserve">one fact from the repository      another fact from it      and one fact more      </text>
+<text x="1368" y="623" class="m" font-size="14" xml:space="preserve">one fact from the repository      another fact from it      and one fact more      </text>
+</g></g></g>
 <g id="stage">
-<rect x="72" y="230" width="200" height="300" rx="16" fill="$panel"/>
-<text x="172" y="388" class="m pulse" font-size="14" fill="$muted" text-anchor="middle">pulses, stays put</text>
-<path class="flow" d="M272 380H600" fill="none" stroke="$muted" stroke-width="2" stroke-dasharray="8 16"/>
-<g transform="translate(288 366)"><rect class="send" opacity="0" width="28" height="28" rx="6" fill="$accent"/></g>
-<rect x="600" y="230" width="560" height="300" rx="16" fill="$panel"/>
+<rect x="600" y="72" width="200" height="484" rx="16" fill="$panel"/>
+<rect x="624" y="104" width="120" height="10" rx="5" fill="$muted"/><rect x="624" y="130" width="152" height="10" rx="5" fill="$line"/><rect x="624" y="156" width="96" height="10" rx="5" fill="$line"/>
+<rect x="624" y="420" width="152" height="10" rx="5" fill="$line"/><rect x="624" y="446" width="110" height="10" rx="5" fill="$line"/><rect x="624" y="472" width="136" height="10" rx="5" fill="$line"/>
+<text x="700" y="318" class="m pulse" font-size="14" fill="$muted" text-anchor="middle">pulses, stays put</text>
+<path class="flow" d="M800 314H890" fill="none" stroke="$muted" stroke-width="2" stroke-dasharray="8 16"/>
+<path d="M882 306l10 8-10 8" fill="none" stroke="$muted" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(806 300)"><rect class="send" opacity="0" width="28" height="28" rx="6" fill="$accent"/></g>
+<rect x="900" y="72" width="308" height="484" rx="16" fill="$panel"/>
+<circle cx="924" cy="100" r="5" fill="$muted"/><circle cx="942" cy="100" r="5" fill="$muted"/><circle cx="960" cy="100" r="5" fill="$muted"/>
+<rect x="920" y="268" width="268" height="10" rx="5" fill="$line"/><rect x="920" y="294" width="220" height="10" rx="5" fill="$line"/><rect x="920" y="320" width="244" height="10" rx="5" fill="$line"/>
+<rect class="pulse" x="920" y="372" width="80" height="32" rx="8" fill="$accent"/><rect x="1012" y="372" width="80" height="32" rx="8" fill="$line"/><rect class="breathe" x="1104" y="372" width="32" height="32" rx="8" fill="$line"/>
+<rect x="920" y="452" width="268" height="10" rx="5" fill="$line"/><rect x="920" y="478" width="180" height="10" rx="5" fill="$line"/><rect x="920" y="504" width="232" height="10" rx="5" fill="$line"/>
 <g clip-path="url(#win)"><g class="scroll" fill="$body">
-<text x="640" y="268" class="m" font-size="16">first line</text>
-<text x="880" y="300" class="s" font-size="16" text-anchor="middle">second <tspan fill="$accent" class="b">bold</tspan> line</text>
-<text class="m" font-size="16" text-anchor="end"><tspan x="1120" y="332">third line</tspan></text>
-<text x="640" y="364" class="m" font-size="16">first line</text>
-<text x="880" y="396" class="s" font-size="16" text-anchor="middle">second <tspan fill="$accent" class="b">bold</tspan> line</text>
-<text class="m" font-size="16" text-anchor="end"><tspan x="1120" y="428">third line</tspan></text>
+<text x="920" y="150" class="m" font-size="16">first line</text>
+<text x="1054" y="182" class="s" font-size="16" text-anchor="middle">second <tspan fill="$accent" class="b">bold</tspan> line</text>
+<text class="m" font-size="16" text-anchor="end"><tspan x="1188" y="214">third line</tspan></text>
+<text x="920" y="246" class="m" font-size="16">first line</text>
+<text x="1054" y="278" class="s" font-size="16" text-anchor="middle">second <tspan fill="$accent" class="b">bold</tspan> line</text>
+<text class="m" font-size="16" text-anchor="end"><tspan x="1188" y="310">third line</tspan></text>
 </g></g>
 </g>
 </svg>

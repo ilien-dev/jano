@@ -62,8 +62,8 @@ test("each source gets its own preview page", all(previews) and previews[0].grou
 test("text that travels is outlined", "first line" not in dark and "third line" not in dark and "<use" in dark)
 test("text that stays still is kept", "still title" in dark)
 test("text that only changes opacity is kept", "pulses, stays put" in dark)
-test("six moving text elements are reported", "6 moving text element(s)" in out, out)
-test("the measured figures are printed", "measured: name 56 px · logo 72 px · tagline 24 px, 7 words" in out, out)
+test("nine moving text elements are reported", "9 moving text element(s)" in out, out)
+test("the measured figures are printed", "measured: name 36 px · logo 48 px · tagline 52 px, 7 words" in out, out)
 root = ET.fromstring(dark) if dark else None
 uses = [u.get("href") for u in root.iter("{http://www.w3.org/2000/svg}use")] if root is not None else []
 ids = {p.get("id") for p in root.iter("{http://www.w3.org/2000/svg}path")} if root is not None else set()
@@ -89,14 +89,14 @@ refused("a source without a palette is refused", re.sub(r"<!--palette.*?-->", ""
 # the parts every hero has
 refused("a hero without a marked name is refused", swap('<text id="name"', "<text"), 'id="name"')
 refused("a hero without a marked stage is refused", swap('<g id="stage">', "<g>"), 'id="stage"')
-refused("a name that moves is refused", swap('id="name" x="164" y="116" class="b"', 'id="name" x="164" y="116" class="b pulse"'), "the name is animated")
+refused("a name that moves is refused", swap('id="name" x="136" y="98" class="b"', 'id="name" x="136" y="98" class="b pulse"'), "the name is animated")
 # where things land
 refused("text that runs out of its box is refused", swap("pulses, stays put", "pulses and then stays where it was put"), "out of its box")
-refused("text that runs off the canvas is refused", swap('id="tagline" x="72"', 'id="tagline" x="1000"'), "off the canvas")
-refused("two lines of text on top of each other are refused", swap('id="tagline" x="72" y="176"', 'id="tagline" x="164" y="112"'), "overlap")
+refused("text that runs off the canvas is refused", swap('id="about" x="72"', 'id="about" x="1000"'), "off the canvas")
+refused("two lines of text on top of each other are refused", swap('id="about" x="72" y="306"', 'id="about" x="136" y="96"'), "overlap")
 # loops that do not close
 refused("a scroll that jumps back is refused", swap("translateY(-96px)", "translateY(-80px)"), "jumps back in plain sight")
-refused("a parcel that jumps back in view is refused", swap("translateX(280px);opacity:0", "translateX(280px);opacity:1"), "jumps back in plain sight")
+refused("a parcel that jumps back in view is refused", swap("translateX(60px);opacity:0", "translateX(60px);opacity:1"), "jumps back in plain sight")
 refused("dashes that do not come round are refused", swap("stroke-dashoffset:-24", "stroke-dashoffset:-20"), "dashes repeat every 24")
 refused("an animated element with its own transform is refused", swap('<rect class="send"', '<rect transform="translate(2 2)" class="send"'), "its own transform attribute")
 refused("animated geometry is refused", swap("50%{opacity:1}", "50%{opacity:1;width:9px}"), "geometry does not animate")
@@ -117,28 +117,39 @@ warned("small text is warned about", swap('font-size="14"', 'font-size="10"'), "
 warned("low contrast is warned about", swap("muted  #A3A8B0", "muted  #2A2F37"), "contrast")
 code, out, _ = build(swap('class="m pulse" font-size="14"', 'class="m pulse" opacity="0" font-size="14"'))
 test("text hidden at rest and shown by its animation is measured as shown", code == 0 and "contrast" not in out, out)
-code, out, _ = build(swap('<rect x="72" y="230" width="200" height="300" rx="16" fill="$panel"/>', '<rect class="breathe" x="72" y="230" width="200" height="300" rx="16" fill="$ink"/>'))
+code, out, _ = build(swap('<rect x="600" y="72" width="200" height="484" rx="16" fill="$panel"/>', '<rect class="breathe" x="600" y="72" width="200" height="484" rx="16" fill="$ink"/>'))
 test("a label is measured against the box behind it even when the box moves", "on $ink has contrast" in out, out)
 warned("a positive delay is warned about", swap(".pulse{", ".pulse{animation-delay:1s;"), "animation-delay")
-warned("text larger than the name is warned about", swap('class="s" font-size="24"', 'class="s" font-size="52"'), "the name is the largest text")
-warned("a name that shouts is warned about", swap('class="b" font-size="56"', 'class="b" font-size="120"'), "so it leads without shouting")
-warned("a logo far from the name is warned about", swap('id="name" x="164"', 'id="name" x="700"'), "from the name")
+warned("text as large as the key phrase is warned about", swap('class="b" font-size="32"', 'class="b" font-size="56"'), "the tagline is the largest text")
+warned("a name that shouts is warned about", swap('class="b" font-size="36"', 'class="b" font-size="120"'), "it signs the poster")
+warned("a logo far from the name is warned about", swap('id="name" x="136"', 'id="name" x="700"'), "from the name")
 warned("a small picture is warned about", swap('<g id="stage">', '<g id="stage" transform="translate(300 200) scale(.5)">'), "of the canvas; give it at least")
-warned("text at the canvas edge is warned about", swap('id="tagline" x="72"', 'id="tagline" x="10"'), "from the canvas edge")
+warned("text at the canvas edge is warned about", swap('id="about" x="72"', 'id="about" x="10"'), "from the canvas edge")
 warned("text tight in its box is warned about", swap("pulses, stays put", "pulses, then stays here"), "from the side of its box")
-warned("a sentence on the canvas is warned about", swap("pulses, stays put", "a b c d e f g h"), "is a sentence of 8 words")
-warned("text in a system font is warned about", swap('class="s" font-size="24"', 'font-size="24"'), "system font")
+warned("a sentence on the canvas is warned about", swap("pulses, stays put", "a b c d e f g h i j k"), "is a sentence of 11 words")
+warned("text in a system font is warned about", swap('class="s" font-size="20"', 'font-size="20"'), "system font")
 warned("motion too small to see is warned about", swap("scale(.8)", "scale(.99)"), "too small to read as motion")
-warned("motion too fast to follow is warned about", swap("send 4s ease-in-out", "send .3s ease-in-out"), "too fast to follow")
+warned("motion too fast to follow is warned about", swap("tick 12s linear", "tick .5s linear"), "too fast to follow")
 warned("a scale without an origin is warned about", swap(";transform-box:fill-box;transform-origin:center", ""), "transform-origin")
 warned("an opacity that pops is warned about", swap("0%,100%{opacity:.55}50%{opacity:1}", "0%{opacity:.55}100%{opacity:1}"), "pops when the loop restarts")
 warned("a parcel left frozen when motion is off is warned about", swap(' opacity="0" width="28"', ' width="28"'), "with motion off it sits frozen")
 warned("a travelling thing too small to see is warned about", swap('width="28" height="28" rx="6"', 'width="12" height="12" rx="6"').replace('<g class="scroll" ', "<g "), "the largest thing that travels")
 warned("a faint connector is warned about", swap('stroke="$muted" stroke-width="2"', 'stroke="$panel" stroke-width="2"'), "it disappears at README width")
 warned("a thin connector is warned about", swap('stroke="$muted" stroke-width="2"', 'stroke="$muted" stroke-width="1"'), "px thick")
-warned("mostly small text is warned about", swap('font-size="16"', 'font-size="15"'), "say less and say it larger")
+warned("mostly small text is warned about", swap('font-size="16"', 'font-size="15"').replace('class="s" font-size="20"', 'class="s" font-size="15"'), "say less and say it larger")
+# the parts of the poster
+code, out, _ = build(re.sub(r'<g id="logo">.*?</g>\n', "", FIXTURE, flags=re.S))
+test("a hero without a logo builds", code == 0 and "logo" not in out, out)
+warned("a hero without a description is warned about", swap('<text id="about"', "<text"), 'id="about"')
+code, out, _ = build(re.sub(r'<g id="facts">.*?</g>\n', "", FIXTURE, flags=re.S))
+test("a hero without highlights builds clean", code == 0 and "checks passed" in out, out)
+warned("too many figures are warned about", swap('<text x="352" y="400"', '<text x="72" y="470" class="b" font-size="32" fill="$ink">2</text><text x="212" y="470" class="b" font-size="32" fill="$ink">5</text><text x="352" y="400"'), "#facts shows 5 figures")
+warned("a strip without running text is warned about", re.sub(r'<g clip-path="url\(#strip\)">.*?</g></g></g>', "</g>", FIXTURE, flags=re.S), "no text travels in #ticker")
+warned("a background that stands still is warned about", swap('<rect class="drift" ', "<rect "), "nothing in #backdrop is animated")
+warned("a text block lost beside the picture is warned about", swap('<g id="stage">', '<g id="stage"><rect x="560" y="0" width="720" height="596" fill="$bg"/>').replace('id="about"', 'id="x"').replace('<g id="facts">', "<g>"), "the text block is too small")
+warned("a bare picture is warned about", re.sub(r'<g id="stage">.*</g>\s*</svg>', '<g id="stage"><rect x="600" y="72" width="608" height="484" rx="16" fill="$panel"/><g transform="translate(700 300)"><rect class="send" opacity="0" width="28" height="28" rx="6" fill="$accent"/></g></g></svg>', FIXTURE, flags=re.S), "it reads as empty")
 warned("SMIL is warned about", swap('rx="6" fill="$accent"/>', 'rx="6" fill="$accent"><animate attributeName="rx" values="6;9;6" dur="2s" repeatCount="indefinite"/></rect>'), "SMIL")
-warned("a stage where nothing travels is warned about", swap("@keyframes send{0%{transform:translateX(0);opacity:0}10%,90%{opacity:1}100%{transform:translateX(280px);opacity:0}}", "@keyframes send{0%,100%{opacity:.6}50%{opacity:1}}").replace('class="flow" ', "").replace("translateY(-96px)", "translateY(-.1px)"), "nothing in #stage travels")
+warned("a stage where nothing travels is warned about", swap("@keyframes send{0%{transform:translateX(0);opacity:0}10%,90%{opacity:1}100%{transform:translateX(60px);opacity:0}}", "@keyframes send{0%,100%{opacity:.6}50%{opacity:1}}").replace('class="flow" ', "").replace("translateY(-96px)", "translateY(-.1px)"), "nothing in #stage travels")
 
 # ---- the checks on their own
 run = subprocess.run([sys.executable, str(CHECK), str(ROOT / "tests/fixture/assets/hero.src.svg"), "--json"], capture_output=True, text=True, encoding="utf-8")
@@ -147,7 +158,7 @@ try:
 except ValueError:
     report = {}
 test("check.py reports the measured figures as JSON", run.returncode == 0 and report.get("errors") == [] and report.get("warnings") == []
-     and report.get("measured", {}).get("name_px") == 56 and report["measured"].get("stage_share", 0) >= 0.3, run.stdout + run.stderr)
+     and report.get("measured", {}).get("name_px") == 36 and report["measured"].get("stage_share", 0) >= 0.3, run.stdout + run.stderr)
 
 # ---- the devices in references/pictures.md build as they are written
 guide = (ROOT / "skills/jano/references/pictures.md").read_text(encoding="utf-8")
@@ -159,12 +170,15 @@ for i, device in enumerate(devices):
     shapes = re.sub(r"<style>.*?</style>|<defs>.*?</defs>", "", device, flags=re.S)
     hero = swap("</style>", css + "</style>")
     hero = swap("</defs>", defs + "</defs>", hero)
-    hero = re.sub(r'<g id="stage">.*</g>\s*</svg>', lambda m: '<g id="stage">' + shapes + "</g></svg>", hero, flags=re.S)
-    hero = hero.replace("panel  #171A20 #FFFFFF", "panel  #171A20 #FFFFFF\nline   #232833 #DCE3EC")
+    hero = re.sub(r'<text id="about".*?</text>\n|<g id="facts">.*?</g>\n', "", hero, flags=re.S)  # the devices are drawn where the fixture has its text
+    if letter == "I":  # the features take turns in the text block, not in the picture
+        hero = swap('<g id="stage">', '<g id="facts">' + shapes + '</g>\n<g id="stage">', hero)
+    else:
+        hero = re.sub(r'<g id="stage">.*</g>\s*</svg>', lambda m: '<g id="stage">' + shapes + "</g></svg>", hero, flags=re.S)
     code, out, _ = build(hero)
-    noise = [l for l in out.splitlines() if l.startswith(("error", "warning")) and "of the canvas; give it at least" not in l]
+    noise = [l for l in out.splitlines() if l.startswith(("error", "warning")) and not any(x in l for x in ("#stage", "text and picture are", "no element with id=", "say less and say it larger"))]
     test(f"device {letter} of pictures.md builds clean", code == 0 and not noise, out)
-test("pictures.md has its seven devices", len(devices) == 7)
+test("pictures.md has its nine devices", len(devices) == 9)
 
 # ---- pictures of the loop
 preview = Path(previews[0].group(1)).parent if previews[0] else Path("missing")
