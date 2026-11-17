@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
-    <img src="assets/hero-light.svg" alt="Jano: a wall of eight small moving pictures, each for a different project (an app, a way past a wall, a chat, a memory, a sound tool, a book converter, a map, a game), around the Jano mark and the line: every project gets its own moving picture." width="100%">
+    <img src="assets/hero-light.svg" alt="Jano: your repo, explained before a word is read. At the top of a README, Jano draws a poster part by part; the build measures it (text size, contrast, loop, speed, file size) and writes hero-dark.svg and hero-light.svg." width="100%">
   </picture>
 </p>
 

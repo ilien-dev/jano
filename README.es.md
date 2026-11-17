@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
-    <img src="assets/hero-light.svg" alt="Jano: una pared de ocho pequeñas imágenes en movimiento, cada una de un proyecto distinto (una app, una forma de pasar un muro, un chat, una memoria, una herramienta de sonido, un conversor de libros, un mapa, un juego), alrededor del símbolo de Jano y la frase: cada proyecto tiene su propia imagen en movimiento." width="100%">
+    <img src="assets/hero-light.svg" alt="Jano: tu repositorio, explicado antes de leer una palabra. En la parte de arriba de un README, Jano dibuja un cartel parte por parte; el build lo mide (tamaño del texto, contraste, bucle, velocidad, peso) y escribe hero-dark.svg y hero-light.svg." width="100%">
   </picture>
 </p>
 
