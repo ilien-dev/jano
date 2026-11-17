@@ -15,6 +15,7 @@ para que la primera pantalla del README muestre qué hace el proyecto.</b></p>
 </p>
 
 <p align="center">
+  <a href="#galería"><b>Galería</b></a> ·
   <a href="#instalación"><b>Instalación</b></a> ·
   <a href="#uso"><b>Uso</b></a> ·
   <a href="#qué-obtienes"><b>Qué obtienes</b></a> ·
@@ -26,6 +27,55 @@ para que la primera pantalla del README muestre qué hace el proyecto.</b></p>
 ---
 
 Este README todavía no tiene hero. Tendrá uno hecho con Jano.
+
+## Galería
+
+Heros hechos con Jano para repositorios reales. Cada uno lo dibujó un agente que solo tenía el repositorio y el skill. Abre un repositorio para ver su hero en su sitio.
+
+**[Svipall](https://github.com/ilien-dev/svipall)**: Tu asistente lee la página real, no la pantalla de «comprobando tu navegador».
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/svipall/hero-dark.svg">
+    <img src="examples/svipall/hero-light.svg" alt="Svipall: un asistente pide un precio a un sitio web. Sin Svipall vuelve una pantalla de espera; con él llega la página real." width="100%">
+  </picture>
+</p>
+
+**[Muninn](https://github.com/ilien-dev/muninn)**: Tu asistente recuerda tus decisiones y suelta las que cambiaste.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/muninn/hero-dark.svg">
+    <img src="examples/muninn/hero-light.svg" alt="Muninn: unas notas viajan de una persona a su asistente a través de un anillo llamado la memoria; una decisión reemplazada se tacha y se guarda." width="100%">
+  </picture>
+</p>
+
+**[Anzu](https://github.com/ilien-dev/anzu)**: Tus libros de Kindle, abiertos en cualquier lector.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/anzu/hero-dark.svg">
+    <img src="examples/anzu/hero-light.svg" alt="Anzu: libros de Kindle con candado pasan bajo el logo de Anzu, pierden el candado y llegan a un lector, un teléfono y una tableta." width="100%">
+  </picture>
+</p>
+
+**[Quirón](https://github.com/ilien-dev/quiron)**: Hace que el borrador de un chatbot se lea como escrito por una persona, y lo mide.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/quiron/hero-dark.svg">
+    <img src="examples/quiron/hero-light.svg" alt="Quirón: páginas escritas por un chatbot cruzan una línea bajo una estrella y salen reescritas; una regla pasa de 13 de 23 a 23 de 23." width="100%">
+  </picture>
+</p>
+
+**[themis](https://github.com/ilien-dev/themis)**: La página de reglas que das a tus asistentes de IA, corta e idéntica en sus dos copias.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/themis/hero-dark.svg">
+    <img src="examples/themis/hero-light.svg" alt="themis: una página larga de reglas se filtra línea por línea; solo salen las que importan, en dos páginas cortas e idénticas." width="100%">
+  </picture>
+</p>
 
 ## Instalación
 
