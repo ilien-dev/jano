@@ -1,107 +1,144 @@
 ---
 name: jano
-description: "Draw a repository its README hero: a looping animated SVG, in dark and light, that shows anyone, technical or not, what the project is for."
+description: "Draw a repository its README hero: a looping animated SVG, in dark and light, that shows what the project does before a word of the README is read."
 disable-model-invocation: true
 ---
 
 # jano
 
-Draw this repository an animated hero for the top of its README. The hero is the whole job: do
-not rewrite the README's title, text, badges or links, and do not commit.
+Draw this repository an animated hero for the top of its README. The hero has one job: a person
+who has read nothing yet looks at it and knows what this repository is and what it does. The
+hero is the whole job: do not rewrite the README's title, text, badges or links, and do not
+commit.
 
 ## 1. Learn the repo
 
-Read the README, docs and code until you can answer three things in the words of someone who has
-never opened a terminal:
+Read the README, docs and code until you can write down four things.
 
-- who uses it, and at what moment;
-- what was slow, risky, tedious or impossible for them before;
-- what they have after.
+**The sentence.** Who uses it and at what moment, what was slow, risky, tedious or impossible for
+them before, and what they have after, joined into one sentence with no word of the trade in it:
+no protocol, format, language or framework name, except the ones that person would say
+themselves ("a Kindle book", "a PDF").
 
-Join the answers into **one sentence** with no word of the trade in it: no protocol, format,
-language or framework name, except the ones that person would say themselves ("a Kindle book",
-"a PDF"). That sentence is the script of the hero.
+**The flow.** What happens when it is used, as three to five steps with their real names from the
+repo: what goes in, what the tool does to it, what comes out.
+`a Kindle book with a lock -> Anzu opens it -> an EPUB any reader takes`. This is what the hero
+will show, so it has to be true: follow it in the code, do not guess it from the name.
 
-Then find its **one proof**: the number, before/after or real output that makes the sentence
-believable, said the way that person would say it ("9 times out of 9", "half the size"). Use only
-facts the repo backs (benchmarks, tests, real output). A hero with an invented number is worse
-than no hero. When the repo measures nothing, the proof is its own sample output and the hero
-carries no figure.
+**The kind.** How a person meets it: a screen, a terminal, a call from their own code, something
+that works unseen inside another tool, a set of files. The kind decides the picture (step 3).
 
-Look for an existing identity (logo, `DESIGN.md`, brand folder, site, badge colors) and reuse its
-colors and mark. The accent is the one the identity declares; when it declares none, take it from
-the mark. If there is no identity, pick one accent that suits the subject; everything else is
-neutral. The fonts are the skill's in every hero, whatever the brand uses.
+**The proof.** The number, before/after or real output that makes the sentence believable, said
+the way that person would say it ("9 times out of 9", "half the size"). Use only facts the repo
+backs (benchmarks, tests, real output). A hero with an invented number is worse than no hero.
+When the repo measures nothing, or marks its numbers as old or as targets, the proof is its own
+sample output and the hero carries no figure. In the hero the proof is one small figure beside
+the step it proves, never a row of numbers.
+
+Look for an existing identity (logo, wordmark, `DESIGN.md`, brand folder, site, design tokens,
+badge colors) and reuse its colors, mark and rules. The accent is the one the identity declares;
+when it declares none, take it from the mark. If there is no identity, pick one accent that suits
+the subject; everything else is neutral. When the product has one theme only, derive the other:
+the same hues, background and ink swapped, the accent darkened or lightened until text in it
+passes contrast. The fonts are the skill's in every hero, whatever the brand uses; the one
+exception is a wordmark the repo ships as a file, which is used as shapes.
+
+When the repo already has a tagline that says this in plain words, keep it as the tagline. A
+brand rule that cannot hold at hero size (interface text of 11 px) gives way to the sizes below;
+its rules on color and on the mark always hold.
+
+The hero speaks the language of the main README. Sample content may be shortened; it is never
+something the tool would not produce, and it names no real third party (`example.com`, not a
+real shop).
 
 ## 2. Logo: `assets/logo.svg`
 
 If the repo has a mark, use it as it is, whatever its shape or detail: copy it to
-`assets/logo.svg` (the variant made for light backgrounds, when there are two). Otherwise draw a 160×160 mark from the name, from what the tool does, or
-both: two or three thick shapes, ink plus the accent, on a rounded square of the dark background.
-It has to survive 16 px, so no thin strokes, no text, no detail.
+`assets/logo.svg` (the variant made for light backgrounds, when there are two). From a lockup,
+take the symbol and leave the wordmark out. A mark that exists only as a raster (`.ico`, `.png`)
+is traced or redrawn as a faithful vector, never replaced with a new idea. Otherwise draw a
+160×160 mark from the name, from what the tool does, or both: two or three thick shapes, ink plus
+the accent, on a rounded square of the dark background. It has to survive 16 px, so no thin
+strokes, no text, no detail.
 
 ## 3. Hero: `assets/hero.src.svg`
 
-What is standard is the quality bar, never the composition. Two heroes made
-with this skill should share fonts and care, and look nothing alike, because the tools are not alike.
+What is standard is the quality bar, never the composition. Two heroes made with this skill share
+fonts and care and look nothing alike, because the tools are not alike.
 
-The viewer is anyone: a person who arrived from a link and may not program. After five seconds
-of looking, they can tell a friend what this is for. People who know the subject read the rest of
-the README; the hero is for everyone else.
+### The four parts
 
-Start from one question: **what picture tells your sentence to that person without reading?**
-Draw that, alive, and give it most of the canvas. Then place the logo, the name and your sentence,
-shortened to one line, wherever the picture leaves room. Those are the only required parts.
-Figures, chips, captions or a ticker go in only when this repo has something worth putting there.
+Every hero has these, marked with these ids so the build can measure them:
 
-Pick the form that tells the sentence best. The picture comes from the repo, so go and look at it
-first:
+```
+<g id="logo">...</g>            the mark, drawn inline, its colors as palette roles so it holds in both themes
+<text id="name">...</text>      the repository name in class b (a <g> of shapes when the repo ships a wordmark file)
+<text id="tagline">...</text>   your sentence, shortened to one line of 12 words or fewer
+<g id="stage">...</g>           the picture of the repository doing its job
+```
 
-- **Demo.** The product in use, simplified. For anything with a screen a person would recognise.
-  Read the components, screenshots and design tokens, keep the real layout, labels and colors,
-  and animate what a user would see happen. It is a portrait, so it has to be recognisable, and
-  it does not have to be exact.
-- **Journey.** A recognisable thing (a book, a page, a photo, a message) goes in one side and
-  comes out the other changed. For converters, pipelines and anything that transforms.
-- **Before and after.** The same thing without the tool and with it, side by side or taking
-  turns. For tools that fix, clean, check or shorten.
-- **Scene.** The situation where the tool matters, with the tool as one of the actors. For tools
-  that work behind something else (a server, a plugin, a hook, an agent tool), whose real surface
-  is a terminal or nothing at all. Draw who and what is involved as simple objects (the
-  assistant, the web, a document, a person) and show what travels between them.
-- **Measure.** A quantity drawn against something familiar, so the difference shows before the
-  number is read. For tools whose whole point is faster, smaller, cheaper or more.
+**Logo and name are what the eye lands on first, and they do not shout.** They sit together
+(within 64 px), still, with clear space around them. The name is the largest text on the canvas,
+between 44 and 96 px; the logo is between 56 and 220 px on its shorter side. A name that fills the
+canvas leaves no room for the picture, and a picture with a name lost in a corner belongs to
+nobody. A mark too heavy to type is spliced in by a small script; keep the part you write by hand
+as its own file next to the source.
 
-Combine two when one alone leaves the sentence half told, and draw something else when the
-subject has its own shape (a network, a waveform, a map).
+**The stage explains.** It takes at least 30% of the canvas and usually more than half. Cover the
+name and the tagline: the stage alone still says what the repository does.
 
-Where the tool runs sets the stage. The subject is always what the person gets. A terminal tool
-can show its terminal, small and recognisable, with one real command in it; the meaning is
-carried by the objects around it and by labels in plain words, because real output explains
-nothing to someone who cannot read it.
+### The picture
 
-Every word on the canvas is one the viewer already knows. A real command, file name or term of
-the trade appears as texture, never as the explanation.
+It comes from the kind of repository and the flow you wrote in step 1:
 
-The picture works with every word blurred: shapes, direction and color say what goes in, what
-changes and what comes out, and words only name things. Sample content inside the picture (a
-chat, a page, a list) is large enough to recognise and short enough to take in while it passes.
-The moment of change is the most interesting thing on the canvas, so it happens in plain sight;
-the logo sits beside it, never over it.
+| The repository is | The stage shows |
+|---|---|
+| an app with a screen | that screen as a skeleton in its real layout and colours, with the one flow a person opens it for playing in it |
+| a command-line tool | a small terminal with the one real command, and beside it what that command does in the world |
+| a service, API or backend | one request followed through the flow: who calls, the steps inside, what it reaches, what comes back |
+| a library or SDK | the shortest real call, and what those lines produce |
+| a converter or pipeline | recognisable things going in one side and coming out the other, changed in plain sight |
+| a plugin, hook or agent tool | the host it lives in, with the plugin acting at its place and the host showing the difference |
+| a collection of files | the things in it, grouped as the repo groups them, and one being picked |
 
-A story with steps (first this, then that) is drawn with all its steps on the canvas at once,
-joined by things that travel from one to the next.
+**Read the section for your kind in `references/pictures.md` before you draw.** It says what to
+read in the repo, what to draw, what moves and the traps of that kind, and it has devices that
+already pass the build: a connector with direction, a parcel between steps, a conveyor, a
+cursor on a skeleton screen, a terminal that types.
 
-Before you build, write down what that viewer would say the tool does after seeing your picture
-with the tagline covered. When it does not match your sentence, draw a different picture.
+Whatever the kind:
 
-Let that picture decide the layout: full-bleed with the title over it, centered, stacked, split,
-one big object or many small ones. If you catch yourself drawing a headline on the left, a row of
-numbers under it, two cards on the right and a strip along the bottom, stop: that is a template,
-and it is the result this skill exists to avoid.
+- **Every step of the flow is on the canvas the whole time**, in reading order, as an object a
+  person recognises: a window, a box, a slot. What a step holds may arrive on its turn; the step
+  itself never appears from nothing. Motion is what goes from one step to the next: a parcel, a
+  cursor, a highlight.
+- **Few things, drawn large.** A README shows the hero at two thirds of its size. Labels that
+  name a step are 18 px or more and most text is 16 or more; what travels through the flow is
+  24 px or more; a connector is 2 px or more and ends in an arrowhead. Three panels with one real
+  line each say more than six panels of small print.
+- **The picture works with every word blurred.** Shapes, direction and color say what goes in,
+  what changes and what comes out; words only name things. The moment of change is the most
+  interesting thing on the canvas, so it happens in plain sight.
+- **Every word is one the viewer already knows.** A label names a thing in a few words. A real
+  command, file name or term of the trade appears as texture, never as the explanation. No
+  sentences besides the tagline: the README says the rest.
+- **It looks like this product.** Its tokens, its screen, its mark. Sample content (a chat, a
+  page, a list) is real content from the repo, large enough to recognise and short enough to
+  take in while it passes.
+- **Let the picture decide the layout**: full-bleed with the identity over a quiet corner,
+  centered, stacked, split, one big object or many small ones. If you catch yourself drawing a
+  headline on the left, a row of numbers under it, two cards on the right and a strip along the
+  bottom, stop: that is a template, and it is the result this skill exists to avoid.
 
-Format. 1280×640 (`viewBox="0 0 1280 640"`, `role="img"`, `aria-label`). The file starts with a
-palette comment, and colors are written as `$role`; the build makes the dark and light files from it:
+Before you build, write down what a person would say the repository does after seeing your stage
+with the name and the tagline covered. When it does not match your sentence, draw a different
+picture.
+
+### Format
+
+1280×640 (`viewBox="0 0 1280 640"`, `role="img"`, `aria-label` that tells the flow). The file
+starts with a palette comment, and colors are written as `$role`; the build makes the dark and
+light files from it:
 
 ```
 <!--palette
@@ -111,41 +148,41 @@ accent #4FD1C5 #0B7A70
 <svg ...><style>@keyframes ...</style> <rect fill="$bg" .../> ...
 ```
 
-Roles are `name dark light`. `bg panel ink body muted accent` get contrast-checked; add any others.
-Text uses the classes `s` (Space Grotesk), `b` (bold) and `m` (JetBrains Mono). The build embeds
-the fonts and the reduced-motion rule, so write neither.
+Roles are `name dark light`, in lowercase letters, digits and `_`; name your own, and repeat the
+value for a color that is the same in both themes. Text uses one class per element: `s` (Space
+Grotesk), `b` (Space Grotesk Bold) or `m` (JetBrains Mono, one weight). The build embeds the fonts and the reduced-motion rule, so write
+neither. GitHub shows the file as an image at about 65% of its size: CSS only, no script, no
+external file, no `<image>`, nothing under 13 px. Draw the logo inline.
 
-Motion. The hero must look like a place that is always running, never like a video that starts
-and ends:
+### Motion
 
-- Every animation is `infinite` and closes on itself. Either travel linearly by exactly one period
-  of repeated content (content drawn twice and scrolled, a pattern drifting one tile, items on a
-  conveyor, lines moving under a fading mask), or swing between two states with `ease-in-out`
-  where 0% and 100% are equal (breathing, pulse, sheen, cursor).
-- No intro, no outro, no scene that builds up and resets, nothing that waits for its turn. To
-  stagger things use negative `animation-delay`, so the first frame is already mid-motion.
-- Something moves everywhere you look, but one thing leads: the picture of the tool. The rest
-  stays low in amplitude, or it becomes noise.
-- Moving text. Text may scroll, slide or ride along at a constant speed; the build turns any
-  text inside a transform-animated element into outlines, because live text lands on whole
-  pixels and crawls in small jumps while outlines glide. For that to work:
-  - give the text a class `s`, `b` or `m`, and animate a wrapping `<g>`, not each line;
-  - travel with `linear` and nothing else: no `steps()`, no easing, no stop-and-go;
-  - keep it readable while it moves: about 10-30 px/s for lines someone should read in
-    passing, 80-120 px/s for a ticker, and at least 13 px tall;
-  - fade the edges where it enters and leaves with a gradient mask, never a hard clip;
-  - one period of the repeated content must equal the travel exactly, or the loop jumps.
-- The headline, name and tagline stay still. Pulsing text never drops below 0.55 opacity.
-  Nothing under 13 px: GitHub shows the hero at about 65%.
-- Motion too small to read as motion looks like a glitch: under about 6 px of travel or 3% of
-  scale, make it larger or remove it.
-- Animate only `transform` and `opacity`, which is what stays smooth. For scale or rotation add
-  `transform-box:fill-box;transform-origin:center`.
-- GitHub shows the file as an image: CSS only, no script, no external file, no `<image>`. Draw the
-  logo inline. An animated element loses its own `transform` attribute, so position it with a
-  parent `<g>`.
+The hero is a place that is always running, never a video that starts and ends. **Read
+`references/motion.md` before you write keyframes**: the rules, their sources, and what the build
+measures. The ones that shape the drawing:
 
-## 4. Build and look
+- **One thing leads**: what travels through the flow. Two or three things move at a time; the
+  rest is still or nearly still.
+- **A flow is a cycle of three to five beats** on one duration of 6 to 12 s. Each part takes its
+  place in it with a negative `animation-delay` (in its class or inline), so the first frame is
+  already mid-story. Ambient loops (walking dashes, a pulse, a caret) keep their own short
+  durations.
+- **The loop closes where it began.** First and last keyframes are equal, or the reset cannot be
+  seen: content that repeats and travels exactly one period, a thing at opacity 0 at both ends or
+  outside its clip. Things leave by finishing (a parcel fades on arrival), never by rewinding.
+- **Draw the finished frame, then animate towards it.** With motion off, every step and its
+  result are on the canvas, and that frame is what `look.png` shows. What exists only in transit
+  (a parcel, a spark) carries `opacity="0"` as an attribute, which the animation overrides.
+- **No moment is empty.** A result leaves just before the next one arrives in its place; results
+  never clear all at once.
+- **A change takes 0.2 to 0.5 s, and what must be read rests a second or more.** Ease arrivals
+  out and departures in; `linear` is for what never stops (a conveyor, walking dashes).
+- **Animate `transform` and `opacity`**, plus `stroke-dashoffset` for connector lines. Scale and
+  rotation need `transform-box:fill-box;transform-origin:center`. An animated element has no
+  `transform` attribute of its own: position it with a parent `<g>`.
+- **Name, tagline and labels stay still.** Text that travels moves at a constant speed inside a
+  `<g>`, 10-30 px/s for lines to read in passing, and the build turns it into outlines.
+
+## 4. Build, measure, look
 
 ```
 uv run <this skill>/scripts/build.py assets/hero.src.svg
@@ -153,12 +190,29 @@ uv run <this skill>/scripts/build.py assets/hero.src.svg
 
 Without `uv`: `pip install fonttools brotli`, then run it with `python`.
 
-It writes `assets/hero-dark.svg` and `assets/hero-light.svg`, prints errors and warnings, and
-writes a preview page (both themes, README and phone width, the logo small) to the system temp
-folder, at the path it prints. Fix what it reports, then open the preview and look, with a
-browser tool if you have one, and correct overlaps, shapes that touch by accident, text that
-runs out of its box or sits closer than 16 px to its edge, a loop that jumps, or a light theme
-that came out weak. Keep the source next to the two outputs.
+It writes `assets/hero-dark.svg` and `assets/hero-light.svg` and prints four things. Use all four.
+
+1. **Errors and warnings**, each with its fix. They are measured on the canvas with the real
+   fonts: text out of its box or over other text, sizes, contrast, loops that jump, motion too
+   fast or too small. Fix every one by changing the drawing. When a warning is wrong for this
+   hero, leave it and tell the user which one and why.
+2. **`measured:`**, the figures of this hero: sizes of name, logo and tagline, the share of the
+   canvas the picture takes, words, loop lengths, top speed.
+3. **`pictures`**, two PNG files. Read both, every build:
+   - `loop.png`: the loop stopped at eight moments. Follow the thing that leads from frame to
+     frame: does it go through every step, in order? Is any frame empty or crowded? Does the last
+     frame lead back into the first?
+   - `look.png`: the finished frame (motion off) in both themes at README width, on a phone and
+     blurred. Is the name the first thing you see? Is every step there with its result, and
+     nothing left over from an earlier moment? Can you read the labels at this size? Does the
+     blurred one still show what goes in and what comes out (when it looks empty, the shapes are too
+     faint against the background)? Do shapes touch or overlap by
+     accident, does anything that travels pass over a label? Did the light theme come out weak?
+4. **`preview`**, a page with both files playing, for the user or a browser tool.
+
+When the build says `no pictures`, open the pages it names with a browser tool; a hero nobody has
+looked at is not finished. Repeat until the build is clean and the pictures show the flow. Keep
+the source next to the two outputs.
 
 ## 5. Put it in the README
 
@@ -169,7 +223,7 @@ image is already there, replace it and leave its old files where they are. Touch
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
-    <img src="assets/hero-light.svg" alt="{what the hero shows, with its figures}" width="100%">
+    <img src="assets/hero-light.svg" alt="{what the hero shows: the flow, with its figures}" width="100%">
   </picture>
 </p>
 ```

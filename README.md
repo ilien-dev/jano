@@ -129,11 +129,14 @@ Jano makes the image and nothing else. Your title, description, badges and links
 
 Two heroes made with Jano should look nothing alike, because the composition comes from the project. What they share is these rules.
 
-- **The picture explains the tool.** Someone who reads no text should still guess what it does. Only facts the repository backs go in, never an invented number.
-- **It never stops and never restarts.** Every animation loops forever and closes on itself. There is no intro or outro, and no scene that builds up and resets, so it reads as a place that is running and not as a video.
-- **Something moves everywhere, one thing leads.** The picture of the tool carries the motion and the rest stays quiet.
+- **The picture explains the repository.** The hero shows what the project does as a flow: what goes in, the steps it passes through, what comes out. An app is drawn as its own screen in skeleton form with its main flow playing, a command-line tool as its terminal and what the command causes, a service as one request followed from end to end. Someone who reads no text should still know what it does. Only facts the repository backs go in, never an invented number.
+- **The logo and the name come first, and do not shout.** They sit together and stay still. The name is the largest text on the canvas, within a set range of sizes.
+- **It never stops and never rewinds.** Every animation loops forever and closes on itself. A flow runs as a short cycle that ends where it began, and things leave by finishing, so it reads as a place that is running and not as a video.
+- **One thing leads.** What travels through the flow carries the motion and the rest stays quiet.
 - **Text stays readable.** The title and tagline stay still. Text that scrolls does it at a constant, slow speed.
 - **Your identity wins.** An existing logo and colors are reused. If there are none, it picks one accent and keeps the rest neutral.
+
+The motion rules come from people who animate SVG and interfaces for a living. They are listed with their sources in [`skills/jano/references/motion.md`](skills/jano/references/motion.md), and what to draw for each kind of repository is in [`skills/jano/references/pictures.md`](skills/jano/references/pictures.md).
 
 ## What the build does
 
@@ -143,8 +146,14 @@ GitHub shows an SVG as an image, so scripts and external files do not load, and 
 - It embeds only the letters used of Space Grotesk and JetBrains Mono, so the hero looks the same on every machine.
 - It turns text that moves into outlines, which glide where live text would stutter.
 - It adds the rule that stops the motion for people who ask their system for reduced motion.
-- It refuses animations that play once, scripts and external files, and warns about low contrast, small text and heavy files.
+- It measures the drawing before it writes anything: where each shape and each line of text lands on the canvas (text is measured with the real fonts), how far and how fast each animation travels, and whether each loop closes on itself.
+- It refuses what is certainly wrong: text that runs out of its box, off the canvas or over other text, a loop that jumps back in plain sight, flashing, an animation that plays once, scripts and external files.
+- It warns, with the fix, about what is probably wrong: small or low-contrast text, a name that is too large or too small, a picture that takes too little of the canvas, too many words, motion too fast to follow or too small to see, and heavy files.
+- It prints the measured figures of the hero: the sizes of the name, the logo and the tagline, the share of the canvas the picture takes, the words, the loop lengths and the top speed.
+- It takes two pictures when the machine has Chrome, Chromium or Edge: the loop stopped at eight moments, and the hero as GitHub shows it (both themes, a phone, blurred, and with motion off). The agent reads them, so it checks its own motion and not only one still frame.
 - It writes a preview page with both themes at README width and at phone width.
+
+`check.py`, next to it, runs the measurements alone: `uv run skills/jano/scripts/check.py assets/hero.src.svg --json`.
 
 A hero built this way weighs between 50 and 80 KB.
 
@@ -152,7 +161,9 @@ A hero built this way weighs between 50 and 80 KB.
 
 - It is an early version. It has been tried on three repositories, by one person.
 - The result depends on the model that runs it. A weaker model draws a weaker hero.
-- The agent sees still frames of its own work. You are the one who checks the motion, in the preview.
+- The agent sees the loop as eight stopped frames, not as motion. You are the one who judges how it feels, in the preview.
+- The checks measure positions, sizes and timing. They cannot tell whether the picture is a good explanation of your project; that is still the model's work and yours.
+- The pictures need a Chromium-family browser on the machine. Without one, the agent opens the preview pages with a browser tool, or you look at them.
 - The fonts are fixed: Space Grotesk and JetBrains Mono. A project with its own typefaces does not get them in the hero.
 - The hero is in English. The Spanish README shares it.
 

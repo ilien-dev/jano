@@ -129,11 +129,14 @@ Jano hace la imagen y nada más. Tu título, tu descripción, tus etiquetas y tu
 
 Dos heroes hechos con Jano no deben parecerse, porque la composición sale del proyecto. Lo que comparten son estas reglas.
 
-- **La imagen explica la herramienta.** Quien no lea nada debería adivinar qué hace. Solo entran datos que el repositorio respalda, nunca una cifra inventada.
-- **Nunca se detiene ni vuelve a empezar.** Cada animación se repite sin fin y cierra sobre sí misma. No hay entrada ni salida, y tampoco una escena que se arma y se reinicia, así que se ve como un lugar en marcha y no como un video.
-- **Algo se mueve en todas partes, una sola cosa manda.** La imagen de la herramienta lleva el movimiento y lo demás se queda discreto.
+- **La imagen explica el repositorio.** El hero muestra lo que hace el proyecto como un flujo: qué entra, por qué pasos pasa y qué sale. Una aplicación se dibuja como su propia pantalla en esqueleto, con su flujo principal en marcha; una herramienta de terminal, como su terminal y lo que provoca el comando; un servicio, como una petición seguida de principio a fin. Quien no lea nada debería saber qué hace. Solo entran datos que el repositorio respalda, nunca una cifra inventada.
+- **El logotipo y el nombre van primero, sin gritar.** Van juntos y no se mueven. El nombre es el texto más grande del lienzo, dentro de un rango fijo de tamaños.
+- **Nunca se detiene ni retrocede.** Cada animación se repite sin fin y cierra sobre sí misma. Un flujo corre como un ciclo corto que termina donde empezó, y las cosas se van porque terminan, así que se ve como un lugar en marcha y no como un video.
+- **Una sola cosa manda.** Lo que recorre el flujo lleva el movimiento y lo demás se queda discreto.
 - **El texto se puede leer.** El título y el eslogan no se mueven. El texto que se desplaza lo hace a velocidad constante y lenta.
 - **Tu identidad manda.** Se reutilizan el logotipo y los colores que ya existen. Si no hay, elige un color de acento y deja lo demás neutro.
+
+Las reglas de movimiento vienen de gente que anima SVG e interfaces como oficio. Están, con sus fuentes, en [`skills/jano/references/motion.md`](skills/jano/references/motion.md), y qué dibujar para cada tipo de repositorio está en [`skills/jano/references/pictures.md`](skills/jano/references/pictures.md). Las dos están en inglés.
 
 ## Qué hace el build
 
@@ -143,8 +146,14 @@ GitHub muestra un SVG como imagen, así que no cargan scripts ni archivos extern
 - Incrusta solo las letras usadas de Space Grotesk y JetBrains Mono, para que el hero se vea igual en cualquier equipo.
 - Convierte en trazos el texto que se mueve, que así se desliza donde el texto normal iría a tirones.
 - Añade la regla que detiene el movimiento a quien pide menos movimiento en su sistema.
-- Rechaza animaciones que se reproducen una sola vez, scripts y archivos externos, y avisa de contraste bajo, texto pequeño y archivos pesados.
+- Mide el dibujo antes de escribir nada: dónde cae cada forma y cada línea de texto en el lienzo (el texto se mide con las fuentes reales), cuánto y a qué velocidad se desplaza cada animación, y si cada bucle cierra sobre sí mismo.
+- Rechaza lo que seguro está mal: texto que se sale de su caja, del lienzo o que pisa otro texto, un bucle que salta hacia atrás a la vista, parpadeos, una animación que se reproduce una sola vez, scripts y archivos externos.
+- Avisa, con la solución, de lo que probablemente está mal: texto pequeño o con poco contraste, un nombre demasiado grande o demasiado pequeño, una imagen que ocupa muy poco lienzo, demasiadas palabras, movimiento demasiado rápido para seguirlo o demasiado pequeño para verlo, y archivos pesados.
+- Imprime las medidas del hero: los tamaños del nombre, el logotipo y el eslogan, la parte del lienzo que ocupa la imagen, las palabras, la duración de los bucles y la velocidad máxima.
+- Toma dos capturas si el equipo tiene Chrome, Chromium o Edge: el bucle detenido en ocho momentos, y el hero como lo muestra GitHub (los dos temas, un teléfono, desenfocado y sin movimiento). El agente las lee, así que revisa su propio movimiento y no un solo cuadro fijo.
 - Escribe una página de vista previa con los dos temas, al ancho del README y al de un teléfono.
+
+`check.py`, junto a él, hace solo las mediciones: `uv run skills/jano/scripts/check.py assets/hero.src.svg --json`.
 
 Un hero hecho así pesa entre 50 y 80 KB.
 
@@ -152,7 +161,9 @@ Un hero hecho así pesa entre 50 y 80 KB.
 
 - Es una versión temprana. Se ha probado en tres repositorios y la ha usado una sola persona.
 - El resultado depende del modelo que lo ejecuta. Un modelo más débil dibuja un hero más débil.
-- El agente ve cuadros fijos de su propio trabajo. El movimiento lo revisas tú, en la vista previa.
+- El agente ve el bucle como ocho cuadros detenidos, no en movimiento. Cómo se siente lo juzgas tú, en la vista previa.
+- Las comprobaciones miden posiciones, tamaños y tiempos. No saben si la imagen explica bien tu proyecto; eso sigue siendo trabajo del modelo y tuyo.
+- Las capturas necesitan un navegador de la familia Chromium en el equipo. Sin él, el agente abre las páginas de vista previa con una herramienta de navegador, o las miras tú.
 - Las fuentes son fijas: Space Grotesk y JetBrains Mono. Un proyecto con tipografías propias no las tendrá en el hero.
 - El hero está en inglés. El README en español usa el mismo.
 

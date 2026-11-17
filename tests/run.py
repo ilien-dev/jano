@@ -2,27 +2,35 @@
 # requires-python = ">=3.9"
 # dependencies = ["fonttools", "brotli"]
 # ///
-"""Tests for skills/jano/scripts/build.py and .github/scripts/check-pr.js.
+"""Tests for skills/jano/scripts/build.py, check.py and .github/scripts/check-pr.js.
 
     uv run tests/run.py
 """
-import re, shutil, subprocess, sys, tempfile
+import json, re, shutil, subprocess, sys, tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 BUILD = ROOT / "skills/jano/scripts/build.py"
+CHECK = ROOT / "skills/jano/scripts/check.py"
 FIXTURE = (ROOT / "tests/fixture/assets/hero.src.svg").read_text(encoding="utf-8")
 failed = []
 
 
-def build(source):
+def build(source, pictures=False):
     """Builds `source` in a fresh folder. Returns (exit code, output, folder)."""
     folder = Path(tempfile.mkdtemp()) / "repo" / "assets"
     folder.mkdir(parents=True)
     (folder / "hero.src.svg").write_text(source, encoding="utf-8")
-    run = subprocess.run([sys.executable, str(BUILD), str(folder / "hero.src.svg")], capture_output=True, text=True, encoding="utf-8")
+    cmd = [sys.executable, str(BUILD), str(folder / "hero.src.svg")] + ([] if pictures else ["--no-pictures"])
+    run = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
     return run.returncode, run.stdout + run.stderr, folder
+
+
+def swap(old, new, source=FIXTURE):
+    """The fixture with one piece changed. Fails loudly when the piece is not there, so a test cannot pass by accident."""
+    assert old in source, f"the fixture no longer contains: {old}"
+    return source.replace(old, new)
 
 
 def test(name, ok, detail=""):
@@ -53,8 +61,9 @@ test("each source gets its own preview page", all(previews) and previews[0].grou
 # ---- moving text becomes outlines, still text stays text
 test("text that travels is outlined", "first line" not in dark and "third line" not in dark and "<use" in dark)
 test("text that stays still is kept", "still title" in dark)
-test("text that only changes opacity is kept", "pulses, does not travel" in dark)
-test("three moving text elements are reported", "3 moving text element(s)" in out, out)
+test("text that only changes opacity is kept", "pulses, stays put" in dark)
+test("six moving text elements are reported", "6 moving text element(s)" in out, out)
+test("the measured figures are printed", "measured: name 56 px · logo 72 px · tagline 24 px, 7 words" in out, out)
 root = ET.fromstring(dark) if dark else None
 uses = [u.get("href") for u in root.iter("{http://www.w3.org/2000/svg}use")] if root is not None else []
 ids = {p.get("id") for p in root.iter("{http://www.w3.org/2000/svg}path")} if root is not None else set()
@@ -62,7 +71,7 @@ test("every outlined glyph has its shape", bool(uses) and all(u[1:] in ids for u
 test("outlines use the font of each run", any(u.startswith("#gm") for u in uses) and any(u.startswith("#gs") for u in uses) and any(u.startswith("#gb") for u in uses))
 
 # ---- a web address shown as text loads nothing, so it builds
-code, out, _ = build(FIXTURE.replace("still title", "still title https://example.com/page"))
+code, out, _ = build(swap("pulses, stays put", "https://a.io/x"))
 test("an address written as text is allowed", code == 0 and "external URL" not in out, out)
 
 # ---- sources the build must refuse
@@ -70,22 +79,108 @@ def refused(name, source, expect):
     code, out, _ = build(source)
     test(name, code != 0 and expect in out, out)
 
-refused("an animation that plays once is refused", FIXTURE.replace("scroll 8s linear infinite", "scroll 8s linear"), "infinite")
-refused("a script is refused", FIXTURE.replace("</svg>", "<script>1</script></svg>"), "<script")
-refused("an external image is refused", FIXTURE.replace("</svg>", '<image href="https://example.com/a.png"/></svg>'), "<image")
-refused("an external reference is refused", FIXTURE.replace("</svg>", '<use href="https://example.com/a.svg#x"/></svg>'), "external URL")
-refused("an unknown palette role is refused", FIXTURE.replace('fill="$ink"', 'fill="$nope"'), "$nope")
-refused("a different canvas is refused", FIXTURE.replace("0 0 1280 640", "0 0 800 400"), "viewBox")
+refused("an animation that plays once is refused", swap("scroll 8s linear infinite", "scroll 8s linear"), "infinite")
+refused("a script is refused", swap("</svg>", "<script>1</script></svg>"), "<script")
+refused("an external image is refused", swap("</svg>", '<image href="https://example.com/a.png"/></svg>'), "<image")
+refused("an external reference is refused", swap("</svg>", '<use href="https://example.com/a.svg#x"/></svg>'), "external URL")
+refused("an unknown palette role is refused", swap('fill="$ink"', 'fill="$nope"'), "$nope")
+refused("a different canvas is refused", swap("0 0 1280 640", "0 0 800 400"), "viewBox")
 refused("a source without a palette is refused", re.sub(r"<!--palette.*?-->", "", FIXTURE, flags=re.S), "palette")
+# the parts every hero has
+refused("a hero without a marked name is refused", swap('<text id="name"', "<text"), 'id="name"')
+refused("a hero without a marked stage is refused", swap('<g id="stage">', "<g>"), 'id="stage"')
+refused("a name that moves is refused", swap('id="name" x="164" y="116" class="b"', 'id="name" x="164" y="116" class="b pulse"'), "the name is animated")
+# where things land
+refused("text that runs out of its box is refused", swap("pulses, stays put", "pulses and then stays where it was put"), "out of its box")
+refused("text that runs off the canvas is refused", swap('id="tagline" x="72"', 'id="tagline" x="1000"'), "off the canvas")
+refused("two lines of text on top of each other are refused", swap('id="tagline" x="72" y="176"', 'id="tagline" x="164" y="112"'), "overlap")
+# loops that do not close
+refused("a scroll that jumps back is refused", swap("translateY(-96px)", "translateY(-80px)"), "jumps back in plain sight")
+refused("a parcel that jumps back in view is refused", swap("translateX(280px);opacity:0", "translateX(280px);opacity:1"), "jumps back in plain sight")
+refused("dashes that do not come round are refused", swap("stroke-dashoffset:-24", "stroke-dashoffset:-20"), "dashes repeat every 24")
+refused("an animated element with its own transform is refused", swap('<rect class="send"', '<rect transform="translate(2 2)" class="send"'), "its own transform attribute")
+refused("animated geometry is refused", swap("50%{opacity:1}", "50%{opacity:1;width:9px}"), "geometry does not animate")
+refused("flashing is refused", swap("pulse 2s ease-in-out", "pulse .2s ease-in-out"), "WCAG 2.3.1")
+
+# a conveyor whose repeated content sits behind a <use> closes its loop too
+belt = swap("</defs>", '<g id="row"><rect x="620" y="240" width="40" height="20" fill="$muted"/><rect x="620" y="336" width="40" height="20" fill="$muted"/></g></defs>')
+belt = swap("</g></g>\n</g>", '</g><g class="scroll"><use href="#row"/></g></g>\n</g>', belt)
+code, out, _ = build(belt)
+test("content repeated inside a <use> counts as a repeat", code == 0 and "jumps back" not in out, out)
 
 # ---- sources the build must warn about
 def warned(name, source, expect):
     code, out, _ = build(source)
     test(name, code == 0 and "warning" in out and expect in out, out)
 
-warned("small text is warned about", FIXTURE.replace('font-size="14"', 'font-size="10"'), "font-size below 13")
-warned("low contrast is warned about", FIXTURE.replace("muted  #A3A8B0", "muted  #2A2F37"), "contrast")
-warned("a positive delay is warned about", FIXTURE.replace(".pulse{", ".pulse{animation-delay:1s;"), "animation-delay")
+warned("small text is warned about", swap('font-size="14"', 'font-size="10"'), "font-size below 13")
+warned("low contrast is warned about", swap("muted  #A3A8B0", "muted  #2A2F37"), "contrast")
+code, out, _ = build(swap('class="m pulse" font-size="14"', 'class="m pulse" opacity="0" font-size="14"'))
+test("text hidden at rest and shown by its animation is measured as shown", code == 0 and "contrast" not in out, out)
+code, out, _ = build(swap('<rect x="72" y="230" width="200" height="300" rx="16" fill="$panel"/>', '<rect class="breathe" x="72" y="230" width="200" height="300" rx="16" fill="$ink"/>'))
+test("a label is measured against the box behind it even when the box moves", "on $ink has contrast" in out, out)
+warned("a positive delay is warned about", swap(".pulse{", ".pulse{animation-delay:1s;"), "animation-delay")
+warned("text larger than the name is warned about", swap('class="s" font-size="24"', 'class="s" font-size="52"'), "the name is the largest text")
+warned("a name that shouts is warned about", swap('class="b" font-size="56"', 'class="b" font-size="120"'), "so it leads without shouting")
+warned("a logo far from the name is warned about", swap('id="name" x="164"', 'id="name" x="700"'), "from the name")
+warned("a small picture is warned about", swap('<g id="stage">', '<g id="stage" transform="translate(300 200) scale(.5)">'), "of the canvas; give it at least")
+warned("text at the canvas edge is warned about", swap('id="tagline" x="72"', 'id="tagline" x="10"'), "from the canvas edge")
+warned("text tight in its box is warned about", swap("pulses, stays put", "pulses, then stays here"), "from the side of its box")
+warned("a sentence on the canvas is warned about", swap("pulses, stays put", "a b c d e f g h"), "is a sentence of 8 words")
+warned("text in a system font is warned about", swap('class="s" font-size="24"', 'font-size="24"'), "system font")
+warned("motion too small to see is warned about", swap("scale(.8)", "scale(.99)"), "too small to read as motion")
+warned("motion too fast to follow is warned about", swap("send 4s ease-in-out", "send .3s ease-in-out"), "too fast to follow")
+warned("a scale without an origin is warned about", swap(";transform-box:fill-box;transform-origin:center", ""), "transform-origin")
+warned("an opacity that pops is warned about", swap("0%,100%{opacity:.55}50%{opacity:1}", "0%{opacity:.55}100%{opacity:1}"), "pops when the loop restarts")
+warned("a parcel left frozen when motion is off is warned about", swap(' opacity="0" width="28"', ' width="28"'), "with motion off it sits frozen")
+warned("a travelling thing too small to see is warned about", swap('width="28" height="28" rx="6"', 'width="12" height="12" rx="6"').replace('<g class="scroll" ', "<g "), "the largest thing that travels")
+warned("a faint connector is warned about", swap('stroke="$muted" stroke-width="2"', 'stroke="$panel" stroke-width="2"'), "it disappears at README width")
+warned("a thin connector is warned about", swap('stroke="$muted" stroke-width="2"', 'stroke="$muted" stroke-width="1"'), "px thick")
+warned("mostly small text is warned about", swap('font-size="16"', 'font-size="15"'), "say less and say it larger")
+warned("SMIL is warned about", swap('rx="6" fill="$accent"/>', 'rx="6" fill="$accent"><animate attributeName="rx" values="6;9;6" dur="2s" repeatCount="indefinite"/></rect>'), "SMIL")
+warned("a stage where nothing travels is warned about", swap("@keyframes send{0%{transform:translateX(0);opacity:0}10%,90%{opacity:1}100%{transform:translateX(280px);opacity:0}}", "@keyframes send{0%,100%{opacity:.6}50%{opacity:1}}").replace('class="flow" ', "").replace("translateY(-96px)", "translateY(-.1px)"), "nothing in #stage travels")
+
+# ---- the checks on their own
+run = subprocess.run([sys.executable, str(CHECK), str(ROOT / "tests/fixture/assets/hero.src.svg"), "--json"], capture_output=True, text=True, encoding="utf-8")
+try:
+    report = json.loads(run.stdout)
+except ValueError:
+    report = {}
+test("check.py reports the measured figures as JSON", run.returncode == 0 and report.get("errors") == [] and report.get("warnings") == []
+     and report.get("measured", {}).get("name_px") == 56 and report["measured"].get("stage_share", 0) >= 0.3, run.stdout + run.stderr)
+
+# ---- the devices in references/pictures.md build as they are written
+guide = (ROOT / "skills/jano/references/pictures.md").read_text(encoding="utf-8")
+devices = re.findall(r"```svg\n(.*?)```", guide, re.S)
+for i, device in enumerate(devices):
+    letter = "ABCDEFGHIJ"[i]
+    css = "".join(re.findall(r"<style>(.*?)</style>", device, re.S))
+    defs = "".join(re.findall(r"<defs>(.*?)</defs>", device, re.S))
+    shapes = re.sub(r"<style>.*?</style>|<defs>.*?</defs>", "", device, flags=re.S)
+    hero = swap("</style>", css + "</style>")
+    hero = swap("</defs>", defs + "</defs>", hero)
+    hero = re.sub(r'<g id="stage">.*</g>\s*</svg>', lambda m: '<g id="stage">' + shapes + "</g></svg>", hero, flags=re.S)
+    hero = hero.replace("panel  #171A20 #FFFFFF", "panel  #171A20 #FFFFFF\nline   #232833 #DCE3EC")
+    code, out, _ = build(hero)
+    noise = [l for l in out.splitlines() if l.startswith(("error", "warning")) and "of the canvas; give it at least" not in l]
+    test(f"device {letter} of pictures.md builds clean", code == 0 and not noise, out)
+test("pictures.md has its seven devices", len(devices) == 7)
+
+# ---- pictures of the loop
+preview = Path(previews[0].group(1)).parent if previews[0] else Path("missing")
+frames = [(preview / f"frame-{i}.svg").read_text(encoding="utf-8") if (preview / f"frame-{i}.svg").exists() else "" for i in range(8)]
+test("eight frozen frames are written", all("animation-play-state:paused" in f for f in frames))
+test("each frame is stopped at its own moment", "animation-delay:-0.500s" in frames[1] and "animation-delay:-1.000s" in frames[2], frames[1][-300:])
+test("a finished frame without motion is written for each theme", all("animation:none!important}</style></svg>" in ((preview / f"still-{t}.svg").read_text(encoding="utf-8") if (preview / f"still-{t}.svg").exists() else "") for t in ("dark", "light")))
+sys.path.insert(0, str(BUILD.parent))
+import build as build_module  # noqa: E402
+
+if build_module.find_browsers():
+    code, out, _ = build(FIXTURE, pictures=True)
+    shots = re.search(r"^pictures (.+\.png) (.+\.png)$", out, re.M)
+    test("pictures of the loop and the look are taken", bool(shots) and all(Path(p).stat().st_size > 5000 for p in shots.groups()), out)
+else:
+    print("skip  pictures (no Chromium-family browser on this machine)")
 
 # ---- skill files: a ": " in an unquoted YAML value makes installers skip the skill
 for skill in sorted(ROOT.glob("**/SKILL.md")):

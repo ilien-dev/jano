@@ -15,35 +15,20 @@ The source starts with a palette comment, one role per line (name dark light):
     accent #4FD1C5 #0B7A70
     -->
 
-and uses the roles as $bg, $accent... anywhere in the SVG. The build swaps them
-per theme, embeds subsets of the fonts (classes .s text, .b bold, .m mono),
-turns text that moves into outlines so it travels without pixel jumps, adds the
-reduced-motion rule, checks the result and writes a preview page.
+and uses the roles as $bg, $accent... anywhere in the SVG. The build measures the
+source (check.py: sizes, overflow, contrast, loops), swaps the roles per theme,
+embeds subsets of the fonts (classes .s text, .b bold, .m mono), turns text that
+moves into outlines so it travels without pixel jumps, adds the reduced-motion
+rule, and writes a preview page plus two pictures of it: the loop as eight frozen
+frames, and the finished frame as GitHub shows it in both themes.
 """
-import base64, hashlib, html, io, re, sys, tempfile
+import base64, hashlib, html, io, os, re, shutil, subprocess, sys, tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-ASSETS = Path(__file__).resolve().parent.parent / "assets"
-SVG = "http://www.w3.org/2000/svg"
-XMLSPACE = "{http://www.w3.org/XML/1998/namespace}space"
-FACES = {"s": ("SpaceGrotesk.ttf", 500), "b": ("SpaceGrotesk.ttf", 700), "m": ("JetBrainsMono.ttf", None)}
-_fonts = {}
-
-
-def font(face):
-    if face not in _fonts:
-        try:
-            from fontTools.ttLib import TTFont
-            import brotli  # noqa: F401  (woff2)
-        except ImportError:
-            sys.exit("error: run this with `uv run`, or first: pip install fonttools brotli")
-        from fontTools.varLib import instancer
-
-        file, wght = FACES[face]
-        f = TTFont(ASSETS / file)
-        _fonts[face] = instancer.instantiateVariableFont(f, {"wght": wght}) if wght else f
-    return _fonts[face]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import check  # noqa: E402
+from check import FACES, SVG, XMLSPACE, font, num  # noqa: E402
 
 
 def subset_font(face, chars):
@@ -67,42 +52,15 @@ def subset_font(face, chars):
 # A browser places text glyphs on whole pixels, so text that travels slowly moves in
 # small jumps. Outlines are plain shapes and move smoothly at any speed.
 
-def moving_classes(css):
-    """Classes (and keyframe names) whose animation changes transform."""
-    kf = dict(re.findall(r"@keyframes\s+([\w-]+)\s*\{((?:[^{}]*\{[^{}]*\})*)", css))
-    names = {n for n, b in kf.items() if "transform" in b}
-    classes = set()
-    for sel, decl in re.findall(r"([^{}]+)\{([^{}]*animation[^{}]*)\}", css):
-        if any(re.search(rf"\b{re.escape(n)}\b", decl) for n in names):
-            classes.update(re.findall(r"\.([\w-]+)", sel))
-    return classes, names
-
-
-def num(v, default=0.0):
-    m = re.search(r"-?[\d.]+", v or "")
-    return float(m.group()) if m else default
-
-
-def outline_moving_text(root, warns):
+def outline_moving_text(root, warns, moves):
     from fontTools.pens.svgPathPen import SVGPathPen
 
-    css = "".join(e.text or "" for e in root.iter(f"{{{SVG}}}style"))
-    classes, names = moving_classes(css)
     parent = {c: p for p in root.iter() for c in p}
 
     def chain(el):
         while el is not None:
             yield el
             el = parent.get(el)
-
-    def moves(el):
-        for a in chain(el):
-            if set(a.get("class", "").split()) & classes:
-                return True
-            st = a.get("style", "")
-            if "animation" in st and any(n in st for n in names):
-                return True
-        return False
 
     def inherit(el, attr, default=None):
         for a in chain(el):
@@ -191,18 +149,79 @@ def outline_moving_text(root, warns):
     return count
 
 
-def lum(hexc):
-    h = hexc.lstrip("#")
-    if len(h) == 3:
-        h = "".join(c * 2 for c in h)
-    ch = [int(h[i : i + 2], 16) / 255 for i in (0, 2, 4)]
-    ch = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in ch]
-    return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2]
+# ---- pictures of the result
+def freeze(svg, t):
+    """The same SVG, stopped t seconds into its loop: every animation paused with its delay moved back by t."""
+    def shifted(v):
+        return ",".join(f"{check.seconds(d.strip()) - t:.3f}s" for d in v.split(","))
+
+    def delay(m):
+        try:
+            return m.group(1) + shifted(m.group(2))
+        except ValueError:
+            return m.group(0)
+
+    def shorthand(m):
+        if m.group(2).strip().startswith("none"):
+            return m.group(0)
+        delays = [check.parse_animation(p, ())["delay"] for p in check.split_commas(m.group(2))]
+        return m.group(0) + ";animation-delay:" + ",".join(f"{d - t:.3f}s" for d in delays)
+
+    svg = re.sub(r"(animation-delay\s*:\s*)([^;}\"]+)", delay, svg)
+    svg = re.sub(r"(animation\s*:\s*)([^;}\"]+)", shorthand, svg)
+    return svg.replace("</svg>", "<style>*{animation-play-state:paused!important}</style></svg>")
 
 
-def contrast(a, b):
-    la, lb = sorted((lum(a), lum(b)), reverse=True)
-    return (la + 0.05) / (lb + 0.05)
+def find_browsers():
+    """Chromium-family browsers that can take the pictures, best first."""
+    home = Path.home()
+    paths = [os.environ.get("JANO_BROWSER")]
+    # the headless shell Playwright downloads starts fastest and never opens a window
+    caches = (Path(os.environ.get("LOCALAPPDATA") or home) / "ms-playwright", home / ".cache/ms-playwright", home / "Library/Caches/ms-playwright")
+    for pat in ("chromium_headless_shell-*/chrome-headless-shell-*/chrome-headless-shell*", "chromium-*/chrome-win*/chrome.exe",
+                "chromium-*/chrome-linux*/chrome", "chromium-*/chrome-mac*/Chromium.app/Contents/MacOS/Chromium"):
+        for cache in caches:
+            paths += sorted(map(str, cache.glob(pat)), reverse=True)[:1]
+    names = ("chrome-headless-shell", "chrome", "google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "msedge", "microsoft-edge")
+    paths += [shutil.which(n) for n in names]
+    for root in (os.environ.get("PROGRAMFILES"), os.environ.get("PROGRAMFILES(X86)"), os.environ.get("LOCALAPPDATA")):
+        if root:
+            paths += [str(Path(root) / "Google/Chrome/Application/chrome.exe"), str(Path(root) / "Microsoft/Edge/Application/msedge.exe")]
+    paths += ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+              "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+              "/Applications/Chromium.app/Contents/MacOS/Chromium"]
+    return list(dict.fromkeys(p for p in paths if p and Path(p).is_file()))
+
+
+def shoot(browser, page, png, height):
+    """A PNG of a local page. True when it was written."""
+    profile = tempfile.mkdtemp(prefix="jano-browser-")
+    png.unlink(missing_ok=True)
+    args = [browser, "--disable-gpu", "--hide-scrollbars", "--no-first-run", "--no-sandbox", f"--user-data-dir={profile}",
+            "--force-device-scale-factor=1", f"--window-size=1320,{height}", f"--screenshot={png}", page.as_uri()]
+    if "headless-shell" not in Path(browser).name:
+        args.insert(1, "--headless")
+    try:
+        # no pipes: a browser's child processes keep them open and the wait never ends
+        proc = subprocess.Popen(args, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        try:
+            proc.wait(45)
+        except subprocess.TimeoutExpired:
+            if os.name == "nt":
+                subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)], capture_output=True)
+            proc.kill()
+    except OSError:
+        pass
+    shutil.rmtree(profile, ignore_errors=True)
+    return png.exists() and png.stat().st_size > 0
+
+
+def take_pictures(shots):
+    """Shoots every (page, png, height) with the first browser that works. True when all were written."""
+    for browser in find_browsers()[:3]:
+        if all(shoot(browser, *shot) for shot in shots):
+            return True
+    return False
 
 
 def main():
@@ -211,20 +230,10 @@ def main():
         sys.exit(__doc__)
     src = Path(sys.argv[1]).resolve()
     out = src.parent
-    raw = src.read_text(encoding="utf-8")
+    palette, body = check.read_source(src.read_text(encoding="utf-8"))
     errors, warns = [], []
 
-    m = re.search(r"<!--\s*palette(.*?)-->", raw, re.S)
-    if not m:
-        sys.exit("error: no <!--palette ... --> comment in the source")
-    palette = {}
-    for line in m.group(1).strip().splitlines():
-        p = line.split()
-        if len(p) == 3 and p[1].startswith("#") and p[2].startswith("#"):
-            palette[p[0]] = (p[1], p[2])
-    body = raw.replace(m.group(0), "").strip()
-
-    # ---- checks on the source
+    # ---- what GitHub will not show, or will show wrong
     if 'viewBox="0 0 1280 640"' not in body:
         errors.append('viewBox must be "0 0 1280 640"')
     if 'role="img"' not in body or "aria-label=" not in body:
@@ -239,46 +248,34 @@ def main():
         errors.append(f"external URL(s) will not load: {ext[:3]}")
     if "<style>" not in body:
         errors.append("no <style> block: the hero has no animation")
-    anims = re.findall(r"animation\s*:\s*([^;}]+)", body)
-    for a in anims:
+    for a in re.findall(r"animation\s*:\s*([^;}\"]+)", body):
         if "infinite" not in a and "none" not in a:
             errors.append(f"animation without 'infinite' (it would play once, like a video): {a.strip()}")
-        if "steps(" in a:
-            warns.append(f"steps() makes motion jump: {a.strip()}")
     for d in re.findall(r"animation-delay\s*:\s*([^;}\"]+)", body):
         if not d.strip().startswith("-") and d.strip() not in ("0s", "0"):
             warns.append(f"positive animation-delay {d.strip()}: the first loop starts frozen. Use a negative delay to shift phase")
-    if len(set(anims)) < 4:
-        warns.append(f"only {len(set(anims))} distinct animations: every region of the hero should have some motion")
     if re.search(r"repeatCount=\"(?!indefinite)", body):
         errors.append("SMIL animation must use repeatCount=\"indefinite\"")
     used = set(re.findall(r"\$([a-z][a-z0-9_]*)", body))
     for u in used - set(palette):
         errors.append(f"${u} is used but not in the palette")
-    small = sorted({float(s) for s in re.findall(r"font-size=\"([\d.]+)\"", body) if float(s) < 13})
-    if small:
-        warns.append(f"font-size below 13 ({small}): unreadable at README width, where the hero is shown at ~65%")
-    for ti, theme in enumerate(("dark", "light")):
-        if "bg" in palette:
-            for role, need in (("ink", 7), ("body", 4.5), ("muted", 4.5), ("accent", 4.5)):
-                if role in palette:
-                    for surface in ("bg", "panel"):
-                        if surface in palette:
-                            c = contrast(palette[role][ti], palette[surface][ti])
-                            if c < need:
-                                warns.append(f"{theme}: ${role} on ${surface} contrast {c:.1f} < {need}")
-    if errors:
-        print("\n".join("error: " + e for e in errors))
-        sys.exit(1)
 
-    # ---- moving text to outlines
+    # ---- what can be measured: sizes, overflow, contrast, loops
     ET.register_namespace("", SVG)
     ET.register_namespace("xlink", "http://www.w3.org/1999/xlink")
     try:
         root = ET.fromstring(body)
     except ET.ParseError as e:
         sys.exit(f"error: the SVG is not well-formed XML: {e}")
-    outlined = outline_moving_text(root, warns)
+    hero = check.check(root, palette)
+    errors = list(dict.fromkeys(errors + hero.errors))
+    warns += hero.warns
+    if errors:
+        print("\n".join("error: " + e for e in errors))
+        sys.exit(1)
+
+    # ---- moving text to outlines
+    outlined = outline_moving_text(root, warns, lambda el: hero.mover(el) is not None)
     body = ET.tostring(root, encoding="unicode")
 
     # ---- fonts for the text that stays still
@@ -294,29 +291,62 @@ def main():
     )
     body = body.replace("<style>", "<style>" + faces, 1)
 
-    names = []
+    names, themed = [], []
     for ti, theme in enumerate(("dark", "light")):
         svg = re.sub(r"\$([a-z][a-z0-9_]*)", lambda k: palette[k.group(1)][ti], body)
         f = out / f"hero-{theme}.svg"
         f.write_text(svg + "\n", encoding="utf-8", newline="\n")
         names.append(f)
+        themed.append(svg)
         kb = len(svg.encode()) / 1024
         if kb > 200:
             warns.append(f"{f.name} is {kb:.0f} KB: simplify, a hero should stay under 200 KB")
         print(f"wrote {f} ({kb:.0f} KB)")
     print(f"{outlined} moving text element(s) turned into outlines")
 
-    # ---- preview: the hero at README width and phone width, on GitHub's two backgrounds
+    # ---- preview: one folder per source path, so two repos with the same name do not overwrite each other
+    tag = hashlib.sha1(str(src).encode()).hexdigest()[:8]
+    folder = Path(tempfile.gettempdir()) / f"hero-preview-{src.parent.parent.name}-{tag}"
+    folder.mkdir(exist_ok=True)
+    cycle = hero.facts.get("cycle_seconds") or 6
+    times = [round(cycle * i / 8, 2) for i in range(8)]
+    for i, t in enumerate(times):
+        (folder / f"frame-{i}.svg").write_text(freeze(themed[0], t), encoding="utf-8")
+    # with motion off a hero shows its finished frame: that is the picture of each theme
+    for theme, svg in zip(("dark", "light"), themed):
+        (folder / f"still-{theme}.svg").write_text(svg.replace("</svg>", "<style>*{animation:none!important}</style></svg>"), encoding="utf-8")
+    css = ("<!doctype html><meta charset=utf-8><title>hero preview</title><style>body{margin:0;font:14px system-ui;background:#0d1117;color:#f0f6fc}"
+           "section{padding:20px 32px}p{margin:0 0 8px}img{display:block;margin:0 0 20px}.g{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}.g img{width:100%;margin:0}"
+           ".l img{display:inline-block;margin-right:16px;vertical-align:middle}.w{background:#fff;color:#1f2328}.r{display:flex;gap:24px;align-items:flex-start}</style>")
     logo = out / "logo.svg"
     logos = "".join(f'<img src="{logo.as_uri()}" width="{s}" height="{s}">' for s in (16, 24, 48, 96)) if logo.exists() else "<i>no assets/logo.svg</i>"
-    page = "<!doctype html><meta charset=utf-8><title>hero preview</title><style>body{margin:0;font:14px system-ui}section{padding:32px}img{display:block;margin:0 0 24px}.l img{display:inline-block;margin-right:16px;vertical-align:middle}</style>"
+
+    # the loop, stopped at eight moments: what moves, where it goes, and whether the last frame leads back into the first
+    loop = css + f"<section><p>the loop, stopped every {cycle / 8:.2g} s of {cycle:g} s (dark)</p><div class=g>"
+    loop += "".join(f'<div><p>{t:g} s</p><img src="frame-{i}.svg"></div>' for i, t in enumerate(times)) + "</div></section>"
+    (folder / "loop.html").write_text(loop, encoding="utf-8")
+    # the hero as GitHub shows it with motion off: both themes at README width, a phone, and blurred
+    look = css + '<section><p>dark, README width (838 px), motion off: the finished frame</p><img src="still-dark.svg" width="838"></section>'
+    look += '<section class=w><p>light, README width (838 px), motion off: the finished frame</p><img src="still-light.svg" width="838"></section>'
+    look += ('<section><div class=r><div><p>phone (360 px)</p><img src="still-dark.svg" width="360"></div>'
+             '<div><p>words blurred: is the story still there?</p><img src="still-dark.svg" width="400" style="filter:blur(3px)"></div>'
+             '<div><p>phone, light</p><img src="still-light.svg" width="360"></div></div></section>')
+    (folder / "look.html").write_text(look, encoding="utf-8")
+    # the live page, for a person or a browser tool
+    page = css.replace("background:#0d1117;color:#f0f6fc", "")
     for f, bg, fg in ((names[0], "#0d1117", "#f0f6fc"), (names[1], "#ffffff", "#1f2328")):
         page += f'<section style="background:{bg};color:{fg}"><p>{f.name} at README width (838px)</p><img src="{f.as_uri()}" width="838"><p>phone (360px)</p><img src="{f.as_uri()}" width="360"><p class="l">logo {logos}</p></section>'
-    # one preview per source path, so two repos with the same name do not overwrite each other
-    tag = hashlib.sha1(str(src).encode()).hexdigest()[:8]
-    prev = Path(tempfile.gettempdir()) / f"hero-preview-{src.parent.parent.name}-{tag}.html"
+    prev = folder / "index.html"
     prev.write_text(page, encoding="utf-8")
     print(f"preview {prev}")
+    shots = [(folder / "loop.html", folder / "loop.png", 1480), (folder / "look.html", folder / "look.png", 1290)]
+    if "--no-pictures" in sys.argv:
+        pass
+    elif take_pictures(shots):
+        print(f"pictures {shots[0][1]} {shots[1][1]}")
+    else:
+        print(f"no pictures: no Chrome, Chromium or Edge could take them (set JANO_BROWSER to one). Open {folder / 'loop.html'} and {folder / 'look.html'} in a browser instead")
+    print(check.summary(hero.facts))
     print("\n".join("warning: " + w for w in dict.fromkeys(warns)) or "checks passed")
 
 
