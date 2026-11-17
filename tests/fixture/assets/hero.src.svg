@@ -6,25 +6,45 @@ body   #C9CDD3 #3A3F48
 muted  #A3A8B0 #555B64
 accent #4FD1C5 #0B7A70
 -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-label="Test hero: a title that stays still and three lines that scroll.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-label="Test hero: a logo, a name and a tagline that stay still, and a stage where lines scroll and a parcel travels.">
 <style>
 @keyframes scroll{to{transform:translateY(-96px)}}
 @keyframes drift{to{transform:translate(24px,24px)}}
 @keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(.8)}}
+@keyframes send{0%{transform:translateX(0);opacity:0}10%,90%{opacity:1}100%{transform:translateX(280px);opacity:0}}
+@keyframes flow{to{stroke-dashoffset:-24}}
 .scroll{animation:scroll 8s linear infinite}
 .drift{animation:drift 4s linear infinite}
 .pulse{animation:pulse 2s ease-in-out infinite}
 .breathe{animation:breathe 2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.send{animation:send 4s ease-in-out infinite}
+.flow{animation:flow 2s linear infinite}
 </style>
+<defs>
+<pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="2" fill="$panel"/></pattern>
+<clipPath id="win"><rect x="600" y="230" width="560" height="300"/></clipPath>
+</defs>
 <rect width="1280" height="640" fill="$bg"/>
-<rect class="drift" x="-24" y="-24" width="1328" height="688" fill="$panel" opacity=".2"/>
-<rect class="breathe" x="72" y="72" width="40" height="40" rx="8" fill="$accent"/>
-<text x="128" y="104" class="b" font-size="32" fill="$ink">still title</text>
-<text x="128" y="140" class="m pulse" font-size="14" fill="$muted">pulses, does not travel</text>
-<g class="scroll" fill="$body">
-<text x="640" y="300" class="m" font-size="16">first line</text>
-<text x="640" y="332" class="s" font-size="16" text-anchor="middle">second <tspan fill="$accent" class="b">bold</tspan> line</text>
-<text class="m" font-size="16" text-anchor="end"><tspan x="900" y="364">third line</tspan><tspan x="900" y="396">first line</tspan></text>
+<rect class="drift" x="-24" y="-24" width="1328" height="688" fill="url(#dots)"/>
+<g id="identity">
+<g id="logo"><rect x="72" y="60" width="72" height="72" rx="16" fill="$panel"/><rect class="breathe" x="92" y="80" width="32" height="32" rx="8" fill="$accent"/></g>
+<text id="name" x="164" y="116" class="b" font-size="56" fill="$ink">still title</text>
+<text id="tagline" x="72" y="176" class="s" font-size="24" fill="$body">It sends lines from here to there.</text>
+</g>
+<g id="stage">
+<rect x="72" y="230" width="200" height="300" rx="16" fill="$panel"/>
+<text x="172" y="388" class="m pulse" font-size="14" fill="$muted" text-anchor="middle">pulses, stays put</text>
+<path class="flow" d="M272 380H600" fill="none" stroke="$muted" stroke-width="2" stroke-dasharray="8 16"/>
+<g transform="translate(288 366)"><rect class="send" opacity="0" width="28" height="28" rx="6" fill="$accent"/></g>
+<rect x="600" y="230" width="560" height="300" rx="16" fill="$panel"/>
+<g clip-path="url(#win)"><g class="scroll" fill="$body">
+<text x="640" y="268" class="m" font-size="16">first line</text>
+<text x="880" y="300" class="s" font-size="16" text-anchor="middle">second <tspan fill="$accent" class="b">bold</tspan> line</text>
+<text class="m" font-size="16" text-anchor="end"><tspan x="1120" y="332">third line</tspan></text>
+<text x="640" y="364" class="m" font-size="16">first line</text>
+<text x="880" y="396" class="s" font-size="16" text-anchor="middle">second <tspan fill="$accent" class="b">bold</tspan> line</text>
+<text class="m" font-size="16" text-anchor="end"><tspan x="1120" y="428">third line</tspan></text>
+</g></g>
 </g>
 </svg>
