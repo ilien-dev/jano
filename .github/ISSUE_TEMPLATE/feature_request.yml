@@ -1,0 +1,34 @@
+name: Feature request
+description: Propose one improvement to Jano.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One idea per issue. Jano does one job: it draws a repository a looping animated SVG hero for its README.
+        Ideas outside that job will be declined. Read [CONTRIBUTING.md](https://github.com/ilien-dev/jano/blob/main/CONTRIBUTING.md) and search the
+        [issues](https://github.com/ilien-dev/jano/issues?q=is%3Aissue) and [pull requests](https://github.com/ilien-dev/jano/pulls?q=is%3Apr) first.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What you are trying to do and what gets in the way. At most a few sentences.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you propose
+      description: The change you have in mind. A sketch, screenshot or GIF helps for anything visual.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before opening
+      options:
+        - label: I searched the existing issues and pull requests and nobody proposed this yet.
+          required: true
+        - label: This is a single idea, not several in one issue.
+          required: true
+        - label: I would like to send the pull request myself.
