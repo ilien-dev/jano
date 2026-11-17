@@ -1,7 +1,7 @@
 {
   "name": "jano",
   "displayName": "Jano",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Draws a repository its README hero: a looping animated SVG, in dark and light, that shows what the project does.",
   "author": {
     "name": "jjimenezc",
@@ -10,5 +10,11 @@
   "homepage": "https://github.com/ilien-dev/jano",
   "repository": "https://github.com/ilien-dev/jano",
   "license": "MIT",
-  "keywords": ["readme", "github-readme", "svg-animation", "hero", "agent-skills"]
+  "keywords": [
+    "readme",
+    "github-readme",
+    "svg-animation",
+    "hero",
+    "agent-skills"
+  ]
 }
