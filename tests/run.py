@@ -61,6 +61,10 @@ ids = {p.get("id") for p in root.iter("{http://www.w3.org/2000/svg}path")} if ro
 test("every outlined glyph has its shape", bool(uses) and all(u[1:] in ids for u in uses))
 test("outlines use the font of each run", any(u.startswith("#gm") for u in uses) and any(u.startswith("#gs") for u in uses) and any(u.startswith("#gb") for u in uses))
 
+# ---- a web address shown as text loads nothing, so it builds
+code, out, _ = build(FIXTURE.replace("still title", "still title https://example.com/page"))
+test("an address written as text is allowed", code == 0 and "external URL" not in out, out)
+
 # ---- sources the build must refuse
 def refused(name, source, expect):
     code, out, _ = build(source)
@@ -69,6 +73,7 @@ def refused(name, source, expect):
 refused("an animation that plays once is refused", FIXTURE.replace("scroll 8s linear infinite", "scroll 8s linear"), "infinite")
 refused("a script is refused", FIXTURE.replace("</svg>", "<script>1</script></svg>"), "<script")
 refused("an external image is refused", FIXTURE.replace("</svg>", '<image href="https://example.com/a.png"/></svg>'), "<image")
+refused("an external reference is refused", FIXTURE.replace("</svg>", '<use href="https://example.com/a.svg#x"/></svg>'), "external URL")
 refused("an unknown palette role is refused", FIXTURE.replace('fill="$ink"', 'fill="$nope"'), "$nope")
 refused("a different canvas is refused", FIXTURE.replace("0 0 1280 640", "0 0 800 400"), "viewBox")
 refused("a source without a palette is refused", re.sub(r"<!--palette.*?-->", "", FIXTURE, flags=re.S), "palette")
