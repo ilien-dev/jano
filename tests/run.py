@@ -77,6 +77,12 @@ warned("small text is warned about", FIXTURE.replace('font-size="14"', 'font-siz
 warned("low contrast is warned about", FIXTURE.replace("muted  #A3A8B0", "muted  #2A2F37"), "contrast")
 warned("a positive delay is warned about", FIXTURE.replace(".pulse{", ".pulse{animation-delay:1s;"), "animation-delay")
 
+# ---- skill files: a ": " in an unquoted YAML value makes installers skip the skill
+for skill in sorted(ROOT.glob("**/SKILL.md")):
+    head = skill.read_text(encoding="utf-8").split("---")[1]
+    bad = [l for l in head.splitlines() if re.match(r"^\w[\w-]*: [^\"'].*: ", l)]
+    test(f"{skill.relative_to(ROOT).as_posix()} has valid frontmatter", not bad, " | ".join(bad))
+
 # ---- the pull request check
 node = shutil.which("node")
 if node:

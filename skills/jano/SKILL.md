@@ -1,6 +1,6 @@
 ---
 name: jano
-description: Draw a repository its README hero: a looping animated SVG, in dark and light, that shows what the project does.
+description: "Draw a repository its README hero: a looping animated SVG, in dark and light, that shows what the project does."
 disable-model-invocation: true
 ---
 
