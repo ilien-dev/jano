@@ -1,5 +1,5 @@
 interface:
   display_name: "Jano"
-  short_description: "Animated SVG hero and standard header for a repository README"
+  short_description: "Looping animated SVG hero for a repository README"
 policy:
   allow_implicit_invocation: false

@@ -2,15 +2,15 @@
 
 <h1 align="center">Jano: un hero SVG animado para tu README de GitHub</h1>
 
-<p align="center"><b>Un skill para agentes que le dibuja a tu repositorio un hero animado en bucle y escribe el encabezado que va debajo,<br>
+<p align="center"><b>Un skill para agentes que le dibuja a tu repositorio un hero animado en bucle,<br>
 para que la primera pantalla del README muestre qué hace el proyecto.</b></p>
 
-<p align="center">Jano lee tu repositorio, decide qué imagen lo explica y la dibuja como un SVG animado en oscuro y en claro. A una herramienta de terminal le pone sus comandos reales, a una aplicación una versión pequeña de su pantalla, a un conversor aquello que convierte. Después añade un logotipo si no tienes uno y el bloque del encabezado: título, eslogan, descripción, etiquetas y menú. Funciona en Claude Code, en Codex y en cualquier agente que lea el formato Agent Skills.</p>
+<p align="center">Jano lee tu repositorio, decide qué imagen lo explica y la dibuja como un SVG animado en oscuro y en claro. A una herramienta de terminal le pone sus comandos reales, a una aplicación una versión pequeña de su pantalla, a un conversor aquello que convierte. Añade un logotipo si no tienes uno y no toca el texto de tu README. Funciona en Claude Code, en Codex y en cualquier agente que lea el formato Agent Skills.</p>
 
 <p align="center">
   <a href="#instalación"><img alt="Skill para Claude Code, Codex y otros agentes" src="https://img.shields.io/badge/agent%20skill-Claude%20Code%20%C2%B7%20Codex-1D6A99?style=flat-square&labelColor=0F1115"></a>
   <a href="#qué-hace-el-build"><img alt="Salida: SVG animado en oscuro y claro" src="https://img.shields.io/badge/salida-SVG%20animado%2C%20oscuro%20%2B%20claro-1D6A99?style=flat-square&labelColor=0F1115"></a>
-  <a href="CHANGELOG.md"><img alt="Versión 0.1.0" src="https://img.shields.io/badge/versi%C3%B3n-0.1.0-0F1115?style=flat-square"></a>
+  <a href="CHANGELOG.md"><img alt="Versión 0.2.0" src="https://img.shields.io/badge/versi%C3%B3n-0.2.0-0F1115?style=flat-square"></a>
   <a href="LICENSE"><img alt="Licencia: MIT" src="https://img.shields.io/badge/licencia-MIT-0F1115?style=flat-square"></a>
 </p>
 
@@ -65,14 +65,14 @@ assets/logo.svg         el logotipo, se conserva si ya tienes uno
 assets/hero.src.svg     la fuente que editas tú o el agente
 assets/hero-dark.svg    generado desde la fuente
 assets/hero-light.svg   generado desde la fuente
-README.md               el encabezado reemplazado, el resto intacto
+README.md               el hero colocado arriba, el resto intacto
 ```
 
-El encabezado del README tiene siempre las mismas partes, en este orden: el hero, el selector de idioma si hay un README en español, el título, un eslogan de una frase, una descripción de un párrafo, de tres a cinco etiquetas y un menú con enlaces a las secciones.
+Jano hace la imagen y nada más. Tu título, tu descripción, tus etiquetas y tus enlaces se quedan como los escribiste.
 
 ## Las reglas que sigue
 
-El encabezado es igual en todos los repositorios. El hero no: dos heroes hechos con Jano no deben parecerse, porque la composición sale del proyecto.
+Dos heroes hechos con Jano no deben parecerse, porque la composición sale del proyecto. Lo que comparten son estas reglas.
 
 - **La imagen explica la herramienta.** Quien no lea nada debería adivinar qué hace. Solo entran datos que el repositorio respalda, nunca una cifra inventada.
 - **Nunca se detiene ni vuelve a empezar.** Cada animación se repite sin fin y cierra sobre sí misma. No hay entrada ni salida, y tampoco una escena que se arma y se reinicia, así que se ve como un lugar en marcha y no como un video.
@@ -95,7 +95,7 @@ Un hero hecho así pesa entre 50 y 80 KB.
 
 ## Límites
 
-- Esta es la versión 0.1.0. Se ha probado en tres repositorios y la ha usado una sola persona.
+- Esta es la versión 0.2.0. Se ha probado en tres repositorios y la ha usado una sola persona.
 - El resultado depende del modelo que lo ejecuta. Un modelo más débil dibuja un hero más débil.
 - El agente ve cuadros fijos de su propio trabajo. El movimiento lo revisas tú, en la vista previa.
 - Las fuentes son fijas: Space Grotesk y JetBrains Mono. Un proyecto con tipografías propias no las tendrá en el hero.

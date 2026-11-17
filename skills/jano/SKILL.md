@@ -1,14 +1,13 @@
 ---
 name: jano
-description: Give a repository the standard README hero - a looping animated SVG (dark and light), a logo, and the header block (languages, title, slogan, description, badges, menu).
+description: Draw a repository its README hero: a looping animated SVG, in dark and light, that shows what the project does.
 disable-model-invocation: true
 ---
 
 # jano
 
-Every repository gets the same header, so they read as one family: an animated SVG on top, then
-language switch, title, slogan, description, badges, menu. Only the header changes; leave the rest
-of the README alone, and do not commit.
+Draw this repository an animated hero for the top of its README. The hero is the whole job: do
+not rewrite the README's title, text, badges or links, and do not commit.
 
 ## 1. Learn the repo
 
@@ -29,7 +28,7 @@ It has to survive 16 px, so no thin strokes, no text, no detail.
 
 ## 3. Hero: `assets/hero.src.svg`
 
-What is standard is the quality bar and the README header, never the composition. Two heroes made
+What is standard is the quality bar, never the composition. Two heroes made
 with this skill should share fonts and care, and look nothing alike, because the tools are not alike.
 
 Start from one question: **what picture would make a stranger understand this tool without reading?**
@@ -107,15 +106,13 @@ Without `uv`: `pip install fonttools brotli`, then run it with `python`.
 It writes `assets/hero-dark.svg` and `assets/hero-light.svg`, prints errors and warnings, and
 writes a preview page (both themes, README and phone width, the logo small). Fix what it reports,
 then open the preview and look, with a browser tool if you have one, and correct overlaps, text
-that runs out of its box, a loop that jumps, or a light theme that came out weak. Commit the
-source with the two outputs.
+that runs out of its box, a loop that jumps, or a light theme that came out weak. Keep the
+source next to the two outputs.
 
-## 5. README header
+## 5. Put it in the README
 
-Put this at the top, in place of the old title, tagline, badges and hero. Content the old intro
-had and the header does not carry (feature lists, notes) stays, below the `---`. English is the main language. If a
-`README.es.md` exists or the user wants Spanish, keep the switch line and give `README.es.md` the
-same header translated (`<a href="README.md">English</a> · <b>Español</b>`); otherwise drop the line.
+Add this as the first thing in `README.md`, and in each translated README. If a hero or banner
+image is already there, replace it. Touch nothing else.
 
 ```html
 <p align="center">
@@ -124,27 +121,4 @@ same header translated (`<a href="README.md">English</a> · <b>Español</b>`); o
     <img src="assets/hero-light.svg" alt="{what the hero shows, with its figures}" width="100%">
   </picture>
 </p>
-
-<p align="center"><b>English</b> · <a href="README.es.md">Español</a></p>
-
-<h1 align="center">{Name}: {what it does, in the words people search for}</h1>
-
-<p align="center"><b>{Slogan: one sentence, at most two lines, the benefit to the reader}</b></p>
-
-<p align="center">{Description: one paragraph, 2-4 sentences, what it is, how it works, who it is for}</p>
-
-<p align="center">
-  <a href="#{section}"><img alt="{text}" src="https://img.shields.io/badge/{label}-{value}-{accent}?style=flat-square&labelColor={bg}"></a>
-</p>
-
-<p align="center">
-  <a href="#{section}"><b>{Section}</b></a> ·
-  <a href="#{section}"><b>{Section}</b></a>
-</p>
-
----
 ```
-
-Badges: three to five, static shields in the light-theme accent with the dark background as
-`labelColor` (hex without `#`): what it is, the key figure, platform or scope, license. Menu: four
-to six links to sections that exist, starting with install.

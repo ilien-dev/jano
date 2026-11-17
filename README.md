@@ -2,15 +2,15 @@
 
 <h1 align="center">Jano: an animated SVG hero for your GitHub README</h1>
 
-<p align="center"><b>An agent skill that draws your repository a looping animated hero and writes the header under it,<br>
+<p align="center"><b>An agent skill that draws your repository a looping animated hero,<br>
 so the first screen of the README shows what the project does.</b></p>
 
-<p align="center">Jano reads your repository, decides which picture explains it, and draws that picture as an animated SVG in dark and light. A terminal tool gets its real commands, an app gets a small version of its screen, a converter gets the thing it converts. Then it adds a logo if you have none and the header block: title, slogan, description, badges and menu. It works in Claude Code, Codex and any agent that reads the Agent Skills format.</p>
+<p align="center">Jano reads your repository, decides which picture explains it, and draws that picture as an animated SVG in dark and light. A terminal tool gets its real commands, an app gets a small version of its screen, a converter gets the thing it converts. It adds a logo if you have none, and it leaves the text of your README alone. It works in Claude Code, Codex and any agent that reads the Agent Skills format.</p>
 
 <p align="center">
   <a href="#install"><img alt="Agent skill for Claude Code, Codex and others" src="https://img.shields.io/badge/agent%20skill-Claude%20Code%20%C2%B7%20Codex-1D6A99?style=flat-square&labelColor=0F1115"></a>
   <a href="#what-the-build-does"><img alt="Output: animated SVG in dark and light" src="https://img.shields.io/badge/output-animated%20SVG%2C%20dark%20%2B%20light-1D6A99?style=flat-square&labelColor=0F1115"></a>
-  <a href="CHANGELOG.md"><img alt="Version 0.1.0" src="https://img.shields.io/badge/version-0.1.0-0F1115?style=flat-square"></a>
+  <a href="CHANGELOG.md"><img alt="Version 0.2.0" src="https://img.shields.io/badge/version-0.2.0-0F1115?style=flat-square"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0F1115?style=flat-square"></a>
 </p>
 
@@ -65,14 +65,14 @@ assets/logo.svg         the mark, kept if you already have one
 assets/hero.src.svg     the source you or the agent edit
 assets/hero-dark.svg    built from the source
 assets/hero-light.svg   built from the source
-README.md               the header replaced, the rest untouched
+README.md               the hero placed on top, the rest untouched
 ```
 
-The README header always has the same parts, in this order: the hero, a language switch if there is a Spanish README, the title, a one-sentence slogan, a one-paragraph description, three to five badges and a menu of links to the sections.
+Jano makes the image and nothing else. Your title, description, badges and links stay as you wrote them.
 
 ## The rules it follows
 
-The header is the same in every repository. The hero is not: two heroes made with Jano should look nothing alike, because the composition comes from the project.
+Two heroes made with Jano should look nothing alike, because the composition comes from the project. What they share is these rules.
 
 - **The picture explains the tool.** Someone who reads no text should still guess what it does. Only facts the repository backs go in, never an invented number.
 - **It never stops and never restarts.** Every animation loops forever and closes on itself. There is no intro or outro, and no scene that builds up and resets, so it reads as a place that is running and not as a video.
@@ -95,7 +95,7 @@ A hero built this way weighs between 50 and 80 KB.
 
 ## Limits
 
-- This is version 0.1.0. It has been tried on three repositories, by one person.
+- This is version 0.2.0. It has been tried on three repositories, by one person.
 - The result depends on the model that runs it. A weaker model draws a weaker hero.
 - The agent sees still frames of its own work. You are the one who checks the motion, in the preview.
 - The fonts are fixed: Space Grotesk and JetBrains Mono. A project with its own typefaces does not get them in the hero.
