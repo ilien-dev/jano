@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
-    <img src="assets/hero-light.svg" alt="Jano: tu repositorio, explicado antes de leer una palabra. En la parte de arriba de un README, Jano dibuja un cartel parte por parte; el build lo mide (tamaño del texto, contraste, bucle, velocidad, peso) y escribe hero-dark.svg y hero-light.svg." width="100%">
+    <img src="assets/hero-light.svg" alt="Jano: tu repositorio, explicado antes de leer una palabra. En la parte de arriba de un README, Jano dibuja un banner animado parte por parte, lo revisa y lo guarda para los temas oscuro y claro de GitHub." width="100%">
   </picture>
 </p>
 
@@ -9,16 +9,16 @@
 
 <h1 align="center">Jano: un hero SVG animado para tu README de GitHub</h1>
 
-<p align="center"><b>Un skill para agentes que le dibuja a tu repositorio un hero animado en bucle,<br>
-para que la primera pantalla del README muestre qué hace el proyecto.</b></p>
+<p align="center"><b>Dale a tu repositorio un banner animado que muestre lo que hace,<br>
+en modo oscuro y claro, antes de que nadie lea una palabra.</b></p>
 
-<p align="center">Jano lee tu repositorio, decide qué imagen lo explica y la dibuja como un SVG animado en oscuro y en claro. A una herramienta de terminal le pone sus comandos reales, a una aplicación una versión pequeña de su pantalla, a un conversor aquello que convierte. Añade un logotipo si no tienes uno y no toca el texto de tu README. Funciona en Claude Code, en Codex y en cualquier agente que lea el formato Agent Skills.</p>
+<p align="center">Jano es un skill para agentes de IA como Claude Code y Codex. Lo pides una vez en tu proyecto y obtienes una cabecera de README hecha para ese proyecto: su nombre, una frase corta que dice para qué sirve y una imagen en movimiento de él funcionando. Llega como un banner SVG animado para los temas oscuro y claro de GitHub, ya colocado al principio de tu README.</p>
 
 <p align="center">
-  <a href="#instalación"><img alt="Skill para Claude Code, Codex y otros agentes" src="https://img.shields.io/badge/agent%20skill-Claude%20Code%20%C2%B7%20Codex-1D6A99?style=flat-square&labelColor=0F1115"></a>
-  <a href="#qué-hace-el-build"><img alt="Salida: SVG animado en oscuro y claro" src="https://img.shields.io/badge/salida-SVG%20animado%2C%20oscuro%20%2B%20claro-1D6A99?style=flat-square&labelColor=0F1115"></a>
-  <a href="https://github.com/ilien-dev/jano/releases"><img alt="Última versión" src="https://img.shields.io/github/v/release/ilien-dev/jano?style=flat-square&label=versi%C3%B3n&color=0F1115"></a>
-  <a href="LICENSE"><img alt="Licencia: MIT" src="https://img.shields.io/badge/licencia-MIT-0F1115?style=flat-square"></a>
+  <a href="#instalación"><img alt="Skill para agentes: Claude Code, Codex y otros" src="https://img.shields.io/badge/agent%20skill-Claude%20Code%20%C2%B7%20Codex-1D6A99?style=flat-square&labelColor=0F1115"></a>
+  <a href="#qué-obtienes"><img alt="Resultado: banner SVG animado para README, oscuro y claro" src="https://img.shields.io/badge/output-animated%20SVG%2C%20dark%20%2B%20light-1D6A99?style=flat-square&labelColor=0F1115"></a>
+  <a href="https://github.com/ilien-dev/jano/releases"><img alt="Última versión" src="https://img.shields.io/github/v/release/ilien-dev/jano?style=flat-square&label=version&color=0F1115"></a>
+  <a href="LICENSE"><img alt="Licencia: MIT" src="https://img.shields.io/badge/license-MIT-0F1115?style=flat-square"></a>
 </p>
 
 <p align="center">
@@ -26,8 +26,7 @@ para que la primera pantalla del README muestre qué hace el proyecto.</b></p>
   <a href="#instalación"><b>Instalación</b></a> ·
   <a href="#uso"><b>Uso</b></a> ·
   <a href="#qué-obtienes"><b>Qué obtienes</b></a> ·
-  <a href="#las-reglas-que-sigue"><b>Reglas</b></a> ·
-  <a href="#qué-hace-el-build"><b>Build</b></a> ·
+  <a href="#cómo-decide"><b>Cómo decide</b></a> ·
   <a href="#límites"><b>Límites</b></a>
 </p>
 
@@ -35,142 +34,129 @@ para que la primera pantalla del README muestre qué hace el proyecto.</b></p>
 
 ## Galería
 
-Heros hechos con Jano para repositorios reales. Cada uno lo dibujó un agente que solo tenía el repositorio y el skill. Abre un repositorio para ver su hero en su sitio.
+Proyectos reales, cada uno con el banner que Jano le dibujó. No hay dos iguales, porque no hay dos proyectos que hagan lo mismo. Abre un proyecto para ver su banner en movimiento.
 
-**[Svipall](https://github.com/ilien-dev/svipall)**: Tu asistente lee la página real, no la pantalla de «comprobando tu navegador».
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="examples/svipall/hero-dark.svg">
-    <img src="examples/svipall/hero-light.svg" alt="Svipall: un asistente pide un precio a un sitio web. Sin Svipall vuelve una pantalla de espera; con él llega la página real." width="100%">
-  </picture>
-</p>
-
-**[Muninn](https://github.com/ilien-dev/muninn)**: Tu asistente recuerda tus decisiones y suelta las que cambiaste.
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="examples/muninn/hero-dark.svg">
-    <img src="examples/muninn/hero-light.svg" alt="Muninn: unas notas viajan de una persona a su asistente a través de un anillo llamado la memoria; una decisión reemplazada se tacha y se guarda." width="100%">
-  </picture>
-</p>
-
-**[Anzu](https://github.com/ilien-dev/anzu)**: Tus libros de Kindle, abiertos en cualquier lector.
+**[Anzu](https://github.com/ilien-dev/anzu)**: Tus libros de Kindle, en EPUB.
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="examples/anzu/hero-dark.svg">
-    <img src="examples/anzu/hero-light.svg" alt="Anzu: libros de Kindle con candado pasan bajo el logo de Anzu, pierden el candado y llegan a un lector, un teléfono y una tableta." width="100%">
+    <img src="examples/anzu/hero-light.svg" alt="Banner del README de Anzu: tres libros de Kindle con candado pasan por la app Anzu y salen como archivos EPUB, listos para cualquier lector." width="100%">
   </picture>
 </p>
 
-**[Quirón](https://github.com/ilien-dev/quiron)**: Hace que el borrador de un chatbot se lea como escrito por una persona, y lo mide.
+**[Ogmios](https://github.com/ilien-dev/ogmios)**: Practica inglés hablado con IA.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/ogmios/hero-dark.svg">
+    <img src="examples/ogmios/hero-light.svg" alt="Banner del README de Ogmios: un libro se prepara capítulo a capítulo y una de sus palabras se aprende con la frase del propio libro." width="100%">
+  </picture>
+</p>
+
+**[Quirón](https://github.com/ilien-dev/quiron)**: Un humanizador de textos de IA que mide su propio trabajo.
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="examples/quiron/hero-dark.svg">
-    <img src="examples/quiron/hero-light.svg" alt="Quirón: páginas escritas por un chatbot cruzan una línea bajo una estrella y salen reescritas; una regla pasa de 13 de 23 a 23 de 23." width="100%">
+    <img src="examples/quiron/hero-light.svg" alt="Banner del README de Quirón: un borrador escrito por IA se reescribe y cinco medidas del texto pasan del lado de la IA a la franja humana." width="100%">
   </picture>
 </p>
 
-**[themis](https://github.com/ilien-dev/themis)**: La página de reglas que das a tus asistentes de IA, corta e idéntica en sus dos copias.
+**[Sharur](https://github.com/ilien-dev/sharur)**: Respuestas más cortas de Claude Code, por menos dinero.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/sharur/hero-dark.svg">
+    <img src="examples/sharur/hero-light.svg" alt="Banner del README de Sharur: un archivo de instrucciones corto reduce una respuesta larga del asistente a unas pocas líneas, con el ahorro por tarea al lado." width="100%">
+  </picture>
+</p>
+
+**[Muninn](https://github.com/ilien-dev/muninn)**: Una memoria que se pone al día cuando cambias de opinión.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/muninn/hero-dark.svg">
+    <img src="examples/muninn/hero-light.svg" alt="Banner del README de Muninn: a lo largo de tres sesiones una decisión vieja se guarda, y dos semanas después el asistente usa solo la nueva." width="100%">
+  </picture>
+</p>
+
+**[themis](https://github.com/ilien-dev/themis)**: Dos archivos, un solo texto.
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="examples/themis/hero-dark.svg">
-    <img src="examples/themis/hero-light.svg" alt="themis: una página larga de reglas se filtra línea por línea; solo salen las que importan, en dos páginas cortas e idénticas." width="100%">
+    <img src="examples/themis/hero-light.svg" alt="Banner del README de themis: una página de reglas para asistentes de IA se revisa línea por línea y lo que queda se guarda como dos archivos cortos e idénticos." width="100%">
+  </picture>
+</p>
+
+**[Svipall](https://github.com/ilien-dev/svipall)**: La página, o la razón por la que no llegó.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/svipall/hero-dark.svg">
+    <img src="examples/svipall/hero-light.svg" alt="Banner del README de Svipall: un agente de IA pide una página web, lo detiene un muro, pasa con un navegador y recibe la página." width="100%">
   </picture>
 </p>
 
 ## Instalación
 
-Con la CLI de [skills](https://skills.sh), que lo instala para Claude Code, Codex, Cursor, Gemini CLI y los demás agentes que soporta:
+Un comando, para Claude Code, Codex, Cursor, Gemini CLI y los demás agentes que admite la CLI de [skills](https://skills.sh):
 
 ```sh
 npx skills add ilien-dev/jano
 ```
 
-Como plugin de Claude Code, ejecuta estos dos comandos dentro de Claude Code:
+O, dentro de Claude Code, como plugin:
 
 ```
 /plugin marketplace add ilien-dev/jano
 /plugin install jano@jano
 ```
 
-A mano, copia `skills/jano` a donde tu agente busca los skills: `~/.claude/skills/jano` para Claude Code, `~/.agents/skills/jano` para Codex y otros.
-
-El script de build necesita Python 3.9 o posterior. Con [uv](https://docs.astral.sh/uv/) instala él mismo sus dos dependencias. Sin uv, ejecuta una vez `pip install fonttools brotli`.
+Jano necesita Python 3.9 o posterior en tu computadora. Si tienes [uv](https://docs.astral.sh/uv/), no hace falta nada más; si no, ejecuta `pip install fonttools brotli` una vez.
 
 ## Uso
 
-Jano solo se ejecuta cuando tú lo llamas. El agente nunca lo inicia por su cuenta.
+Abre tu agente en el proyecto y llama a Jano:
 
-| Agente | Cómo llamarlo |
+| Agente | Escribe |
 |---|---|
 | Claude Code | `/jano` (como plugin: `/jano:jano`) |
 | Codex | `$jano` |
-| Otros | «usa el skill jano en este repositorio» |
+| Otros | "usa el skill jano en este repositorio" |
 
-Abre el agente en el repositorio al que quieres ponerle hero y llama al skill. Puedes añadir lo que quieres ver: `/jano muestra la sincronización entre los dos archivos, conserva nuestro azul`. Escribe los archivos y te enseña una página de vista previa. No hace commit.
+Puedes decir lo que quieres ver: `/jano muestra un libro convirtiéndose en EPUB, conserva nuestro amarillo`. Jano nunca se ejecuta si no lo llamas, y no hace commit de nada.
 
 ## Qué obtienes
 
-```
-assets/logo.svg         el logotipo, se conserva si ya tienes uno
-assets/hero.src.svg     la fuente que editas tú o el agente
-assets/hero-dark.svg    generado desde la fuente
-assets/hero-light.svg   generado desde la fuente
-README.md               el hero colocado arriba, el resto intacto
-```
+- **Un banner animado para el principio de tu README**, en dos versiones que siguen el tema de GitHub de cada visitante: una para el modo oscuro y otra para el claro.
+- **Tu README con el banner colocado arriba.** Tu título, texto, insignias y enlaces quedan como los escribiste.
+- **La fuente del banner**, para que tú o el agente puedan cambiarlo después.
+- **Una página de vista previa** para verlo antes de publicarlo.
 
-Jano hace la imagen y nada más. Tu título, tu descripción, tus etiquetas y tus enlaces se quedan como los escribiste.
+Los archivos son SVG normales, normalmente de 60 a 130 KB, y se reproducen en GitHub sin instalar ni alojar nada.
 
-## Las reglas que sigue
+## Cómo decide
 
-Dos heroes hechos con Jano no deben parecerse, porque la composición sale del proyecto. Lo que comparten son estas reglas.
+- **Primero lee tu proyecto**, y luego dibuja lo que tu proyecto hace de verdad: una app como su pantalla, una herramienta de terminal como su comando y lo que provoca, un conversor como lo que convierte.
+- **Hace un cartel, no una animación de logo.** Un bloque de texto corto con el nombre y para qué sirve el proyecto, junto a una imagen que se mueve.
+- **Solo dice lo que tu proyecto puede respaldar.** Las cifras salen de tus propias mediciones o no aparecen; cuando ninguna cifra le diría mucho a tus lectores, muestra unas cuantas funciones en palabras simples.
+- **Revisa su trabajo antes de guardar.** Texto que se lee en un teléfono, contraste suficiente en los dos temas, movimiento que se repite sin saltos y una imagen fija para quien desactiva las animaciones.
 
-- **La imagen explica el repositorio.** El hero muestra lo que hace el proyecto como un flujo: qué entra, por qué pasos pasa y qué sale. Una aplicación se dibuja como su propia pantalla en esqueleto, con su flujo principal en marcha; una herramienta de terminal, como su terminal y lo que provoca el comando; un servicio, como una petición seguida de principio a fin. Quien no lea nada debería saber qué hace. Solo entran datos que el repositorio respalda, nunca una cifra inventada.
-- **El logotipo y el nombre van primero, sin gritar.** Van juntos y no se mueven. El nombre es el texto más grande del lienzo, dentro de un rango fijo de tamaños.
-- **Nunca se detiene ni retrocede.** Cada animación se repite sin fin y cierra sobre sí misma. Un flujo corre como un ciclo corto que termina donde empezó, y las cosas se van porque terminan, así que se ve como un lugar en marcha y no como un video.
-- **Una sola cosa manda.** Lo que recorre el flujo lleva el movimiento y lo demás se queda discreto.
-- **El texto se puede leer.** El título y el eslogan no se mueven. El texto que se desplaza lo hace a velocidad constante y lenta.
-- **Tu identidad manda.** Se reutilizan el logotipo y los colores que ya existen. Si no hay, elige un color de acento y deja lo demás neutro.
-
-Las reglas de movimiento vienen de gente que anima SVG e interfaces como oficio. Están, con sus fuentes, en [`skills/jano/references/motion.md`](skills/jano/references/motion.md), y qué dibujar para cada tipo de repositorio está en [`skills/jano/references/pictures.md`](skills/jano/references/pictures.md). Las dos están en inglés.
-
-## Qué hace el build
-
-GitHub muestra un SVG como imagen, así que no cargan scripts ni archivos externos, y un navegador dibuja a saltitos el texto que se mueve despacio. `build.py` resuelve las dos cosas:
-
-- Escribe el archivo oscuro y el claro desde una sola fuente, con una paleta de colores con nombre.
-- Incrusta solo las letras usadas de Space Grotesk y JetBrains Mono, para que el hero se vea igual en cualquier equipo.
-- Convierte en trazos el texto que se mueve, que así se desliza donde el texto normal iría a tirones.
-- Añade la regla que detiene el movimiento a quien pide menos movimiento en su sistema.
-- Mide el dibujo antes de escribir nada: dónde cae cada forma y cada línea de texto en el lienzo (el texto se mide con las fuentes reales), cuánto y a qué velocidad se desplaza cada animación, y si cada bucle cierra sobre sí mismo.
-- Rechaza lo que seguro está mal: texto que se sale de su caja, del lienzo o que pisa otro texto, un bucle que salta hacia atrás a la vista, parpadeos, una animación que se reproduce una sola vez, scripts y archivos externos.
-- Avisa, con la solución, de lo que probablemente está mal: texto pequeño o con poco contraste, un nombre demasiado grande o demasiado pequeño, una imagen que ocupa muy poco lienzo, demasiadas palabras, movimiento demasiado rápido para seguirlo o demasiado pequeño para verlo, y archivos pesados.
-- Imprime las medidas del hero: los tamaños del nombre, el logotipo y el eslogan, la parte del lienzo que ocupa la imagen, las palabras, la duración de los bucles y la velocidad máxima.
-- Toma dos capturas si el equipo tiene Chrome, Chromium o Edge: el bucle detenido en ocho momentos, y el hero como lo muestra GitHub (los dos temas, un teléfono, desenfocado y sin movimiento). El agente las lee, así que revisa su propio movimiento y no un solo cuadro fijo.
-- Escribe una página de vista previa con los dos temas, al ancho del README y al de un teléfono.
-
-`check.py`, junto a él, hace solo las mediciones: `uv run skills/jano/scripts/check.py assets/hero.src.svg --json`.
-
-Un hero hecho así pesa entre 50 y 80 KB.
+Conserva tu logo y tus colores cuando los tienes, y no añade logo cuando no lo hay. Las reglas completas están en [`skills/jano/SKILL.md`](skills/jano/SKILL.md).
 
 ## Límites
 
-- Es una versión temprana. Se ha probado en tres repositorios y la ha usado una sola persona.
-- El resultado depende del modelo que lo ejecuta. Un modelo más débil dibuja un hero más débil.
-- El agente ve el bucle como ocho cuadros detenidos, no en movimiento. Cómo se siente lo juzgas tú, en la vista previa.
-- Las comprobaciones miden posiciones, tamaños y tiempos. No saben si la imagen explica bien tu proyecto; eso sigue siendo trabajo del modelo y tuyo.
-- Las capturas necesitan un navegador de la familia Chromium en el equipo. Sin él, el agente abre las páginas de vista previa con una herramienta de navegador, o las miras tú.
-- Las fuentes son fijas: Space Grotesk y JetBrains Mono. Un proyecto con tipografías propias no las tendrá en el hero.
-- El hero está en inglés. El README en español usa el mismo.
+- El resultado depende del modelo de IA que lo ejecuta: un modelo más capaz dibuja un mejor banner.
+- El agente ve el movimiento como cuadros detenidos. Tú juzgas cómo se siente, en la vista previa.
+- Todos los banners usan dos tipografías, Space Grotesk y JetBrains Mono.
+- Hasta ahora se ha usado en ocho proyectos, por una sola persona.
 
 ## Contribuir
 
-Se aceptan issues y pull requests, un cambio a la vez. Las reglas están en [CONTRIBUTING.md](CONTRIBUTING.md), en inglés. El número de versión lo calcula el workflow de release a partir de los títulos de los pull requests, así que nadie lo escribe a mano.
+Los issues y pull requests son bienvenidos, un cambio a la vez. [CONTRIBUTING.md](CONTRIBUTING.md) tiene las reglas.
 
 ## Licencia
 
-MIT, ver [LICENSE](LICENSE). Las dos fuentes incluidas están bajo la SIL Open Font License, y sus archivos de licencia están junto a ellas en `skills/jano/assets`.
+MIT, ver [LICENSE](LICENSE). Las dos tipografías incluidas están bajo la SIL Open Font License, con sus licencias en `skills/jano/assets`.
