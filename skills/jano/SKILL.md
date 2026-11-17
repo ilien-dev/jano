@@ -1,6 +1,6 @@
 ---
 name: jano
-description: "Draw a repository its README hero: a looping animated SVG, in dark and light, that shows what the project does."
+description: "Draw a repository its README hero: a looping animated SVG, in dark and light, that shows anyone, technical or not, what the project is for."
 disable-model-invocation: true
 ---
 
@@ -11,18 +11,32 @@ not rewrite the README's title, text, badges or links, and do not commit.
 
 ## 1. Learn the repo
 
-Read the README, docs and code until you can say what the tool does in one sentence and name its
-**one proof**: the number, before/after, pipeline or output that makes someone get it at a glance.
-Use only facts the repo backs (benchmarks, tests, real output). A hero with an invented number is
-worse than no hero.
+Read the README, docs and code until you can answer three things in the words of someone who has
+never opened a terminal:
+
+- who uses it, and at what moment;
+- what was slow, risky, tedious or impossible for them before;
+- what they have after.
+
+Join the answers into **one sentence** with no word of the trade in it: no protocol, format,
+language or framework name, except the ones that person would say themselves ("a Kindle book",
+"a PDF"). That sentence is the script of the hero.
+
+Then find its **one proof**: the number, before/after or real output that makes the sentence
+believable, said the way that person would say it ("9 times out of 9", "half the size"). Use only
+facts the repo backs (benchmarks, tests, real output). A hero with an invented number is worse
+than no hero. When the repo measures nothing, the proof is its own sample output and the hero
+carries no figure.
 
 Look for an existing identity (logo, `DESIGN.md`, brand folder, site, badge colors) and reuse its
-colors and mark. If there is none, pick one accent that suits the subject; everything else is neutral.
+colors and mark. The accent is the one the identity declares; when it declares none, take it from
+the mark. If there is no identity, pick one accent that suits the subject; everything else is
+neutral. The fonts are the skill's in every hero, whatever the brand uses.
 
 ## 2. Logo: `assets/logo.svg`
 
-If the repo has a mark, use it as it is (copy it to `assets/logo.svg` if it lives elsewhere), and
-take the accent from it. Otherwise draw a 160×160 mark from the name, from what the tool does, or
+If the repo has a mark, use it as it is, whatever its shape or detail: copy it to
+`assets/logo.svg` (the variant made for light backgrounds, when there are two). Otherwise draw a 160×160 mark from the name, from what the tool does, or
 both: two or three thick shapes, ink plus the accent, on a rounded square of the dark background.
 It has to survive 16 px, so no thin strokes, no text, no detail.
 
@@ -31,19 +45,55 @@ It has to survive 16 px, so no thin strokes, no text, no detail.
 What is standard is the quality bar, never the composition. Two heroes made
 with this skill should share fonts and care, and look nothing alike, because the tools are not alike.
 
-Start from one question: **what picture would make a stranger understand this tool without reading?**
-Draw that, alive, and give it most of the canvas. Then place the logo, the name and one line saying
-what the thing is wherever the picture leaves room. Those are the only required parts. Figures,
-chips, captions or a ticker go in only when this repo has something worth putting there.
+The viewer is anyone: a person who arrived from a link and may not program. After five seconds
+of looking, they can tell a friend what this is for. People who know the subject read the rest of
+the README; the hero is for everyone else.
 
-The picture comes from the repo, so go and look at it first:
+Start from one question: **what picture tells your sentence to that person without reading?**
+Draw that, alive, and give it most of the canvas. Then place the logo, the name and your sentence,
+shortened to one line, wherever the picture leaves room. Those are the only required parts.
+Figures, chips, captions or a ticker go in only when this repo has something worth putting there.
 
-- An app with a UI: a simplified version of its real screen, in use. Read the components,
-  screenshots and design tokens, keep the real layout, labels and colors, and animate what a user
-  would see happen. It does not have to be exact; it has to be recognisable.
-- A CLI or agent tool: its real commands and real output, working.
-- A library, converter or pipeline: the thing it transforms, going in one way and out another.
-- Something else: whatever its subject looks like (a document, a network, a waveform, a diff, a map).
+Pick the form that tells the sentence best. The picture comes from the repo, so go and look at it
+first:
+
+- **Demo.** The product in use, simplified. For anything with a screen a person would recognise.
+  Read the components, screenshots and design tokens, keep the real layout, labels and colors,
+  and animate what a user would see happen. It is a portrait, so it has to be recognisable, and
+  it does not have to be exact.
+- **Journey.** A recognisable thing (a book, a page, a photo, a message) goes in one side and
+  comes out the other changed. For converters, pipelines and anything that transforms.
+- **Before and after.** The same thing without the tool and with it, side by side or taking
+  turns. For tools that fix, clean, check or shorten.
+- **Scene.** The situation where the tool matters, with the tool as one of the actors. For tools
+  that work behind something else (a server, a plugin, a hook, an agent tool), whose real surface
+  is a terminal or nothing at all. Draw who and what is involved as simple objects (the
+  assistant, the web, a document, a person) and show what travels between them.
+- **Measure.** A quantity drawn against something familiar, so the difference shows before the
+  number is read. For tools whose whole point is faster, smaller, cheaper or more.
+
+Combine two when one alone leaves the sentence half told, and draw something else when the
+subject has its own shape (a network, a waveform, a map).
+
+Where the tool runs sets the stage. The subject is always what the person gets. A terminal tool
+can show its terminal, small and recognisable, with one real command in it; the meaning is
+carried by the objects around it and by labels in plain words, because real output explains
+nothing to someone who cannot read it.
+
+Every word on the canvas is one the viewer already knows. A real command, file name or term of
+the trade appears as texture, never as the explanation.
+
+The picture works with every word blurred: shapes, direction and color say what goes in, what
+changes and what comes out, and words only name things. Sample content inside the picture (a
+chat, a page, a list) is large enough to recognise and short enough to take in while it passes.
+The moment of change is the most interesting thing on the canvas, so it happens in plain sight;
+the logo sits beside it, never over it.
+
+A story with steps (first this, then that) is drawn with all its steps on the canvas at once,
+joined by things that travel from one to the next.
+
+Before you build, write down what that viewer would say the tool does after seeing your picture
+with the tagline covered. When it does not match your sentence, draw a different picture.
 
 Let that picture decide the layout: full-bleed with the title over it, centered, stacked, split,
 one big object or many small ones. If you catch yourself drawing a headline on the left, a row of
@@ -104,15 +154,16 @@ uv run <this skill>/scripts/build.py assets/hero.src.svg
 Without `uv`: `pip install fonttools brotli`, then run it with `python`.
 
 It writes `assets/hero-dark.svg` and `assets/hero-light.svg`, prints errors and warnings, and
-writes a preview page (both themes, README and phone width, the logo small). Fix what it reports,
-then open the preview and look, with a browser tool if you have one, and correct overlaps, text
-that runs out of its box, a loop that jumps, or a light theme that came out weak. Keep the
-source next to the two outputs.
+writes a preview page (both themes, README and phone width, the logo small) to the system temp
+folder, at the path it prints. Fix what it reports, then open the preview and look, with a
+browser tool if you have one, and correct overlaps, shapes that touch by accident, text that
+runs out of its box or sits closer than 16 px to its edge, a loop that jumps, or a light theme
+that came out weak. Keep the source next to the two outputs.
 
 ## 5. Put it in the README
 
 Add this as the first thing in `README.md`, and in each translated README. If a hero or banner
-image is already there, replace it. Touch nothing else.
+image is already there, replace it and leave its old files where they are. Touch nothing else.
 
 ```html
 <p align="center">
