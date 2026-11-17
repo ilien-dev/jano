@@ -232,7 +232,9 @@ def main():
     for bad in ("<script", "<foreignObject", "<image", "@import"):
         if bad in body:
             errors.append(f"{bad} is not allowed: GitHub shows the SVG as an image, nothing external loads")
-    ext = [u for u in re.findall(r"https?://[^\"')\s]+", body) if "www.w3.org" not in u]
+    # only addresses something would load: one written as visible text is fine
+    ext = re.findall(r"""(?:href|src)\s*=\s*["'](https?://[^"']+)|url\(\s*["']?(https?://[^"')\s]+)""", body)
+    ext = [a or b for a, b in ext if "www.w3.org" not in (a or b)]
     if ext:
         errors.append(f"external URL(s) will not load: {ext[:3]}")
     if "<style>" not in body:
