@@ -10,7 +10,7 @@ so the first screen of the README shows what the project does.</b></p>
 <p align="center">
   <a href="#install"><img alt="Agent skill for Claude Code, Codex and others" src="https://img.shields.io/badge/agent%20skill-Claude%20Code%20%C2%B7%20Codex-1D6A99?style=flat-square&labelColor=0F1115"></a>
   <a href="#what-the-build-does"><img alt="Output: animated SVG in dark and light" src="https://img.shields.io/badge/output-animated%20SVG%2C%20dark%20%2B%20light-1D6A99?style=flat-square&labelColor=0F1115"></a>
-  <a href="CHANGELOG.md"><img alt="Version 0.2.0" src="https://img.shields.io/badge/version-0.2.0-0F1115?style=flat-square"></a>
+  <a href="https://github.com/ilien-dev/jano/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/ilien-dev/jano?style=flat-square&label=version&color=0F1115"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0F1115?style=flat-square"></a>
 </p>
 
@@ -95,11 +95,15 @@ A hero built this way weighs between 50 and 80 KB.
 
 ## Limits
 
-- This is version 0.2.0. It has been tried on three repositories, by one person.
+- It is an early version. It has been tried on three repositories, by one person.
 - The result depends on the model that runs it. A weaker model draws a weaker hero.
 - The agent sees still frames of its own work. You are the one who checks the motion, in the preview.
 - The fonts are fixed: Space Grotesk and JetBrains Mono. A project with its own typefaces does not get them in the hero.
 - The hero is in English. The Spanish README shares it.
+
+## Contributing
+
+Issues and pull requests are welcome, one change at a time. [CONTRIBUTING.md](CONTRIBUTING.md) has the rules. Versions are numbered by the release workflow from the pull request titles, so nobody writes a version number.
 
 ## License
 

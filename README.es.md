@@ -10,7 +10,7 @@ para que la primera pantalla del README muestre qué hace el proyecto.</b></p>
 <p align="center">
   <a href="#instalación"><img alt="Skill para Claude Code, Codex y otros agentes" src="https://img.shields.io/badge/agent%20skill-Claude%20Code%20%C2%B7%20Codex-1D6A99?style=flat-square&labelColor=0F1115"></a>
   <a href="#qué-hace-el-build"><img alt="Salida: SVG animado en oscuro y claro" src="https://img.shields.io/badge/salida-SVG%20animado%2C%20oscuro%20%2B%20claro-1D6A99?style=flat-square&labelColor=0F1115"></a>
-  <a href="CHANGELOG.md"><img alt="Versión 0.2.0" src="https://img.shields.io/badge/versi%C3%B3n-0.2.0-0F1115?style=flat-square"></a>
+  <a href="https://github.com/ilien-dev/jano/releases"><img alt="Última versión" src="https://img.shields.io/github/v/release/ilien-dev/jano?style=flat-square&label=versi%C3%B3n&color=0F1115"></a>
   <a href="LICENSE"><img alt="Licencia: MIT" src="https://img.shields.io/badge/licencia-MIT-0F1115?style=flat-square"></a>
 </p>
 
@@ -95,11 +95,15 @@ Un hero hecho así pesa entre 50 y 80 KB.
 
 ## Límites
 
-- Esta es la versión 0.2.0. Se ha probado en tres repositorios y la ha usado una sola persona.
+- Es una versión temprana. Se ha probado en tres repositorios y la ha usado una sola persona.
 - El resultado depende del modelo que lo ejecuta. Un modelo más débil dibuja un hero más débil.
 - El agente ve cuadros fijos de su propio trabajo. El movimiento lo revisas tú, en la vista previa.
 - Las fuentes son fijas: Space Grotesk y JetBrains Mono. Un proyecto con tipografías propias no las tendrá en el hero.
 - El hero está en inglés. El README en español usa el mismo.
+
+## Contribuir
+
+Se aceptan issues y pull requests, un cambio a la vez. Las reglas están en [CONTRIBUTING.md](CONTRIBUTING.md), en inglés. El número de versión lo calcula el workflow de release a partir de los títulos de los pull requests, así que nadie lo escribe a mano.
 
 ## Licencia
 
