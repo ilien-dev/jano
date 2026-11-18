@@ -1,37 +1,92 @@
 {
-  "picture:coldread.src.svg": {
-    "sha": "ec719dd6f4cbd521",
+  "picture:features.src.svg": {
+    "sha": "837021fc10c245a5",
     "pass": true,
-    "why": "The blind judge saw a picture shown alone to a reader, its reading compared with a claims file, ending in pass or redraw."
-  },
-  "section:How it works": {
-    "sha": "343b2ca90b44ef17",
-    "pass": true,
-    "why": "The reader described the cold read step: fresh agents read the result and redraw or rewrite what they get wrong, with a blind reader checking a picture against claims."
-  },
-  "picture:plan.src.svg": {
-    "sha": "d40a702518daa665",
-    "pass": true,
-    "why": "The blind judge saw a plan listing README sections, each with a word budget and a picture slot, though the per-section job is read only as a keyword tag."
+    "why": "Blind judge read a moving picture on top, pictures where they help, short plain text, and dark and light both ready."
   },
   "section:What you get": {
-    "sha": "b907c5e494795b83",
+    "sha": "d76a1fd8fd4d9cec",
     "pass": true,
-    "why": "The reader understood a README planned section by section with word budgets and pictures over the sections that need them."
+    "why": "Reader listed a moving picture on top, a picture over parts that need one, short plain text, dark and light versions."
   },
-  "picture:ask.src.svg": {
-    "sha": "70fb1718bba82037",
+  "picture:audience.src.svg": {
+    "sha": "c800f58256921c93",
     "pass": true,
-    "why": "The blind judge saw an agent ask three questions with a Jano-suggested option each, then work on its own."
+    "why": "Blind judge saw three kinds of project (a book app, a writing style for AI, a web tool for AI), each filling its own card. It did not mention colours and was vague on the logo, but the main point came through."
+  },
+  "section:Who it is for": {
+    "sha": "7fcfbfb42d44b14b",
+    "pass": true,
+    "why": "Reader understood that Jano suits different kinds of projects and picks a picture for each, and named the three examples."
+  },
+  "picture:use.src.svg": {
+    "sha": "4d8b44aae93818d3",
+    "pass": true,
+    "why": "Blind judge read a typed command in chat, questions answered by clicking, then a progress bar and a ready message."
   },
   "section:Use": {
-    "sha": "8a33e9e0ea68dca7",
+    "sha": "b219e99e34e392c8",
     "pass": true,
-    "why": "The reader understood it asks a few questions with a suggested answer, then works alone."
+    "why": "Reader understood that one command is typed, a few questions follow, and Jano then works alone. It judged the picture a partial mismatch, but the meaning came through."
+  },
+  "icon:hero.src.svg#1": {
+    "sha": "7366ca4e25ad1e2b",
+    "pass": true,
+    "why": "Judge was sure: folder, a project."
+  },
+  "icon:features.src.svg#1": {
+    "sha": "2c3694d50590effc",
+    "pass": true,
+    "why": "Judge was sure: play, start an animation."
+  },
+  "icon:features.src.svg#2": {
+    "sha": "02548b24e95db8b3",
+    "pass": true,
+    "why": "Judge was sure: images or a gallery."
+  },
+  "icon:features.src.svg#3": {
+    "sha": "08627e77c9e512f6",
+    "pass": true,
+    "why": "Judge was sure: lines of text."
+  },
+  "icon:features.src.svg#4": {
+    "sha": "2afd2ec08bfa0398",
+    "pass": true,
+    "why": "Judge was sure: dark mode."
+  },
+  "icon:audience.src.svg#1": {
+    "sha": "351290822b86f31c",
+    "pass": true,
+    "why": "Judge was sure: a book."
+  },
+  "icon:audience.src.svg#2": {
+    "sha": "696c310b5fbee657",
+    "pass": true,
+    "why": "Judge was sure: a padlock, locked."
+  },
+  "icon:audience.src.svg#3": {
+    "sha": "60287d7120c97dfa",
+    "pass": true,
+    "why": "Judge was sure: a speech bubble, chat."
+  },
+  "icon:audience.src.svg#4": {
+    "sha": "5053c0da92c92408",
+    "pass": true,
+    "why": "Judge was sure: a robot, an AI agent."
+  },
+  "icon:audience.src.svg#5": {
+    "sha": "ec21fce53498922a",
+    "pass": true,
+    "why": "Judge was sure: a globe, the web."
+  },
+  "icon:use.src.svg#1": {
+    "sha": "43ce60d84c38659c",
+    "pass": true,
+    "why": "Judge was sure: a check mark, done."
   },
   "readme": {
-    "sha": "542bd24fe1114cb3",
+    "sha": "696cba069ee43c07",
     "pass": true,
-    "why": "The reader's project sentence and start capture a skill for project owners that asks a few questions and writes a README with animated pictures for strangers, though the cold-read check is left out of the sentence."
+    "why": "Reader summed it up as a skill that writes a project's README and draws animated dark and light pictures, started by one request, a few questions and a review. This matches the author's meaning."
   }
 }

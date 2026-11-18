@@ -149,6 +149,13 @@ mark from the repository's identity as `references/hero.md` says. Jano draws no 
 mascots: what moves in a scene is the thing the section is about. When the user brings a
 character of their own, it is drawn into the stage like any other object.
 
+Then choose the asset families, before drawing anything: read `references/assets.md`. For each
+category the pictures will need (icons, objects, logos, flags, files), describe the mark and
+the hero (fill, stroke weight, corners, grid), run `assets.py suggest <category> ... --repo
+<name>`, look at `assets.py preview <category>` for the families that fit, and record one with
+`assets.py choose <repo> <category> <family> --why "..."`. Every asset of that category comes
+from that family; `readme.py check` refuses a picture that mixes families.
+
 ## 5. The hero
 
 Follow `references/hero.md`. When `assets/hero.src.svg` already exists and still says what the
@@ -166,7 +173,9 @@ uv run <this skill>/scripts/build.py assets/hero.src.svg assets/readme/*.src.svg
 ```
 
 Read `loop.png` and `look.png` of each, as `references/hero.md` says for the hero, until each
-builds clean and its pictures show what its claim says.
+builds clean and its pictures show what its claim says. Interface parts come from
+`scripts/kit.py`, icons and other assets from `scripts/assets.py` in the chosen family, and
+every one says what it means in `data-icon` (`references/scenes.md`, Parts, icons and assets).
 
 ## 7. The text
 
@@ -190,6 +199,8 @@ You know the repository, so you cannot read its README as a stranger does. Run
 
 - **blind/**: each scene as a PNG with its eyebrow, title and sub removed, eight moments of its
   loop and its finished frame. The picture has to say its claim without a word of the text block.
+  `icons.png` holds every declared icon, cut out at the size a README shows it; an icon the
+  judge misreads or is unsure of is rebuilt, never removed.
 - **reader/**: the README with every picture as a PNG beside it.
 - **packets.json**: the three prompts and the fingerprint (`sha`) of every item;
   **claims.json**: what each item was meant to say, for the grader only.

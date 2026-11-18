@@ -3,3 +3,4 @@ __pycache__/
 .argoz/
 *.quiron.json
 tests/fixture/assets/hero-*.svg
+tools/library/work/

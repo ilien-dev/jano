@@ -236,6 +236,63 @@ code, out, folder = build_scene(SCENE)
 test("a scene builds clean", code == 0 and "checks passed" in out, out)
 scene_dark = (folder / "demo-dark.svg").read_text(encoding="utf-8") if code == 0 else ""
 test("a scene is written as <name>-dark.svg and <name>-light.svg", bool(scene_dark) and (folder / "demo-light.svg").exists())
+icon = ('<g transform="translate(300 380)"><path d="M0 -8l12 8-12 8" fill="none" stroke="$muted" stroke-width="2"/>'
+        '<circle cx="-6" cy="-8" r="4" fill="none" stroke="$muted" stroke-width="2"/><circle cx="-6" cy="8" r="4" fill="none" stroke="$muted" stroke-width="2"/></g></g>\n</svg>')
+code, out, _ = build_scene(SCENE.replace("</g>\n</svg>", icon))
+test("a small drawing that does not say what it means is warned about", "does not say what it means" in out, out)
+sys.path.insert(0, str(ROOT / "skills/jano/scripts"))
+import assets as assets_module  # noqa: E402
+import kit as kit_module  # noqa: E402
+known = assets_module.snippet("lucide", "scissors", "cut", 300, 368)
+code, out, folder = build_scene(SCENE.replace("</g>\n</svg>", known + "</g>\n</svg>"))
+test("an icon from the library, declared, builds clean", code == 0 and "checks passed" in out, out)
+built_icon = (folder / "demo-dark.svg").read_text(encoding="utf-8") if code == 0 else ""
+test("a picture that uses a set carries its notice as invisible metadata", "<metadata>" in built_icon and "Lucide" in built_icon and "ISC" in built_icon)
+test("a picture without assets carries no notice", "<metadata>" not in scene_dark)
+code, out, _ = build_scene(SCENE.replace("</g>\n</svg>", assets_module.snippet("lucide", "scissors", "cut", 300, 368, 16) + "</g>\n</svg>"))
+test("an icon under its grid size is warned about", 'the icon "cut" is 16 px' in out, out)
+code, out, _ = build_scene(SCENE.replace("</g>\n</svg>", assets_module.snippet("heroicons", "document-text", "a page", 300, 360) + "</g>\n</svg>"))
+test("an icon from a family drawn in 1.5 px lines comes out large enough for 2 px strokes", "strokes of" not in out, out)
+test("the library finds an icon by what it means", "scissors" in assets_module.find("lucide", ["cut"]))
+test("the library knows the words families use for the same thing", any(n.startswith("magnifying-glass") for n in assets_module.find("heroicons", ["search"])))
+test("a part of a word is not a match", "vehicle-car-profile" not in assets_module.find("fluent", ["file"]))
+test("a short word does not match a longer name it only starts", "rustdesk" not in assets_module.find("simple-icons", ["rust"]))
+test("a name with a dot is found as each set spells it", assets_module.find("simple-icons", ["node.js"])[:1] == ["nodedotjs"]
+     and assets_module.find("devicon", ["node.js"])[:1] == ["nodejs"])
+solid = subprocess.run([sys.executable, str(ROOT / "skills/jano/scripts/assets.py"), "suggest", "icons", "--fill", "glyph", "--stroke", "bold",
+                        "--corners", "round", "--grid", "24", "--repo", "x"], capture_output=True, text=True, encoding="utf-8").stdout
+test("a solid mark is matched by the solid variants of families", any(l.startswith("*") and "heroicons:solid" in l for l in solid.splitlines()), solid)
+
+# ---- the library: only licences that ask nothing of the repositories that use Jano
+ALLOWED = {"MIT", "ISC", "ISC AND MIT", "CC0-1.0"}
+families = assets_module.manifest()
+test("every family in the library is MIT, ISC or CC0", all(f["licence"] in ALLOWED for f in families),
+     ", ".join(f"{f['prefix']}: {f['licence']}" for f in families if f["licence"] not in ALLOWED))
+test("every family ships its licence text", all((assets_module.LIB / f["licence_text"]).exists() for f in families))
+guide = (ROOT / "skills/jano/references/assets.md").read_text(encoding="utf-8")
+test("every family is described in references/assets.md", all(f"`{f['prefix']}`" in guide for f in families),
+     ", ".join(f["prefix"] for f in families if f"`{f['prefix']}`" not in guide))
+styles = subprocess.run([sys.executable, str(ROOT / "skills/jano/scripts/assets.py"), "styles"], capture_output=True, text=True, encoding="utf-8").stdout
+test("every family is listed by assets.py styles", all(f["prefix"] in styles for f in families))
+test("THIRD_PARTY_NOTICES.md is generated from the library and up to date",
+     (ROOT / "THIRD_PARTY_NOTICES.md").read_text(encoding="utf-8") == assets_module.notices())
+test("GitHub's logos are not among Octicons", not any(re.search("github|copilot", n) for n in assets_module.load("octicon")["icons"]))
+test("Boxicons' brand logos are left out", not any(n.startswith("bxl-") for n in assets_module.load("bx")["icons"]))
+ties = [subprocess.run([sys.executable, str(ROOT / "skills/jano/scripts/assets.py"), "suggest", "icons", "--fill", "line", "--stroke", "regular",
+                        "--corners", "round", "--grid", "24", "--repo", r], capture_output=True, text=True, encoding="utf-8").stdout.split("\n")[0] for r in ("one", "two", "three")]
+test("families that fit equally are not always listed in the same order", len(set(ties)) > 1, "\n".join(ties))
+
+# ---- kit parts and the cursor
+chip = kit_module.chip(0, 0, "features")
+width = float(re.search(r'width="([\d.]+)"', chip).group(1))
+test("a kit chip is as wide as its text and its padding", width >= kit_module.width("features", 14) + 20)
+arrow_only = SCENE.replace("</g>\n</svg>", kit_module.button(900, 380, "Install") + kit_module.cursor(930, 390, "arrow") + "</g>\n</svg>")
+code, out, _ = build_scene(arrow_only)
+test("a cursor that never turns into a pointer over something clickable is warned about", "turns into a pointer" in out, out)
+swap_css, swap_g = kit_module.cursor_swap(930, 390, on="20-40", dur=8, name="t").split("\n", 1)
+with_swap = arrow_only.replace(kit_module.cursor(930, 390, "arrow"), swap_g).replace("</style>", swap_css[len("<!-- add to <style>: "):-len(" -->")] + "</style>")
+code, out, _ = build_scene(with_swap)
+test("a cursor that turns into a pointer is not warned about", "turns into a pointer" not in out, out)
 test("a scene's palette roles are replaced", "$" not in re.sub(r"base64,[^)]+", "", scene_dark))
 test("the scene's figures are printed", "title 44 px, 6 words" in out, out)
 code, out, _ = build_scene(SCENE.replace("0 0 1280 448", "0 0 1280 640"))
@@ -322,6 +379,21 @@ code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=passing)
 test("readme.py: a README that keeps its plan passes", code == 0 and "checks passed" in out, out)
 code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=passing, stale=True)
 test("readme.py: a picture built from another version of its source fails", code == 1 and "built from another version of its source" in out, out)
+with_icon = SCENE.replace("</g>\n</svg>", assets_module.snippet("lucide", "scissors", "cut", 300, 368) + "</g>\n</svg>")
+PLAN_ICONS = {**PLAN_OK, "assets": {"icons": {"family": "lucide", "variant": None, "why": "the mark is drawn in rounded two pixel lines"}}}
+code, out = repo_with(GOOD, PLAN_ICONS, SCENES, scene=with_icon,
+                      judges=lambda r, p: {k: v for k, v in passing(r, p).items() if not k.startswith("icon:")})
+test("readme.py: every declared icon needs its own cold read", code == 1 and "icon:demo.src.svg#1 has no verdict" in out, out)
+code, out = repo_with(GOOD, PLAN_ICONS, SCENES, scene=with_icon, judges=passing)
+test("readme.py: an icon that was read cold passes", code == 0, out)
+code, out = repo_with(GOOD, PLAN_OK, SCENES, scene=with_icon, judges=passing)
+test("readme.py: an asset whose category the plan did not choose fails", code == 1 and "the plan chose no icons family" in out, out)
+mixed = with_icon.replace("</g>\n</svg>", assets_module.snippet("tabler", "lock", "locked", 340, 368) + "</g>\n</svg>")
+code, out = repo_with(GOOD, PLAN_ICONS, SCENES, scene=mixed, judges=passing)
+test("readme.py: icons from two families in one README fail", code == 1 and "one family per category" in out, out)
+missing = with_icon.replace('data-asset="lucide:scissors"', 'data-asset="lucide:no-such-icon"')
+code, out = repo_with(GOOD, PLAN_ICONS, SCENES, scene=missing, judges=passing)
+test("readme.py: an asset name that is not in the library fails", code == 1 and "has no icon named 'no-such-icon'" in out, out)
 test("the build writes its source's fingerprint into each output", 'data-jano-src="' in scene_dark)
 _, _, again = build_scene(SCENE)
 test("the same source builds the same bytes", (again / "demo-dark.svg").read_text(encoding="utf-8") == scene_dark)

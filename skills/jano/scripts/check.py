@@ -65,6 +65,9 @@ DURATION = (0.4, 60)   # s
 LEAD_TRAVEL = 40       # px: something in the stage travels at least this far
 LEAD_SIZE = 20         # px: and the largest thing that travels is at least this big on its shorter side
 LINE_CONTRAST = 3      # a connector with walking dashes against the background
+ICON_MAX = 40          # px: thin strokes in a cluster smaller than this are a pictogram, and must say what they mean
+ICON_MIN = 24          # px: an icon's grid on the canvas, 16 px at README width
+ICON_STROKE = 2        # px: the thinnest line an icon may have on the canvas
 # a section scene: a short canvas with a headline that says what the section claims, and a picture that shows it
 TITLE_SIZE = (34, 56)  # the headline of the scene: the largest text on it
 TITLE_WORDS = 8
@@ -658,6 +661,70 @@ class Hero:
             self.warns.append(f"#stage has {small} small detail(s): mix sizes, a large object with medium ones and {STAGE_SMALL[1]} or more small ones ({STAGE_SMALL[0]} px or less)")
         if moving < STAGE_MOVING:
             self.warns.append(f"{moving} thing(s) move in #stage: a picture that is alive has {STAGE_MOVING} or more, one leading and the others following or ambient")
+        self.check_icons(stage)
+
+    def check_cursor(self, stage):
+        """A cursor that reaches something clickable becomes a pointer there: the scene holds a pointer as well as the arrow."""
+        kinds = {e.get("data-cursor") for e in stage.iter() if e.get("data-kit") == "cursor"}
+        clickable = [e for e in stage.iter() if e.get("data-clickable") == "true"]
+        if "arrow" in kinds and clickable and "pointer" not in kinds:
+            self.warns.append(f"the cursor stays an arrow, and the scene has {len(clickable)} clickable part(s): over a button, a link or an option it "
+                              "turns into a pointer. Use `kit.py cursor-swap` with the moments it hovers")
+
+    def check_icons(self, stage):
+        """Small pictograms: each says what it means (data-icon), is drawn large and thick enough, and the judges read it cold."""
+        self.check_cursor(stage)
+        declared = [e for e in stage.iter() if e.get("data-icon") is not None]
+        self.facts["icons"] = len(declared)
+        for e in declared:
+            b = self.box.get(e)
+            if b is None:
+                continue
+            means = e.get("data-icon").strip()
+            if not means:
+                self.warns.append(f"an icon has an empty data-icon: write what it means here, in a few words (\"cut\", \"read again\")")
+            k = mscale(self.M.get(self.parent.get(e), IDENT)) if self.parent.get(e) is not None else 1  # the groups around it, not its own scale
+            # a set icon says its drawn size (data-size, scaled by any group around it); a home-made one is measured
+            size = num(e.get("data-size")) * k if e.get("data-size") else max(b[2] - b[0], b[3] - b[1])
+            if size < ICON_MIN:
+                self.warns.append(f"the icon \"{means}\" is {size:.0f} px; draw it at {ICON_MIN} px or more (its grid, for a set icon), or it is "
+                                  f"{size * README:.0f} px at README width and blurs into something else")
+            widths = [num(self.inherit(s, "stroke-width"), 1) * mscale(self.M.get(s, IDENT)) for s in e.iter()
+                      if s in self.M and local(s.tag) in ("path", "circle", "ellipse", "line", "polyline", "rect")
+                      and self.inherit(s, "stroke", "none") not in ("none", "transparent")]
+            if widths and min(widths) < ICON_STROKE - 0.05:
+                self.warns.append(f"the icon \"{means}\" has strokes of {min(widths):.1f} px; use {ICON_STROKE} or more, thinner lines vanish at README width")
+        # thin strokes that are not frames or connectors, and not inside a declared icon: curves, short lines and rings drawn without fill
+        strokes = []
+        for s in self.shapes:
+            if not self.inside(s["el"], stage) or s["tag"] not in ("path", "circle", "ellipse", "polyline", "line"):
+                continue
+            if any(self.inside(s["el"], e) for e in declared):
+                continue
+            if self.inherit(s["el"], "fill", "#000") != "none" or self.inherit(s["el"], "stroke", "none") in ("none", "transparent"):
+                continue
+            w, h = s["box"][2] - s["box"][0], s["box"][3] - s["box"][1]
+            if max(w, h) > ICON_MAX and min(w, h) <= 4:  # a straight connector or rule passes by, it is not part of a drawing
+                continue
+            strokes.append(s)
+        # strokes that touch and are seen at the same time belong to one drawing; cards that take turns in one place do not add up
+        def layer(el):
+            return next((a for a in self.chain(el) if any("opacity" in x["props"] for x in self.anims(a))), None)
+        groups = []
+        for s in strokes:
+            near = [g for g in groups if layer(g[0]["el"]) is layer(s["el"])
+                    and any(inter(o["box"], (s["box"][0] - 4, s["box"][1] - 4, s["box"][2] + 4, s["box"][3] + 4)) for o in g)]
+            merged = [s] + [x for g in near for x in g]
+            groups = [g for g in groups if g not in near] + [merged]
+        for g in groups:
+            b = None
+            for s in g:
+                b = union(b, s["box"])
+            if len(g) < 2 or max(b[2] - b[0], b[3] - b[1]) > ICON_MAX:
+                continue
+            self.warns.append(f"{self.describe(g[0]['el'])} and {len(g) - 1} more thin stroke(s) draw a small icon ({b[2] - b[0]:.0f}×{b[3] - b[1]:.0f} px "
+                              f"at {b[0]:.0f}, {b[1]:.0f}) that does not say what it means. Wrap it in <g data-icon=\"what it means\">, or take a known one "
+                              f"with `assets.py search <repo> icons <words>`: the judges read every icon cold, at the size a reader sees it")
 
     def check_scene_slots(self):
         """A section scene: eyebrow, title and sub are the text block, the stage shows what the section says."""

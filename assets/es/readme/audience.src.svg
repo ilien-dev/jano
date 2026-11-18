@@ -1,0 +1,145 @@
+<!--palette
+bg     #0E1526 #F5F7FB
+panel  #172138 #FFFFFF
+line   #34446A #C9D3E3
+ink    #EEF2F7 #1B2A4A
+body   #C3CBD9 #3A4560
+muted  #95A0B6 #586380
+accent #E8553D #C23B25
+dots   #1E2A44 #DDE4EF
+an_bg  #15161A #15161A
+an_acc #FFF27A #FFF27A
+an_ink #ECEDEF #ECEDEF
+an_red #FFB4A2 #FFB4A2
+sh_bg  #171A20 #171A20
+sh_acc #4FD1C5 #4FD1C5
+sh_ink #F2F0EA #F2F0EA
+sh_ln  #3A404A #3A404A
+sv_bg  #0B1A2B #0B1A2B
+sv_acc #FFB03A #FFB03A
+sv_ink #EFE7DA #EFE7DA
+sv_wal #34506F #34506F
+tile   #1B2A4A #1B2A4A
+plain  #2A3142 #2A3142
+plainln #3D4558 #3D4558
+door   #EEF2F7 #EEF2F7
+mark   #E8553D #E8553D
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 448" role="img" aria-label="Para quién es: tres portadas pequeñas lado a lado, cada una con sus colores. Una luz pasa de una a otra: en Anzu, un libro pierde su candado y se vuelve un archivo EPUB; en Sharur, una respuesta larga se encoge a una corta; en Svipall, una página atraviesa un muro hasta un agente de IA. Debajo de cada una, el tipo de proyecto: una app de libros, un estilo de texto para IA, web para tu agente de IA.">
+<style>
+/* 15 s story
+   ringA  |=====|                 (0-33%)   anzu: lock off 8-11, book to file 12-22, file in 21-24
+   ringB        |=====|           (33-66%)  sharur: long out 38-42, short in 40-44
+   ringC              |=====|     (66-99%)  svipall: page through wall 70-84, agent lit 84-95 */
+@keyframes drift{to{transform:translate(24px,24px)}}
+@keyframes ra{0%,30%{opacity:1}33%,97%{opacity:0}100%{opacity:1}}
+@keyframes rb{0%,31%{opacity:0}34%,63%{opacity:1}66%,100%{opacity:0}}
+@keyframes rc{0%,64%{opacity:0}67%,96%{opacity:1}99%,100%{opacity:0}}
+@keyframes lock{0%,14%{opacity:1}17%,95%{opacity:0}98%,100%{opacity:1}}
+@keyframes pa{0%,16%{transform:translateX(0);opacity:0}18%{transform:translateX(0);opacity:1}26%{transform:translateX(92px);opacity:1}28%,100%{transform:translateX(92px);opacity:0}}
+@keyframes file{0%,26%{opacity:.55}29%,95%{opacity:1}98%,100%{opacity:.55}}
+@keyframes long{0%,46%{opacity:1}50%,95%{opacity:0}98%,100%{opacity:1}}
+@keyframes short{0%,48%{opacity:0}52%,95%{opacity:1}98%,100%{opacity:0}}
+@keyframes pc{0%,75%{transform:translateX(0);opacity:0}77%{transform:translateX(0);opacity:1}87%{transform:translateX(-112px);opacity:1}90%,100%{transform:translateX(-112px);opacity:0}}
+@keyframes glow{0%,88%{opacity:0}90%,95%{opacity:1}98%,100%{opacity:0}}
+.drift{animation:drift 6s linear infinite}
+.ra{animation:ra 15s ease-in-out infinite}
+.rb{animation:rb 15s ease-in-out infinite}
+.rc{animation:rc 15s ease-in-out infinite}
+.lock{animation:lock 15s ease-in-out infinite}
+.pa{animation:pa 15s cubic-bezier(.4,0,.2,1) infinite}
+.file{animation:file 15s ease-out infinite}
+.long{animation:long 15s ease-in-out infinite}
+.short{animation:short 15s ease-in-out infinite}
+.pc{animation:pc 15s cubic-bezier(.4,0,.2,1) infinite}
+.glow{animation:glow 15s ease-out infinite}
+@keyframes send{0%{transform:translateX(0);opacity:0}1%{transform:translateX(0);opacity:1}6%{transform:translateX(316px);opacity:1}8%,100%{transform:translateX(316px);opacity:0}}
+@keyframes beat{0%{transform:scale(1);opacity:0}4%{transform:scale(1);opacity:.9}34%,100%{transform:scale(1.35);opacity:0}}
+@keyframes flow{to{stroke-dashoffset:-24}}
+.send{animation:send 15s cubic-bezier(.4,0,.2,1) infinite}
+.beat{animation:beat 5s ease-out -0.9s infinite;transform-box:fill-box;transform-origin:center}
+.flow{animation:flow 1.2s linear infinite}
+@keyframes sa{0%{transform:translate(0,0);opacity:0}1%{transform:translate(0,0);opacity:1}11%{transform:translate(454px,-190px);opacity:1}13%,100%{transform:translate(454px,-190px);opacity:0}}
+.sa{animation:sa 15s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes sb{0%{transform:translate(0,0);opacity:0}1%{transform:translate(0,0);opacity:1}11%{transform:translate(701px,-190px);opacity:1}13%,100%{transform:translate(701px,-190px);opacity:0}}
+.sb{animation:sb 15s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes sc{0%{transform:translate(0,0);opacity:0}1%{transform:translate(0,0);opacity:1}11%{transform:translate(947px,-190px);opacity:1}13%,100%{transform:translate(947px,-190px);opacity:0}}
+.sc{animation:sc 15s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes cova{0%,6%{opacity:1}9%,92%{opacity:0}95%,100%{opacity:1}}
+@keyframes covb{0%,39%{opacity:1}42%,94%{opacity:0}97%,100%{opacity:1}}
+@keyframes covc{0%,72%{opacity:1}75%,96%{opacity:0}99%,100%{opacity:1}}
+.cova{animation:cova 15s ease-in-out infinite}
+.covb{animation:covb 15s ease-in-out infinite}
+.covc{animation:covc 15s ease-in-out infinite}
+</style>
+<defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.6" fill="$dots"/></pattern></defs>
+<rect width="1280" height="448" fill="$bg"/>
+<g id="backdrop"><rect class="drift" x="-24" y="-24" width="1328" height="496" fill="url(#grid)"/></g>
+
+<text id="eyebrow" x="72" y="56" class="m" font-size="15" letter-spacing="3" fill="$accent">PARA QUIÉN ES</text>
+<text id="title" class="b" font-size="42" fill="$ink"><tspan x="72" y="108">Cada proyecto,</tspan><tspan x="72" y="158">su propia imagen</tspan></text>
+<text id="sub" class="s" font-size="19" fill="$body"><tspan x="72" y="200">Tres proyectos reales, cada uno</tspan><tspan x="72" y="226">con sus propios colores.</tspan></text>
+
+<g id="stage">
+<!-- Jano sends a front page to each project in turn -->
+<circle class="beat" cx="122" cy="334" r="46" fill="none" stroke="$accent" stroke-width="3"/>
+<circle cx="122" cy="334" r="46" fill="$panel" stroke="$line" stroke-width="2"/>
+<g transform="translate(94 306) scale(0.21875)"><rect width="256" height="256" rx="56" fill="$tile"/><g transform="translate(25.6 25.6) scale(.8)"><path fill="$door" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/><path fill="$mark" d="M114 70A24 24 0 1 0 162 70A24 24 0 1 0 114 70Z"/></g></g>
+<path class="flow" d="M178 334H506" fill="none" stroke="$muted" stroke-width="2" stroke-dasharray="8 16"/>
+<path d="M504 326l10 8-10 8" fill="none" stroke="$muted" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(-80 -12) scale(1.1)">
+<!-- Anzu -->
+<rect x="560" y="40" width="208" height="290" rx="16" fill="$panel" stroke="$line" stroke-width="2"/>
+<circle cx="580" cy="57" r="4" fill="$line"/><circle cx="593" cy="57" r="4" fill="$line"/><circle cx="606" cy="57" r="4" fill="$line"/>
+<rect x="572" y="72" width="184" height="140" rx="10" fill="$an_bg"/>
+<rect x="584" y="84" width="10" height="10" rx="2" fill="$an_acc"/>
+<text x="600" y="94" class="b" font-size="15" fill="$an_ink">Anzu</text>
+<g data-asset="ph:book-bold" data-icon="un libro" data-size="40" transform="translate(584 108) scale(0.1562)" color="$an_ink"><path fill="currentColor" d="M208 20H72a36 36 0 0 0-36 36v168a12 12 0 0 0 12 12h144a12 12 0 0 0 0-24H60v-4a12 12 0 0 1 12-12h136a12 12 0 0 0 12-12V32a12 12 0 0 0-12-12m-12 152H72a35.6 35.6 0 0 0-12 2.06V56a12 12 0 0 1 12-12h124Z"/></g>
+<g class="lock"><g data-asset="ph:lock-bold" data-icon="con candado" data-size="32" transform="translate(586 156) scale(0.125)" color="$an_red"><path fill="currentColor" d="M208 76h-28V56a52 52 0 0 0-104 0v20H48a20 20 0 0 0-20 20v112a20 20 0 0 0 20 20h160a20 20 0 0 0 20-20V96a20 20 0 0 0-20-20M100 56a28 28 0 0 1 56 0v20h-56Zm104 148H52V100h152Zm-60-52a16 16 0 1 1-16-16a16 16 0 0 1 16 16"/></g></g>
+<path d="M634 140H660" fill="none" stroke="$an_ink" stroke-width="2"/><path d="M654 133l8 7-8 7" fill="none" stroke="$an_ink" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<g class="file"><rect x="676" y="104" width="64" height="80" rx="6" fill="$an_acc"/><path d="M726 104L740 118H726Z" fill="$an_bg"/><text x="708" y="152" class="m" font-size="14" fill="$an_bg" text-anchor="middle">EPUB</text></g>
+<g transform="translate(590 124)"><rect class="pa" opacity="0" width="28" height="28" rx="6" fill="$an_acc"/></g>
+<g transform="translate(736 46) scale(0.0859)"><rect width="256" height="256" rx="56" fill="$tile"/><g transform="translate(25.6 25.6) scale(.8)"><path fill="$door" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/><path fill="$mark" d="M114 70A24 24 0 1 0 162 70A24 24 0 1 0 114 70Z"/></g></g>
+<g class="cova" opacity="0"><rect x="572" y="72" width="184" height="140" rx="10" fill="$plain"/></g>
+<rect x="572" y="230" width="150" height="10" rx="5" fill="$line"/><rect x="572" y="252" width="172" height="10" rx="5" fill="$line"/><rect x="572" y="274" width="128" height="10" rx="5" fill="$line"/><rect x="572" y="296" width="156" height="10" rx="5" fill="$line"/>
+<rect class="ra" opacity="0" x="552" y="32" width="224" height="306" rx="20" fill="none" stroke="$accent" stroke-width="3"/>
+<text x="664" y="368" class="s" font-size="16" fill="$body" text-anchor="middle">una app de libros</text>
+<!-- Sharur -->
+<rect x="784" y="40" width="208" height="290" rx="16" fill="$panel" stroke="$line" stroke-width="2"/>
+<circle cx="804" cy="57" r="4" fill="$line"/><circle cx="817" cy="57" r="4" fill="$line"/><circle cx="830" cy="57" r="4" fill="$line"/>
+<rect x="796" y="72" width="184" height="140" rx="10" fill="$sh_bg"/>
+<rect x="808" y="84" width="10" height="10" rx="2" fill="$sh_acc"/>
+<text x="824" y="94" class="b" font-size="15" fill="$sh_ink">Sharur</text>
+<g class="long" opacity="0"><rect x="808" y="108" width="132" height="94" rx="10" fill="none" stroke="$sh_ln" stroke-width="2"/>
+<rect x="820" y="120" width="108" height="8" rx="4" fill="$sh_ln"/><rect x="820" y="136" width="96" height="8" rx="4" fill="$sh_ln"/><rect x="820" y="152" width="104" height="8" rx="4" fill="$sh_ln"/><rect x="820" y="168" width="88" height="8" rx="4" fill="$sh_ln"/><rect x="820" y="184" width="100" height="8" rx="4" fill="$sh_ln"/></g>
+<g class="short"><rect x="808" y="108" width="132" height="44" rx="10" fill="none" stroke="$sh_acc" stroke-width="2"/>
+<rect x="820" y="120" width="108" height="8" rx="4" fill="$sh_acc"/><rect x="820" y="136" width="64" height="8" rx="4" fill="$sh_acc"/></g>
+<g data-asset="ph:chat-text-bold" data-icon="una respuesta en el chat" data-size="32" transform="translate(940 164) scale(0.125)" color="$sh_ink"><path fill="currentColor" d="M216 44H40a20 20 0 0 0-20 20v160a19.82 19.82 0 0 0 11.56 18.1a20.1 20.1 0 0 0 8.49 1.9a19.9 19.9 0 0 0 12.82-4.72l.12-.11L84.47 212H216a20 20 0 0 0 20-20V64a20 20 0 0 0-20-20m-4 144H80a11.93 11.93 0 0 0-7.84 2.92L44 215.23V68h168ZM84 108a12 12 0 0 1 12-12h64a12 12 0 1 1 0 24H96a12 12 0 0 1-12-12m0 40a12 12 0 0 1 12-12h64a12 12 0 0 1 0 24H96a12 12 0 0 1-12-12"/></g>
+<g transform="translate(960 46) scale(0.0859)"><rect width="256" height="256" rx="56" fill="$tile"/><g transform="translate(25.6 25.6) scale(.8)"><path fill="$door" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/><path fill="$mark" d="M114 70A24 24 0 1 0 162 70A24 24 0 1 0 114 70Z"/></g></g>
+<g class="covb" opacity="0"><rect x="796" y="72" width="184" height="140" rx="10" fill="$plain"/></g>
+<rect x="796" y="230" width="150" height="10" rx="5" fill="$line"/><rect x="796" y="252" width="172" height="10" rx="5" fill="$line"/><rect x="796" y="274" width="128" height="10" rx="5" fill="$line"/><rect x="796" y="296" width="156" height="10" rx="5" fill="$line"/>
+<rect class="rb" opacity="0" x="776" y="32" width="224" height="306" rx="20" fill="none" stroke="$accent" stroke-width="3"/>
+<text x="888" y="368" class="s" font-size="16" fill="$body" text-anchor="middle">un estilo de texto para IA</text>
+<!-- Svipall -->
+<rect x="1008" y="40" width="208" height="290" rx="16" fill="$panel" stroke="$line" stroke-width="2"/>
+<circle cx="1028" cy="57" r="4" fill="$line"/><circle cx="1041" cy="57" r="4" fill="$line"/><circle cx="1054" cy="57" r="4" fill="$line"/>
+<rect x="1020" y="72" width="184" height="140" rx="10" fill="$sv_bg"/>
+<rect x="1032" y="84" width="10" height="10" rx="2" fill="$sv_acc"/>
+<text x="1048" y="94" class="b" font-size="15" fill="$sv_ink">Svipall</text>
+<circle class="glow" opacity="0" cx="1052" cy="146" r="28" fill="none" stroke="$sv_acc" stroke-width="3"/>
+<g data-asset="ph:robot-bold" data-icon="un agente de IA" data-size="40" transform="translate(1032 126) scale(0.1562)" color="$sv_ink"><path fill="currentColor" d="M72 104a16 16 0 1 1 16 16a16 16 0 0 1-16-16m96 16a16 16 0 1 0-16-16a16 16 0 0 0 16 16m68-40v112a36 36 0 0 1-36 36H56a36 36 0 0 1-36-36V80a36 36 0 0 1 36-36h60V16a12 12 0 0 1 24 0v28h60a36 36 0 0 1 36 36m-24 0a12 12 0 0 0-12-12H56a12 12 0 0 0-12 12v112a12 12 0 0 0 12 12h144a12 12 0 0 0 12-12Zm-12 82a30 30 0 0 1-30 30H86a30 30 0 0 1 0-60h84a30 30 0 0 1 30 30m-80-6v12h16v-12Zm-34 12h10v-12H86a6 6 0 0 0 0 12m90-6a6 6 0 0 0-6-6h-10v12h10a6 6 0 0 0 6-6"/></g>
+<rect x="1100" y="104" width="20" height="28" rx="3" fill="$sv_wal"/><rect x="1100" y="164" width="20" height="40" rx="3" fill="$sv_wal"/>
+<g data-asset="ph:globe-bold" data-icon="la web" data-size="40" transform="translate(1148 126) scale(0.1562)" color="$sv_acc"><path fill="currentColor" d="M128 20a108 108 0 1 0 108 108A108.12 108.12 0 0 0 128 20m0 187a113.4 113.4 0 0 1-20.39-35h40.82a117 117 0 0 1-10 20.77A108.6 108.6 0 0 1 128 207m-26.49-59a135.4 135.4 0 0 1 0-40h53a135.4 135.4 0 0 1 0 40ZM44 128a83.5 83.5 0 0 1 2.43-20h30.82a160.6 160.6 0 0 0 0 40H46.43A83.5 83.5 0 0 1 44 128m84-79a113.4 113.4 0 0 1 20.39 35h-40.8a117 117 0 0 1 10-20.77A108.6 108.6 0 0 1 128 49m50.73 59h30.82a83.5 83.5 0 0 1 0 40h-30.8a160.6 160.6 0 0 0 0-40Zm20.77-24h-25.79a140.8 140.8 0 0 0-15.5-34.36A84.5 84.5 0 0 1 199.52 84ZM97.79 49.64A140.8 140.8 0 0 0 82.29 84H56.48a84.5 84.5 0 0 1 41.31-34.36M56.48 172h25.81a140.8 140.8 0 0 0 15.5 34.36A84.5 84.5 0 0 1 56.48 172m101.73 34.36a140.8 140.8 0 0 0 15.5-34.36h25.81a84.5 84.5 0 0 1-41.31 34.36"/></g>
+<g transform="translate(1154 134)"><rect class="pc" opacity="0" width="24" height="24" rx="5" fill="$sv_acc"/></g>
+<g transform="translate(1184 46) scale(0.0859)"><rect width="256" height="256" rx="56" fill="$tile"/><g transform="translate(25.6 25.6) scale(.8)"><path fill="$door" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/><path fill="$mark" d="M114 70A24 24 0 1 0 162 70A24 24 0 1 0 114 70Z"/></g></g>
+<g class="covc" opacity="0"><rect x="1020" y="72" width="184" height="140" rx="10" fill="$plain"/></g>
+<rect x="1020" y="230" width="150" height="10" rx="5" fill="$line"/><rect x="1020" y="252" width="172" height="10" rx="5" fill="$line"/><rect x="1020" y="274" width="128" height="10" rx="5" fill="$line"/><rect x="1020" y="296" width="156" height="10" rx="5" fill="$line"/>
+<rect class="rc" opacity="0" x="1000" y="32" width="224" height="306" rx="20" fill="none" stroke="$accent" stroke-width="3"/>
+<text x="1112" y="368" class="s" font-size="16" fill="$body" text-anchor="middle">web para tu agente de IA</text>
+</g>
+<!-- what Jano sends lands in each page -->
+<g transform="translate(180 318)"><g class="sa" opacity="0" style="animation-delay:-1.05s"><g transform="scale(0.125)"><rect width="256" height="256" rx="56" fill="$tile"/><g transform="translate(25.6 25.6) scale(.8)"><path fill="$door" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/><path fill="$mark" d="M114 70A24 24 0 1 0 162 70A24 24 0 1 0 114 70Z"/></g></g></g></g>
+<g transform="translate(180 318)"><g class="sb" opacity="0" style="animation-delay:-11.1s"><g transform="scale(0.125)"><rect width="256" height="256" rx="56" fill="$tile"/><g transform="translate(25.6 25.6) scale(.8)"><path fill="$door" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/><path fill="$mark" d="M114 70A24 24 0 1 0 162 70A24 24 0 1 0 114 70Z"/></g></g></g></g>
+<g transform="translate(180 318)"><g class="sc" opacity="0" style="animation-delay:-6.15s"><g transform="scale(0.125)"><rect width="256" height="256" rx="56" fill="$tile"/><g transform="translate(25.6 25.6) scale(.8)"><path fill="$door" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/><path fill="$mark" d="M114 70A24 24 0 1 0 162 70A24 24 0 1 0 114 70Z"/></g></g></g></g>
+</g>
+</svg>

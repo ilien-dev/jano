@@ -41,6 +41,28 @@ from check import FACES, SVG, XMLSPACE, font, num  # noqa: E402
 RASTER_KB = 400  # a real screenshot inside a scene: past this the README loads slowly
 
 
+LIBRARY = Path(__file__).resolve().parent.parent / "assets" / "library"
+
+
+def asset_notice(body):
+    """The notices of the asset sets a picture uses, as invisible <metadata>: the set's licence travels with its icons, nothing shows."""
+    used = sorted({m.split(":")[0] for m in re.findall(r'data-asset="([^"]+)"', body)})
+    if not used or not (LIBRARY / "manifest.json").exists():
+        return ""
+    import json
+    sets = {s["prefix"]: s for s in json.loads((LIBRARY / "manifest.json").read_text(encoding="utf-8"))["sets"]}
+    lines, texts = [], {}
+    for prefix in used:
+        s = sets.get(prefix)
+        if not s:
+            continue
+        lines.append(f"{s['title']} ({prefix}): {s['licence']}, {s['holder']}, {s['repo']}")
+        if "CC0" not in s["licence"]:
+            texts.setdefault(s["licence_text"], (LIBRARY / s["licence_text"]).read_text(encoding="utf-8").strip())
+    text = "Assets used in this picture:\n" + "\n".join(lines) + ("\n\n" + "\n\n".join(texts.values()) if texts else "")
+    return "<metadata>" + html.escape(text, quote=False) + "</metadata>"
+
+
 _whole = {}
 
 
@@ -330,8 +352,10 @@ def build(src):
     # the outputs carry a fingerprint of their source, so a check can tell a stale build in any clone, whatever the file dates
     print_sha = hashlib.sha256(src.read_bytes().replace(b"\r\n", b"\n")).hexdigest()[:16]  # line endings as git stores them
     body = body.replace("<svg ", f'<svg data-jano-src="{print_sha}" ', 1)
+    notice = asset_notice(body)
     for ti, theme in enumerate(("dark", "light")):
         svg = re.sub(r"\$([a-z][a-z0-9_]*)", lambda k: palette[k.group(1)][ti], body)
+        svg = svg.replace("</svg>", notice + "</svg>") if notice else svg  # after the palette and the fonts: the notice is text nobody sees
         f = out / f"{stem}-{theme}.svg"
         f.write_text(svg + "\n", encoding="utf-8", newline="\n")
         names.append(f)
