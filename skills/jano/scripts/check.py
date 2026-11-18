@@ -65,6 +65,7 @@ DURATION = (0.4, 60)   # s
 LEAD_TRAVEL = 40       # px: something in the stage travels at least this far
 LEAD_SIZE = 20         # px: and the largest thing that travels is at least this big on its shorter side
 LINE_CONTRAST = 3      # a connector with walking dashes against the background
+ICON_MAX = 40          # px: a pictogram of thin lines smaller than this does not survive README width
 # a section scene: a short canvas with a headline that says what the section claims, and a picture that shows it
 TITLE_SIZE = (34, 56)  # the headline of the scene: the largest text on it
 TITLE_WORDS = 8
@@ -658,6 +659,26 @@ class Hero:
             self.warns.append(f"#stage has {small} small detail(s): mix sizes, a large object with medium ones and {STAGE_SMALL[1]} or more small ones ({STAGE_SMALL[0]} px or less)")
         if moving < STAGE_MOVING:
             self.warns.append(f"{moving} thing(s) move in #stage: a picture that is alive has {STAGE_MOVING} or more, one leading and the others following or ambient")
+        self.check_icons(stage)
+
+    def check_icons(self, stage):
+        """A pictogram drawn in thin lines and a few shapes, smaller than a word: at README width it reads as something else."""
+        seen = []
+        for g in stage.iter(f"{{{SVG}}}g"):
+            lines = [s for s in self.shapes if self.inside(s["el"], g)]
+            if len(lines) < 3 or any(self.inside(t["el"], g) for t in self.texts):
+                continue
+            stroked = [s for s in lines if self.inherit(s["el"], "fill", "#000") == "none" and self.inherit(s["el"], "stroke", "none") != "none"]
+            if len(stroked) < 3:
+                continue
+            b = None
+            for s in lines:
+                b = union(b, s["box"])
+            if max(b[2] - b[0], b[3] - b[1]) > ICON_MAX or any(inter(b, o) and area(inter(b, o)) > 0.8 * area(b) for o in seen):
+                continue
+            seen.append(b)
+            self.warns.append(f"{self.describe(g)} is an icon of {len(lines)} thin shapes, {b[2] - b[0]:.0f}×{b[3] - b[1]:.0f} px: at README width it is "
+                              f"{(b[2] - b[0]) * README:.0f} px and reads as something else. Name the thing in words, or draw it {ICON_MAX + 8} px or more with filled shapes")
 
     def check_scene_slots(self):
         """A section scene: eyebrow, title and sub are the text block, the stage shows what the section says."""
