@@ -201,7 +201,8 @@ uv run <this skill>/scripts/build.py assets/hero.src.svg
 
 Without `uv`: `pip install fonttools brotli`, then run it with `python`.
 
-It writes `assets/hero-dark.svg` and `assets/hero-light.svg` and prints four things. Use all four.
+It writes `assets/hero-dark.svg`, `assets/hero-light.svg` and the social preview (below), and
+prints four things. Use all four.
 
 1. **Errors and warnings**, each with its fix. They are measured on the canvas with the real
    fonts: text out of its box or over other text, sizes, contrast, loops that jump, motion too
@@ -249,6 +250,25 @@ was asked for, touch nothing else.
 </p>
 ```
 
+## The social preview
+
+Every build of `assets/hero.src.svg` also writes the card GitHub shows when the repository is
+shared, so the two never drift apart:
+
+- `assets/social-preview.svg`: the finished frame of the dark hero, still, scaled into the
+  safe area of GitHub's template (80 px from every edge, where other sites crop) on the hero's
+  background. It is the vector the card is made from.
+- `assets/social-preview.png`: that SVG shot at 1280×640, lossless, the size GitHub's template
+  asks for and the format its setting takes (PNG, JPG or GIF under 1 MB).
+
+Keep both in `assets/` next to the hero, and never edit them: change the hero and build again.
+The PNG needs the same browser as the pictures; with `--no-pictures` only the SVG is written.
+Look at the PNG once: is the key phrase still the first thing you read at a glance? GitHub has
+no API for this setting, so the user uploads the PNG by hand: **Settings → General → Social
+preview → Edit → Upload an image**. `readme.py check` fails when either file was built from
+another version of the hero.
+
 Then tell the user, briefly: the brief (the sentence, the input and output with their files, the
 source of each claim, what was left out as unfinished), whether the hero has a strip and why,
-what the cold read said, any warning left and why, and the preview page.
+what the cold read said, any warning left and why, the preview page, and the social preview
+with where to upload it.

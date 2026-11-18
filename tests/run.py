@@ -212,13 +212,27 @@ test("each frame is stopped at its own moment", "animation-delay:-0.500s" in fra
 test("a finished frame without motion is written for each theme", all("animation:none!important}</style></svg>" in ((preview / f"still-{t}.svg").read_text(encoding="utf-8") if (preview / f"still-{t}.svg").exists() else "") for t in ("dark", "light")))
 sys.path.insert(0, str(BUILD.parent))
 import build as build_module  # noqa: E402
+import readme as readme_module  # noqa: E402
 
 if build_module.find_browsers():
-    code, out, _ = build(FIXTURE, pictures=True)
+    code, out, folder = build(FIXTURE, pictures=True)
     shots = re.search(r"^pictures (.+\.png) (.+\.png)$", out, re.M)
     test("pictures of the loop and the look are taken", bool(shots) and all(Path(p).stat().st_size > 5000 for p in shots.groups()), out)
+    card = folder / "social-preview.png"
+    import hashlib
+    mark = hashlib.sha256((folder / "hero.src.svg").read_bytes().replace(b"\r\n", b"\n")).hexdigest()[:16]
+    test("the hero gives a social preview at GitHub's size, under 1 MB", card.exists() and build_module.png_size(card) == (1280, 640)
+         and card.stat().st_size < 1024 * 1024, out)
+    test("the social preview carries the fingerprint of its hero", card.exists() and readme_module.social_stamp(card) == mark, out)
 else:
     print("skip  pictures (no Chromium-family browser on this machine)")
+code, out, folder = build(FIXTURE)
+card = (folder / "social-preview.svg").read_text(encoding="utf-8") if (folder / "social-preview.svg").exists() else ""
+test("a build without pictures says the PNG of the social preview was not made", "no social preview" in out and not (folder / "social-preview.png").exists(), out)
+test("the social preview is written as a vector even without pictures", card.startswith('<svg xmlns="http://www.w3.org/2000/svg" data-jano-src=') and ET.fromstring(card) is not None
+     and 'viewBox="0 0 1280 640"' in card and "animation:none!important" in card and "$" not in re.sub(r"base64,[^)]+", "", card), card[:300])
+test("the social preview keeps the hero inside GitHub's safe area", '<svg x="80" y="40" width="1120" height="560"' in card, card[:600])
+test("the social preview sits on the background of its hero", '<rect width="1280" height="640" fill="#0F1115"/>' in card, card[:600])
 
 # ---- section scenes
 SCENE = (ROOT / "tests/fixture/assets/readme/demo.src.svg").read_text(encoding="utf-8")
@@ -329,11 +343,24 @@ def built(src_file, stale=False):
         (src_file.parent / f"{stem}-{t}.svg").write_text(f'<svg data-jano-src="{mark}">{stem}{t}</svg>', encoding="utf-8")
 
 
-def repo_with(readme, plan, scenes=("demo",), judges=None, scene=None, stale=False):
+def social_card(src_file, stale=False):
+    """A stand-in social preview, SVG and PNG, with the fingerprint build.py writes into them. `stale` is "svg" or "png"."""
+    import hashlib, struct, zlib
+    mark = hashlib.sha256(src_file.read_bytes().replace(b"\r\n", b"\n")).hexdigest()[:16]
+    src_file.with_name("social-preview.svg").write_text(f'<svg data-jano-src="{"0" * 16 if stale == "svg" else mark}"></svg>', encoding="utf-8")
+    ihdr = b"IHDR" + struct.pack(">IIBBBBB", 1280, 640, 8, 2, 0, 0, 0)
+    png = src_file.with_name("social-preview.png")
+    png.write_bytes(b"\x89PNG\r\n\x1a\n" + struct.pack(">I", 13) + ihdr + struct.pack(">I", zlib.crc32(ihdr)))
+    build_module.png_stamp(png, "0" * 16 if stale == "png" else mark)
+
+
+def repo_with(readme, plan, scenes=("demo",), judges=None, scene=None, stale=False, social="fresh"):
     repo = Path(tempfile.mkdtemp()) / "proj"
     (repo / "assets/readme").mkdir(parents=True)
     (repo / "assets/hero.src.svg").write_text(FIXTURE, encoding="utf-8")
     built(repo / "assets/hero.src.svg")
+    if social:
+        social_card(repo / "assets/hero.src.svg", social if social in ("svg", "png") else False)
     for i, s in enumerate(scenes):
         src = (scene if scene and i == 0 else SCENE).replace("Cards go in, done comes out", ["Cards go in, done comes out", "Install it in one line", "Three ways people use it"][i % 3])
         if i:
@@ -377,6 +404,11 @@ def passing(repo, plan):
 
 code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=passing)
 test("readme.py: a README that keeps its plan passes", code == 0 and "checks passed" in out, out)
+code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=passing, social=None)
+test("readme.py: a hero without its social preview is warned about", code == 0 and "social-preview.png: is missing" in out, out)
+for kind in ("svg", "png"):
+    code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=passing, social=kind)
+    test(f"readme.py: a social preview {kind} from another version of the hero fails", code == 1 and f"social-preview.{kind}: was built from another version" in out, out)
 code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=passing, stale=True)
 test("readme.py: a picture built from another version of its source fails", code == 1 and "built from another version of its source" in out, out)
 with_icon = SCENE.replace("</g>\n</svg>", assets_module.snippet("lucide", "scissors", "cut", 300, 368) + "</g>\n</svg>")

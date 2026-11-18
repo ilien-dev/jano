@@ -24,13 +24,15 @@ source (check.py: sizes, overflow, contrast, loops), swaps the roles per theme,
 embeds subsets of the fonts (classes .s text, .b bold, .m mono), turns text that
 moves into outlines so it travels without pixel jumps, adds the reduced-motion
 rule, and writes a preview page plus two pictures of it: the loop as eight frozen
-frames, and the finished frame as GitHub shows it in both themes.
+frames, and the finished frame as GitHub shows it in both themes. A hero also gives
+its social preview, the card GitHub shows when the repository is shared: a still
+vector (assets/social-preview.svg) and the PNG GitHub takes, shot from it.
 
 An optional <!--brief ... --> comment holds what the hero claims and where each claim
 comes from: the preview page shows it, the outputs leave it out. Several sources at
 once (assets/options/*/hero.src.svg) build each one and add a page with them side by side.
 """
-import base64, glob, hashlib, html, io, os, re, shutil, subprocess, sys, tempfile
+import base64, glob, hashlib, html, io, os, re, shutil, struct, subprocess, sys, tempfile, zlib
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -39,6 +41,11 @@ import check  # noqa: E402
 from check import FACES, SVG, XMLSPACE, font, num  # noqa: E402
 
 RASTER_KB = 400  # a real screenshot inside a scene: past this the README loads slowly
+# GitHub's social preview: 1280x640 for best display, PNG, JPG or GIF under 1 MB. Its template
+# keeps what matters 80 px from every edge (40 pt at 2x), where other sites crop the card.
+SOCIAL = (1280, 640)
+SOCIAL_SAFE = 80
+SOCIAL_BYTES = 1024 * 1024
 
 
 LIBRARY = Path(__file__).resolve().parent.parent / "assets" / "library"
@@ -235,12 +242,12 @@ def find_browsers():
     return list(dict.fromkeys(p for p in paths if p and Path(p).is_file()))
 
 
-def shoot(browser, page, png, height):
+def shoot(browser, page, png, height, width=1320):
     """A PNG of a local page. True when it was written."""
     profile = tempfile.mkdtemp(prefix="jano-browser-")
     png.unlink(missing_ok=True)
     args = [browser, "--disable-gpu", "--hide-scrollbars", "--no-first-run", "--no-sandbox", f"--user-data-dir={profile}",
-            "--force-device-scale-factor=1", f"--window-size=1320,{height}", f"--screenshot={png}", page.as_uri()]
+            "--force-device-scale-factor=1", f"--window-size={width},{height}", f"--screenshot={png}", page.as_uri()]
     if "headless-shell" not in Path(browser).name:
         args.insert(1, "--headless")
     try:
@@ -264,6 +271,37 @@ def take_pictures(shots):
         if all(shoot(browser, *shot) for shot in shots):
             return True
     return False
+
+
+def png_size(png):
+    """(width, height) of a PNG, read from its header."""
+    return struct.unpack(">II", png.read_bytes()[16:24])
+
+
+def png_stamp(png, sha):
+    """Writes the fingerprint of the source into the PNG as a text chunk, right after the header."""
+    data = png.read_bytes()
+    body = b"tEXt" + b"jano-src\0" + sha.encode()
+    chunk = struct.pack(">I", len(body) - 4) + body + struct.pack(">I", zlib.crc32(body))
+    png.write_bytes(data[:33] + chunk + data[33:])
+
+
+def social_svg(svg, sha):
+    """The social preview as a still vector: the hero's finished frame (dark), scaled into the safe area, on its own background."""
+    w, h = SOCIAL
+    scale = (w - 2 * SOCIAL_SAFE) / w
+    # the background is the fill of the first shape that covers the whole canvas
+    bg = "#0d1117"
+    for rect in re.findall(r"<rect\b[^>]*>", svg):
+        fill = re.search(r'fill="(#[0-9A-Fa-f]{3,8})"', rect)
+        if fill and re.search(r'width="(1280|100%)"', rect) and re.search(r'height="(640|100%)"', rect):
+            bg = fill.group(1)
+            break
+    label = re.search(r'aria-label="([^"]*)"', svg)
+    inner = svg.replace("<svg ", f'<svg x="{SOCIAL_SAFE}" y="{(h - h * scale) / 2:g}" width="{w * scale:g}" height="{h * scale:g}" ', 1)
+    inner = inner.replace("</svg>", "<style>*{animation:none!important}</style></svg>")
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" data-jano-src="{sha}" viewBox="0 0 {w} {h}" width="{w}" height="{h}" '
+            f'role="img" aria-label="{label.group(1) if label else "social preview"}"><rect width="{w}" height="{h}" fill="{bg}"/>{inner}</svg>')
 
 
 def build(src):
@@ -406,12 +444,33 @@ def build(src):
     prev.write_text(page, encoding="utf-8")
     print(f"preview {prev}")
     shots = [(folder / "loop.html", folder / "loop.png", 1480), (folder / "look.html", folder / "look.png", 1290)]
+    # the repository's social preview comes from its hero, so the two never drift apart; an option is not the hero yet
+    social = out / "social-preview.png" if kind == "hero" and out.parent.name != "options" else None
+    if social:
+        # the card is drawn as a vector first, so it stays sharp at any size; the PNG GitHub takes is shot from it
+        card = social.with_suffix(".svg")
+        card.write_text(social_svg(themed[0], print_sha) + "\n", encoding="utf-8", newline="\n")
+        print(f"wrote {card} ({len(card.read_bytes()) / 1024:.0f} KB)")
+        page = folder / "social.html"
+        page.write_text(f'<!doctype html><body style="margin:0;overflow:hidden"><img src="{card.as_uri()}" width="{SOCIAL[0]}" height="{SOCIAL[1]}" style="display:block">', encoding="utf-8")
+        shots.append((page, social, SOCIAL[1], SOCIAL[0]))
     if "--no-pictures" in sys.argv:
-        pass
+        if social:
+            print(f"no social preview: {social.name} needs the pictures; build without --no-pictures")
     elif take_pictures(shots):
         print(f"pictures {shots[0][1]} {shots[1][1]}")
+        if social:
+            png_stamp(social, print_sha)
+            size, kb = png_size(social), social.stat().st_size / 1024
+            if size != SOCIAL:
+                warns.append(f"{social.name} came out {size[0]}x{size[1]}, not {SOCIAL[0]}x{SOCIAL[1]}: set JANO_BROWSER to another Chromium-family browser")
+            if social.stat().st_size >= SOCIAL_BYTES:
+                warns.append(f"{social.name} is {kb:.0f} KB and GitHub takes 1 MB at most: fewer gradients and fine textures in the hero")
+            print(f"social preview {social} ({size[0]}x{size[1]}, {kb:.0f} KB): upload it in Settings > General > Social preview")
     else:
         print(f"no pictures: no Chrome, Chromium or Edge could take them (set JANO_BROWSER to one). Open {folder / 'loop.html'} and {folder / 'look.html'} in a browser instead")
+        if social:
+            print(f"no social preview: {social.name} needs the same browser")
     print(check.summary(hero.facts))
     print("\n".join("warning: " + w for w in dict.fromkeys(warns)) or "checks passed")
     return {"files": names, "brief": brief}
