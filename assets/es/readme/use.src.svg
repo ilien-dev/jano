@@ -1,0 +1,112 @@
+<!--palette
+bg     #0E1526 #F5F7FB
+panel  #172138 #FFFFFF
+raised #22304F #E6ECF5
+line   #34446A #C9D3E3
+ink    #EEF2F7 #1B2A4A
+body   #C3CBD9 #3A4560
+muted  #95A0B6 #586380
+accent #E8553D #C23B25
+dots   #1E2A44 #DDE4EF
+tile   #1B2A4A #1B2A4A
+door   #EEF2F7 #EEF2F7
+mark   #E8553D #E8553D
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 448" role="img" aria-label="Uso: en una ventana de chat escribes /jano haz el README de este repositorio. Jano pregunta quién lo va a leer; el puntero pulsa Quien lo usa y se llena el primer punto. Pregunta si deja fuera lo que no está terminado; el puntero pulsa Dejar fuera y se llena el segundo punto. Una barra se llena mientras escribe y dibuja, y un mensaje dice que tu README está listo.">
+<style>
+/* 16 s story
+   typing  |-type-|==========================================|   (2-12%)
+   card        |in|=====================================|out|  (13-17, 96-99)
+   cursor        |go|=on buttons=====|home|                    (18-26, 26-56, 56-64)
+   q1/q2              |click q1|swap|click q2|                (30, 37-40, 50)
+   dots                  |d1|            |d2|                  (31-33, 51-53)
+   bar                                      |==fill==|         (56-80)
+   done                                              |in|====| (80-84, 84-96) */
+@keyframes drift{to{transform:translate(24px,24px)}}
+@keyframes type{0%,2%{transform:translateX(-374px);animation-timing-function:steps(39,end)}12%,96%{transform:translateX(0);animation-timing-function:steps(39,end)}100%{transform:translateX(-374px)}}
+@keyframes card{0%,13%{opacity:0;transform:translateY(10px)}17%,96%{opacity:1;transform:translateY(0)}99%,100%{opacity:0;transform:translateY(10px)}}
+@keyframes q1{0%,36%{opacity:1}39%,97%{opacity:0}99%,100%{opacity:1}}
+@keyframes q2{0%,37%{opacity:0}40%,97%{opacity:1}99%,100%{opacity:0}}
+@keyframes cm{0%,18%{transform:translate(0,0)}26%,56%{transform:translate(-316px,-190px)}64%,100%{transform:translate(0,0)}}
+@keyframes pa{0%,29%{transform:scale(1)}30.5%{transform:scale(.9)}32%,100%{transform:scale(1)}}
+@keyframes pb{0%,49%{transform:scale(1)}50.5%{transform:scale(.9)}52%,100%{transform:scale(1)}}
+@keyframes d1{0%,31%{opacity:0}33%,96%{opacity:1}99%,100%{opacity:0}}
+@keyframes d2{0%,51%{opacity:0}53%,96%{opacity:1}99%,100%{opacity:0}}
+@keyframes work{0%,56%{opacity:0}59%,97%{opacity:1}100%{opacity:0}}
+@keyframes fill{0%,58%{transform:scaleX(.04)}80%,97%{transform:scaleX(1)}100%{transform:scaleX(.04)}}
+@keyframes done{0%,80%{opacity:0;transform:translateY(10px)}84%,96%{opacity:1;transform:translateY(0)}99%,100%{opacity:0;transform:translateY(10px)}}
+@keyframes caret{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes cur-ptr{0%{opacity:0}26%{opacity:0}26.5%,56%{opacity:1}56.5%{opacity:0}100%{opacity:0}}
+@keyframes cur-arr{0%{opacity:1}26%{opacity:1}26.5%,56%{opacity:0}56.5%{opacity:1}100%{opacity:1}}
+.drift{animation:drift 6s linear infinite}
+.type{animation:type 16s linear infinite}
+.card{animation:card 16s cubic-bezier(0,0,.2,1) infinite}
+.q1{animation:q1 16s ease-in-out infinite}
+.q2{animation:q2 16s ease-in-out infinite}
+.cm{animation:cm 16s cubic-bezier(.4,0,.2,1) infinite}
+.pa{animation:pa 16s ease-out infinite;transform-box:fill-box;transform-origin:center}
+.pb{animation:pb 16s ease-out infinite;transform-box:fill-box;transform-origin:center}
+.d1{animation:d1 16s ease-out infinite}
+.d2{animation:d2 16s ease-out infinite}
+.work{animation:work 16s ease-in-out infinite}
+.fill{animation:fill 16s cubic-bezier(.4,0,.2,1) infinite;transform-box:fill-box;transform-origin:0 50%}
+.done{animation:done 16s cubic-bezier(0,0,.2,1) infinite}
+.caret{animation:caret 1.2s steps(1,end) infinite}
+.cur-ptr{animation:cur-ptr 16s step-end infinite}
+.cur-arr{animation:cur-arr 16s step-end infinite}
+</style>
+<defs>
+<pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.6" fill="$dots"/></pattern>
+<clipPath id="row"><rect x="816" y="84" width="390" height="32"/></clipPath>
+</defs>
+<rect width="1280" height="448" fill="$bg"/>
+<g id="backdrop"><rect class="drift" x="-24" y="-24" width="1328" height="496" fill="url(#grid)"/></g>
+
+<text id="eyebrow" x="72" y="56" class="m" font-size="15" letter-spacing="3" fill="$accent">USO</text>
+<text id="title" class="b" font-size="42" fill="$ink"><tspan x="72" y="108">Una petición,</tspan><tspan x="72" y="158">unos clics</tspan></text>
+<text id="sub" class="s" font-size="19" fill="$body"><tspan x="72" y="200">Luego trabaja por su cuenta</tspan><tspan x="72" y="226">y nunca hace commit.</tspan></text>
+
+<g id="stage">
+<g data-kit="window"><rect x="540.0" y="28.0" width="696.0" height="396.0" rx="12" fill="$panel" stroke="$line" stroke-width="1.5"/><path d="M540.0 62.0H1236.0" stroke="$line" stroke-width="1.5"/><circle cx="560.0" cy="45.0" r="5" fill="$line"/><circle cx="576.0" cy="45.0" r="5" fill="$line"/><circle cx="592.0" cy="45.0" r="5" fill="$line"/><text x="888.0" y="50.0" class="m" font-size="14" fill="$muted" text-anchor="middle">chat</text></g>
+
+<!-- what you type -->
+<rect x="800" y="78" width="416" height="44" rx="12" fill="$raised"/>
+<text x="818" y="106" class="m" font-size="16" fill="$ink">/jano haz el README de este repositorio</text>
+<g clip-path="url(#row)"><rect class="type" x="1192" y="84" width="380" height="32" fill="$raised"/></g>
+
+<!-- Jano answers -->
+<g transform="translate(560 140) scale(0.125)"><rect width="256" height="256" rx="56" fill="$tile"/><g transform="translate(25.6 25.6) scale(.8)"><path fill="$door" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/><path fill="$mark" d="M114 70A24 24 0 1 0 162 70A24 24 0 1 0 114 70Z"/></g></g>
+<g class="card">
+<rect x="604" y="136" width="440" height="116" rx="12" fill="$bg" stroke="$line" stroke-width="2"/>
+<g class="q1" opacity="0">
+<text x="624" y="170" class="b" font-size="18" fill="$ink">¿Quién lo va a leer?</text>
+<g class="pa"><g data-kit="button" data-clickable="true"><rect x="624.0" y="190.0" width="134" height="40" rx="20.0" fill="$accent"/><text x="690.8" y="215.6" class="b" font-size="16" fill="$bg" text-anchor="middle">Quien lo usa</text></g></g>
+<g data-kit="button" data-clickable="true"><rect x="774.0" y="190.0" width="162" height="40" rx="20.0" fill="none" stroke="$line" stroke-width="1.5"/><text x="854.8" y="215.6" class="b" font-size="16" fill="$ink" text-anchor="middle">Desarrolladores</text></g>
+</g>
+<g class="q2">
+<text x="624" y="170" class="b" font-size="18" fill="$ink">¿Dejo fuera lo que no está terminado?</text>
+<g class="pb"><g data-kit="button" data-clickable="true"><rect x="624.0" y="190.0" width="125" height="40" rx="20.0" fill="$accent"/><text x="686.7" y="215.6" class="b" font-size="16" fill="$bg" text-anchor="middle">Dejar fuera</text></g></g>
+<g data-kit="button" data-clickable="true"><rect x="765.0" y="190.0" width="115" height="40" rx="20.0" fill="none" stroke="$line" stroke-width="1.5"/><text x="822.6" y="215.6" class="b" font-size="16" fill="$ink" text-anchor="middle">Mantener</text></g>
+</g>
+</g>
+<!-- answered questions -->
+<rect x="1068" y="176" width="88" height="44" rx="22" fill="$panel" stroke="$line" stroke-width="2"/>
+<circle cx="1096" cy="198" r="9" fill="none" stroke="$muted" stroke-width="2"/><circle cx="1128" cy="198" r="9" fill="none" stroke="$muted" stroke-width="2"/>
+<circle class="d1" cx="1096" cy="198" r="9" fill="$accent"/><circle class="d2" cx="1128" cy="198" r="9" fill="$accent"/>
+
+<!-- it carries on alone -->
+<g class="work">
+<text x="604" y="292" class="s" font-size="16" fill="$muted">escribiendo y dibujando</text>
+<g data-kit="progress"><rect x="604.0" y="304.0" width="440.0" height="10" rx="5" fill="$line"/><rect class="fill" x="604.0" y="304.0" width="440" height="10" rx="5" fill="$accent"/></g>
+</g>
+<g class="done">
+<rect x="604" y="334" width="440" height="60" rx="12" fill="$raised"/>
+<g data-asset="ph:check-circle-bold" data-icon="listo" data-size="40" transform="translate(616 344) scale(0.1562)" color="$accent"><path fill="currentColor" d="M176.49 95.51a12 12 0 0 1 0 17l-56 56a12 12 0 0 1-17 0l-24-24a12 12 0 1 1 17-17L112 143l47.51-47.52a12 12 0 0 1 16.98.03M236 128A108 108 0 1 1 128 20a108.12 108.12 0 0 1 108 108m-24 0a84 84 0 1 0-84 84a84.09 84.09 0 0 0 84-84"/></g>
+<text x="672" y="371" class="b" font-size="18" fill="$ink">Tu README está listo</text>
+</g>
+<rect class="caret" x="1198" y="90" width="9" height="18" fill="$accent"/>
+
+<!-- the cursor -->
+<g class="cm"><g data-kit="cursor-swap"><g class="cur-arr"><g data-kit="cursor" data-cursor="arrow" transform="translate(1000.0 400.0) scale(1.08)"><path transform="translate(0 0)" d="M0 0V19L5 14.5L8.6 22.3L12 20.8L8.5 13.2H15Z" fill="$ink" stroke="$bg" stroke-width="1.6" stroke-linejoin="round"/></g></g><g class="cur-ptr" opacity="0"><g data-kit="cursor" data-cursor="pointer" transform="translate(1000.0 400.0) scale(1.08)"><path transform="translate(-6.5 0)" d="M6.5 0C7.9 0 9 1.1 9 2.5V9.2C9.4 9 9.9 8.9 10.4 8.9C11.6 8.9 12.6 9.6 13 10.6C13.4 10.4 13.9 10.3 14.4 10.3C15.7 10.3 16.8 11.2 17.1 12.4C17.5 12.2 17.9 12.1 18.4 12.1C19.8 12.1 21 13.3 21 14.7V19C21 23.4 17.4 27 13 27H11.5C8.8 27 6.4 25.6 5 23.4L1 17C.3 15.9 .6 14.5 1.7 13.8C2.7 13.2 4 13.4 4.7 14.4L4 13.6V2.5C4 1.1 5.1 0 6.5 0Z" fill="$ink" stroke="$bg" stroke-width="1.6" stroke-linejoin="round"/></g></g></g></g>
+</g>
+</svg>

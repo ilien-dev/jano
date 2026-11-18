@@ -1,16 +1,16 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/es/hero-dark.svg">
-    <img src="assets/es/hero-light.svg" alt="Jano: entra tu repo, sale tu README listo. Un repositorio recorre una ruta de seis estaciones (lee el repo, te pregunta, planea, dibuja, revisa y lectura en frío), deja una marca en cada una y llega como un README.md terminado." width="100%">
+    <img src="assets/es/hero-light.svg" alt="Jano: un README que se explica solo. Un paquete sale de la carpeta de tu proyecto, pasa por Jano y llega a una página README.md, donde aparece una imagen en movimiento arriba y una imagen sobre cada parte." width="100%">
   </picture>
 </p>
 
 <p align="center"><a href="README.md">English</a> · <b>Español</b></p>
 
-<h1 align="center">Jano: un README que explica tu repositorio</h1>
+<h1 align="center">Jano: un README que explica tu proyecto</h1>
 
-<p align="center"><b>Entra tu repo. Sale un README que un extraño entiende,<br>
-con una imagen en movimiento arriba y sobre cada parte que la necesita.</b></p>
+<p align="center"><b>Lo pides una vez, respondes unas preguntas y tienes una portada<br>
+con imágenes en movimiento, en oscuro y claro, con tus propios colores.</b></p>
 
 <p align="center">
   <a href="#instalación"><img alt="Skill para agentes: Claude Code, Codex y otros" src="https://img.shields.io/badge/agent%20skill-Claude%20Code%20%C2%B7%20Codex-1D6A99?style=flat-square&labelColor=0F1115"></a>
@@ -20,52 +20,41 @@ con una imagen en movimiento arriba y sobre cada parte que la necesita.</b></p>
 </p>
 
 <p align="center">
-  <a href="#cómo-funciona"><b>Cómo funciona</b></a> ·
   <a href="#qué-obtienes"><b>Qué obtienes</b></a> ·
-  <a href="#hecho-con-jano"><b>Hecho con Jano</b></a> ·
+  <a href="#para-quién-es"><b>Para quién es</b></a> ·
   <a href="#instalación"><b>Instalación</b></a> ·
   <a href="#uso"><b>Uso</b></a> ·
-  <a href="#límites"><b>Límites</b></a>
+  <a href="#límites"><b>Límites</b></a> ·
+  <a href="#el-nombre"><b>El nombre</b></a>
 </p>
 
 ---
 
-**Jano es un skill para tu agente de IA que escribe y dibuja el README de tu repositorio.** Es para quien tiene un proyecto y quiere que su portada se explique sola. Lo llamas una vez, respondes unas preguntas y Jano lleva tu repo por una ruta fija: lee el proyecto, planea cada sección, escribe el texto a la medida, dibuja una imagen arriba y sobre las partes que la necesitan, y revisa el resultado antes de que lo veas.
-
-## Cómo funciona
-
-<p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/es/readme/coldread-dark.svg">
-  <img src="assets/es/readme/coldread-light.svg" alt="La última revisión: a la imagen de una sección se le quitan las palabras, solo la imagen llega a un lector a ciegas que nunca vio el proyecto, el lector escribe lo que muestra y esa respuesta se compara con lo que la imagen debía decir. Coincide, así que la imagen pasa; si fallara, volvería a dibujarse." width="100%">
-</picture></p>
-
-La imagen de arriba es la última parada de la ruta. Esta es la ruta completa:
-
-1. **Lee tu proyecto.** El README, la documentación y el código, hasta poder decir en una frase sencilla para quién es y qué hace.
-2. **Te pregunta, una sola vez.** Quién lee el README, qué hacer con lo que está marcado como sin terminar y, si tu proyecto tiene pantalla, si una sección puede mostrar una captura real. Después ya no pregunta más.
-3. **Planea cada sección.** Cada una recibe una tarea, un presupuesto de palabras y, si ayuda, una imagen.
-4. **Dibuja y escribe, y luego mide.** Unos scripts revisan el tamaño del texto, el contraste, que las animaciones se repitan sin saltos, el largo de cada sección y los enlaces, y Jano corrige lo que encuentran.
-5. **Lo lee un extraño, en frío.** Agentes nuevos que nunca vieron tu proyecto miran cada imagen sin sus palabras, y luego el README completo. Lo que entienden mal se vuelve a dibujar o a escribir.
+**Jano le da a tu proyecto una portada que se explica sola.** Es un skill para tu asistente de IA, para quien hizo algo y quiere que un desconocido lo entienda de un vistazo. Lo pides una vez y respondes unas preguntas. Recibes un README que dice qué hace tu proyecto, para quién es y cómo empezar, con una imagen en movimiento arriba y sobre las partes que la necesitan, en oscuro y claro, con los colores de tu proyecto.
 
 ## Qué obtienes
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/es/readme/plan-dark.svg">
-  <img src="assets/es/readme/plan-light.svg" alt="El plan: una hoja plan.json lista las secciones, una por fila, cada una con su tarea, una barra con su presupuesto de palabras y una marca de si lleva imagen. Se ilumina una fila a la vez, y una tarjeta la nombra, llena su presupuesto de palabras y muestra si tiene imagen." width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/es/readme/features-dark.svg">
+  <img src="assets/es/readme/features-light.svg" alt="Una portada terminada, vista de cerca. Sus partes se iluminan una a una mientras una tarjeta nombra cada una: una imagen que se mueve arriba, imágenes donde ayudan, texto breve y sencillo. Luego un puntero pulsa el interruptor de oscuro y claro y toda la página se vuelve clara." width="100%">
 </picture></p>
 
-- **Un README planeado sección por sección.** El plan queda en `assets/readme/plan.json`, para que puedas leer por qué está cada parte.
-- **Texto a la medida.** Cada sección se queda dentro de su presupuesto de palabras; lo que no cabe pasa a una página en `docs/`.
-- **Una imagen en movimiento arriba**, el banner, que muestra lo que hace tu proyecto antes de leer una palabra.
-- **Una imagen sobre cada sección que la necesita**, y cada una muestra algo distinto.
-- **Versión oscura y clara de cada imagen.** GitHub le muestra a cada visitante la que va con su tema.
-- **Tu logo y tus colores**, cuando los tienes.
+- **Una imagen en movimiento arriba** que muestra qué hace tu proyecto antes de leer una palabra.
+- **Una imagen sobre las partes que la necesitan**, y cada una muestra algo distinto.
+- **Texto breve y sencillo**, a la medida para que se lea hasta el final. Lo que no cabe pasa a su propia página en `docs/`.
+- **Versión oscura y clara de cada imagen.** GitHub le muestra a cada visitante la que va con su pantalla.
+- **Tu logo y tus colores**, cuando tu proyecto los tiene.
 
-Las imágenes son archivos SVG normales que se reproducen en GitHub sin instalar ni alojar nada.
+Las imágenes son archivos normales que se reproducen en GitHub, sin instalar ni alojar nada.
 
-## Hecho con Jano
+## Para quién es
 
-Banners que Jano dibujó para otros proyectos: [Anzu](https://github.com/ilien-dev/anzu), [Sharur](https://github.com/ilien-dev/sharur) y [Svipall](https://github.com/ilien-dev/svipall). No hay dos iguales, porque no hay dos proyectos que hagan lo mismo.
+<p align="center"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/es/readme/audience-dark.svg">
+  <img src="assets/es/readme/audience-light.svg" alt="Tres portadas pequeñas lado a lado, cada una con sus colores. Una luz pasa de una a otra: en Anzu un libro pierde su candado y se vuelve un archivo EPUB, en Sharur una respuesta larga se encoge a una corta, en Svipall una página atraviesa un muro hasta un agente de IA. Debajo de cada una, el tipo de proyecto." width="100%">
+</picture></p>
+
+Para cualquiera con un proyecto en GitHub que quiera que la gente lo entienda sin leer el código: una app, una herramienta, un conjunto de archivos. Jano elige la imagen según el tipo de proyecto, así que no salen dos iguales. Aquí hay tres que dibujó, [Anzu](https://github.com/ilien-dev/anzu), [Sharur](https://github.com/ilien-dev/sharur) y [Svipall](https://github.com/ilien-dev/svipall), tal como se ven en sus propias páginas:
 
 <p align="center">
 <a href="https://github.com/ilien-dev/anzu"><picture><source media="(prefers-color-scheme: dark)" srcset="examples/anzu/hero-dark.svg"><img src="examples/anzu/hero-light.svg" alt="Banner de Anzu: libros de Kindle con candado pasan por la app y salen como archivos EPUB." width="32%"></picture></a>
@@ -73,13 +62,11 @@ Banners que Jano dibujó para otros proyectos: [Anzu](https://github.com/ilien-d
 <a href="https://github.com/ilien-dev/svipall"><picture><source media="(prefers-color-scheme: dark)" srcset="examples/svipall/hero-dark.svg"><img src="examples/svipall/hero-light.svg" alt="Banner de Svipall: a un agente de IA lo detiene un muro, pasa con un navegador y recibe la página." width="32%"></picture></a>
 </p>
 
-<p align="center"><b><a href="https://jano.ilien.dev/es/#gallery">Míralos todos en movimiento en jano.ilien.dev</a></b></p>
-
-El nombre: Jano es el dios romano de las puertas (Janus, en latín), al que se dibuja con dos caras. Un README es la puerta de un repositorio, y cada imagen que dibuja Jano también tiene dos caras: una para el tema oscuro y otra para el claro.
+<p align="center"><b><a href="https://jano.ilien.dev/es/#gallery">Mira las siete portadas en movimiento</a></b></p>
 
 ## Instalación
 
-Un comando, para Claude Code, Codex, Cursor, Gemini CLI y los demás agentes que admite la CLI de [skills](https://skills.sh):
+Un comando, para Claude Code, Codex, Cursor, Gemini CLI y los demás asistentes que admite la herramienta [skills](https://skills.sh):
 
 ```sh
 npx skills add ilien-dev/jano
@@ -98,17 +85,17 @@ O, dentro de Claude Code, como plugin:
 ## Uso
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/es/readme/ask-dark.svg">
-  <img src="assets/es/readme/ask-light.svg" alt="En el chat del agente escribes /jano haz el README de este repositorio. Jano hace tres preguntas, una tras otra, cada una con la respuesta que sugiere marcada; eliges, un contador se llena uno, dos, tres, y una barra muestra a Jano siguiendo solo." width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/es/readme/use-dark.svg">
+  <img src="assets/es/readme/use-light.svg" alt="En una ventana de chat escribes /jano haz el README de este repositorio. Jano pregunta quién lo va a leer y el puntero pulsa Quien lo usa; pregunta si deja fuera lo que no está terminado y el puntero pulsa Dejar fuera. Se llenan dos puntos, una barra se llena mientras escribe y dibuja, y un mensaje dice que tu README está listo." width="100%">
 </picture></p>
 
-Abre tu agente en el proyecto y llama a Jano (`/jano` en Claude Code, `/jano:jano` como plugin, `$jano` en Codex):
+Abre tu asistente de IA en la carpeta de tu proyecto y escribe:
 
 ```text
 /jano haz el README de este repositorio
 ```
 
-Te hace unas preguntas, cada una con la respuesta que elegiría y por qué. Después trabaja por su cuenta y te cuenta lo que hizo; nunca hace commit de nada.
+Como plugin de Claude Code es `/jano:jano`, y en Codex `$jano`. Jano te hace unas preguntas, cada una con la respuesta que sugiere y por qué: quién va a leer el README, si deja fuera lo que no está terminado y, si tu proyecto tiene pantalla, si una parte puede mostrar una captura real. Después trabaja por su cuenta y te cuenta lo que hizo. Nunca hace commit de nada, así que lo revisas antes de quedártelo.
 
 También puedes pedir menos:
 
@@ -117,14 +104,18 @@ También puedes pedir menos:
 /jano haz 4 alternativas para el hero de este repositorio
 ```
 
-La primera dibuja solo la imagen de arriba y deja el resto de tu README como está. La segunda abre cuatro banners distintos lado a lado en una página; te quedas con uno, o dices qué tomar de varios.
+La primera dibuja solo la imagen de arriba, que Jano llama hero, y deja el resto de tu README como está. La segunda muestra cuatro imágenes distintas lado a lado en una página; te quedas con una, o dices qué tomar de varias.
 
 ## Límites
 
 - El resultado depende del modelo de IA que lo ejecuta: un modelo más capaz dibuja mejores imágenes.
-- La lectura en frío necesita un agente que pueda iniciar otros agentes. Si no puede, Jano te avisa que esa revisión no se hizo.
-- Todas las imágenes usan las mismas dos tipografías, Space Grotesk y JetBrains Mono.
+- Antes de que veas el resultado, ayudantes nuevos que nunca vieron tu proyecto lo leen en frío. Eso necesita un asistente que pueda iniciar otros agentes; si no puede, Jano te avisa que esa revisión no se hizo.
+- Todas las imágenes usan las mismas dos tipografías.
 - Hasta ahora se ha usado en unos cuantos proyectos, por una sola persona.
+
+## El nombre
+
+Jano es el dios romano de las puertas (Janus, en latín), al que se dibuja con dos caras. Un README es la puerta de un proyecto, y cada imagen que dibuja Jano también tiene dos caras: una para pantallas oscuras y otra para claras.
 
 ## Contribuir
 
