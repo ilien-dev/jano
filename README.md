@@ -124,7 +124,6 @@ Open your agent in the project and call Jano:
 |---|---|
 | Claude Code | `/jano` (as a plugin: `/jano:jano`) |
 | Codex | `$jano` |
-| Others | "use the jano skill:" |
 
 and ask for what you want. One hero:
 
@@ -138,7 +137,7 @@ Four to choose from, each a different picture of the same project:
 /jano make 4 alternatives for this repository's hero
 ```
 
-The options open side by side on one page. Keep one, or say what to take from several ("the picture of B with the layout of C"); the README changes only after you choose. In Codex or another agent, start with its call from the table instead of `/jano`.
+The options open side by side on one page. Keep one, or say what to take from several ("the picture of B with the layout of C"); the README changes only after you choose. In Codex, start with `$jano` instead.
 
 You can say what you want to see: `/jano show a book turning into an EPUB, keep our yellow`. Jano never runs unless you call it, and it does not commit anything.
 
