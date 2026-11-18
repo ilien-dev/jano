@@ -7,12 +7,12 @@
 
 <p align="center"><b>English</b> · <a href="README.es.md">Español</a></p>
 
-<h1 align="center">Jano: an animated SVG hero for your GitHub README</h1>
+<h1 align="center">Jano: an animated SVG banner for your GitHub README</h1>
 
 <p align="center"><b>Give your repository an animated banner that shows what it does,<br>
 in dark and light mode, before anyone reads a word.</b></p>
 
-<p align="center">Jano is an agent skill for Claude Code, Codex and other AI agents. Ask for it once in your project and you get a README header made for that project: its name, a short phrase that says what it is for, and a moving picture of it at work. It comes as an animated SVG banner for GitHub's dark and light themes, already placed at the top of your README.</p>
+<p align="center">Jano is a Claude Code skill, also for Codex and other AI agents. Ask for it once in your project and you get a README header banner made for that project: its name, a short phrase that says what it is for, and a moving picture of it at work. It comes as an animated SVG banner for GitHub's dark and light themes, already placed at the top of your README.</p>
 
 <p align="center">
   <a href="#install"><img alt="Agent skill for Claude Code, Codex and others" src="https://img.shields.io/badge/agent%20skill-Claude%20Code%20%C2%B7%20Codex-1D6A99?style=flat-square&labelColor=0F1115"></a>
@@ -27,7 +27,8 @@ in dark and light mode, before anyone reads a word.</b></p>
   <a href="#use"><b>Use</b></a> ·
   <a href="#what-you-get"><b>What you get</b></a> ·
   <a href="#how-it-decides"><b>How it decides</b></a> ·
-  <a href="#limits"><b>Limits</b></a>
+  <a href="#limits"><b>Limits</b></a> ·
+  <a href="#why-jano"><b>Why Jano</b></a>
 </p>
 
 ---
@@ -165,6 +166,12 @@ It keeps your logo and colors when you have them, and adds no logo when you do n
 - The agent sees the motion as stopped frames. You judge how it feels, in the preview.
 - Two typefaces are used for every banner, Space Grotesk and JetBrains Mono.
 - It has been used on eight projects so far, by one person.
+
+## Why Jano
+
+Jano is the Spanish name of Janus, the Roman god of doors, passages and beginnings. He is drawn with two faces looking opposite ways, and January is named after him.
+
+A README banner is the door to a repository, the first thing anyone sees. Jano draws it with two faces too: one for GitHub's dark theme and one for light. Every project in the showroom has a name from mythology, and Jano is no exception.
 
 ## Contributing
 
