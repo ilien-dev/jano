@@ -120,13 +120,25 @@ Jano needs Python 3.9 or later on your computer. If you have [uv](https://docs.a
 
 Open your agent in the project and call Jano:
 
-| Agent | One hero | Four to choose from |
-|---|---|---|
-| Claude Code | `/jano` (as a plugin: `/jano:jano`) | `/jano 4 options` |
-| Codex | `$jano` | `$jano 4 options` |
-| Others | "use the jano skill on this repository" | "use the jano skill: 4 options" |
+| Agent | Call |
+|---|---|
+| Claude Code | `/jano` (as a plugin: `/jano:jano`) |
+| Codex | `$jano` |
+| Others | "use the jano skill:" |
 
-With options, each one is a different picture of the same project, and they open side by side on one page. Keep one, or say what to take from several ("the picture of B with the layout of C"); the README changes only after you choose.
+and ask for what you want. One hero:
+
+```
+/jano make a hero for this repository
+```
+
+Four to choose from, each a different picture of the same project:
+
+```
+/jano make 4 alternatives for this repository's hero
+```
+
+The options open side by side on one page. Keep one, or say what to take from several ("the picture of B with the layout of C"); the README changes only after you choose. In Codex or another agent, start with its call from the table instead of `/jano`.
 
 You can say what you want to see: `/jano show a book turning into an EPUB, keep our yellow`. Jano never runs unless you call it, and it does not commit anything.
 
