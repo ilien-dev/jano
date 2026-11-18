@@ -1,0 +1,8 @@
+- Tests: `uv run tests/run.py` (all of `build.py`, `check.py` and `.github/scripts/check-pr.js`); a change to `build.py` comes with a test there.
+- Build a hero: `uv run skills/jano/scripts/build.py <path>/hero.src.svg`; add `--no-pictures` when no Chromium-family browser is installed.
+- `hero-dark.svg` and `hero-light.svg` are build output: edit `hero.src.svg` and rebuild, never the outputs.
+- `.claude/skills/uncontributing/SKILL.md` and `.agents/skills/uncontributing/SKILL.md` are the same file for two agents: change both together.
+- A change to `README.md` goes with the same change in `README.es.md`, the only Spanish file; everything else is in English.
+- Never edit the version in `.claude-plugin/plugin.json` or `CHANGELOG.md`; release-please does it.
+- A change to `skills/jano/SKILL.md` is `feat` or `fix`, never `docs`; it ships to users.
+- Before a branch, commit or PR, follow the `uncontributing` skill (branch `feature/<1-4 words>`, one change per PR).
