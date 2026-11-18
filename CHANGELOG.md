@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/ilien-dev/jano/compare/v0.5.0...v0.6.0) (2026-11-18)
+
+
+### Features
+
+* draw hero options, a brief of claims and an optional strip ([#15](https://github.com/ilien-dev/jano/issues/15)) ([4f8e16f](https://github.com/ilien-dev/jano/commit/4f8e16f2b5c7d98091d25116d8f50f179b7623a6))
+
 ## [0.5.0](https://github.com/ilien-dev/jano/compare/v0.4.0...v0.5.0) (2026-11-17)
 
 
