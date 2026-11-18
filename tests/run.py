@@ -144,6 +144,30 @@ warned("a hero without a description is warned about", swap('<text id="about"', 
 code, out, _ = build(re.sub(r'<g id="facts">.*?</g>\n', "", FIXTURE, flags=re.S))
 test("a hero without highlights builds clean", code == 0 and "checks passed" in out, out)
 warned("too many figures are warned about", swap('<text x="352" y="400"', '<text x="72" y="470" class="b" font-size="32" fill="$ink">2</text><text x="212" y="470" class="b" font-size="32" fill="$ink">5</text><text x="352" y="400"'), "#facts shows 5 figures")
+code, out, _ = build(re.sub(r'<g id="ticker">.*?</g></g></g>\n', "", FIXTURE, flags=re.S))
+test("a hero without a strip builds clean", code == 0 and "checks passed" in out and "ticker" not in out, out)
+code, out, folder = build(swap("<!--palette", "<!--brief\nsentence: a test hero <script>\n-->\n<!--palette"))
+page = Path(re.search(r"^preview (.+)$", out, re.M).group(1)).read_text(encoding="utf-8") if code == 0 else ""
+test("the brief is on the preview page and not in the outputs", "a test hero &lt;script&gt;" in page and "a test hero" not in (folder / "hero-dark.svg").read_text(encoding="utf-8"), out)
+flagged = Path(tempfile.mkdtemp()) / "hero.src.svg"
+flagged.write_text(swap("<!--palette", "<!--brief\nleft out: --permission-mode agent-default\n-->\n<!--palette"), encoding="utf-8")
+run = subprocess.run([sys.executable, str(CHECK), str(flagged), "--json"], capture_output=True, text=True, encoding="utf-8")
+test("a brief with -- in it is checked like any source", run.returncode == 0 and '"errors": []' in run.stdout, run.stdout + run.stderr)
+options = Path(tempfile.mkdtemp())
+(options / "a").mkdir()
+(options / "a" / "hero.src.svg").write_text(FIXTURE, encoding="utf-8")
+(options / "b").mkdir()  # letters the first option does not have: each option gets the whole font
+(options / "b" / "hero.src.svg").write_text(swap(">still title", ">quick wavy jazz"), encoding="utf-8")
+(options / "c").mkdir()
+(options / "c" / "hero.src.svg").write_text(swap('id="name"', 'id="nombre"'), encoding="utf-8")
+run = subprocess.run([sys.executable, str(BUILD), str(options / "*" / "hero.src.svg"), "--no-pictures"], capture_output=True, text=True, encoding="utf-8")
+page = re.search(r"^options (.+)$", run.stdout, re.M)
+page = Path(page.group(1)).read_text(encoding="utf-8") if page else ""
+test("several sources build each one and share one options page", run.returncode == 1 and (options / "b" / "hero-light.svg").exists()
+     and page.count("<h2>") == 3 and "did not build" in page, run.stdout + run.stderr)
+alone = build(swap(">still title", ">quick wavy jazz"))[1]
+second = run.stdout.split("== ")[2] if run.stdout.count("== ") >= 2 else ""
+test("an option built after another is measured as if built alone", ("checks passed" in alone) == ("checks passed" in second) and "jazz" not in second, second)
 warned("a strip without running text is warned about", re.sub(r'<g clip-path="url\(#strip\)">.*?</g></g></g>', "</g>", FIXTURE, flags=re.S), "no text travels in #ticker")
 warned("a background that stands still is warned about", swap('<rect class="drift" ', "<rect "), "nothing in #backdrop is animated")
 warned("a text block lost beside the picture is warned about", swap('<g id="stage">', '<g id="stage"><rect x="560" y="0" width="720" height="596" fill="$bg"/>').replace('id="about"', 'id="x"').replace('<g id="facts">', "<g>"), "the text block is too small")

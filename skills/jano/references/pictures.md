@@ -31,8 +31,13 @@ bar, an extension in the corner of a page.
 app would show it, and the cycle closes while the cursor returns. Only the parts that take part in
 that flow move.
 
+The result is real content, large enough to read: the paragraph before and after, the rows that
+fill, the file that comes out. It is what the viewer remembers; the cursor only leads to it.
+
 **Traps:** drawing every panel of the app (keep the one flow); a screenshot traced in full detail
-(it turns to noise at README width); a generic dashboard that could be any product.
+(it turns to noise at README width); a generic dashboard that could be any product; a cursor
+clicking through menus and toolbars while the content stays the same (it shows the interface,
+not what the app does).
 
 ## A command-line tool
 
@@ -284,7 +289,7 @@ makes them grow from their left end.
 
 ### H. A strip of running text and a backdrop that drifts
 
-The two ambient parts every hero has. The strip is the same line written three times, one period
+The backdrop every hero has, and the strip when step 1 kept one. The strip is the same line written three times, one period
 apart, moved by exactly one period behind a clip: here 80 characters of 14 px mono, 80 x 8.4 =
 672 px, in 12 s (56 px/s). Pad the line with spaces to the length you want (`xml:space`). The
 backdrop is a pattern on a rectangle one tile larger than the canvas, moved by one tile.

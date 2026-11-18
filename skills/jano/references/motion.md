@@ -132,13 +132,13 @@ Errors stop the build. Warnings are printed with the fix.
 | Measured | Limit |
 |---|---|
 | `id="name"`, `id="tagline"`, `id="stage"` exist; name, key phrase and description are not animated | error |
-| `id="about"`, `id="ticker"`, `id="backdrop"` exist (`#facts` is optional) | warning |
+| `id="about"`, `id="backdrop"` exist (`#facts` and `#ticker` are optional) | warning |
 | Name size | 26-64 px, at most 45% of the canvas width |
 | Logo (when there is one), shorter side | 32-160 px, within 64 px of the name |
 | Key phrase (`#tagline`) | 38-68 px, the largest text on the canvas, 10 words or fewer |
 | Description (`#about`) | 18-26 px, 8 to 24 words |
 | Highlights (`#facts`) | at most 4 figures of 24 px or more; features take turns instead of standing as a block |
-| Strip (`#ticker`) | text that travels in it |
+| Strip (`#ticker`), when there is one | text that travels in it |
 | Background (`#backdrop`) | something in it is animated |
 | Picture (`#stage`), what can be seen of it | 34% of the canvas or more |
 | Text block against text block + picture (words in the picture count as picture) | reported; a warning under 25% or over 55%, and when the two overlap |
