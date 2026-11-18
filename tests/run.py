@@ -236,6 +236,10 @@ code, out, folder = build_scene(SCENE)
 test("a scene builds clean", code == 0 and "checks passed" in out, out)
 scene_dark = (folder / "demo-dark.svg").read_text(encoding="utf-8") if code == 0 else ""
 test("a scene is written as <name>-dark.svg and <name>-light.svg", bool(scene_dark) and (folder / "demo-light.svg").exists())
+icon = ('<g transform="translate(300 380)"><path d="M0 -8l12 8-12 8" fill="none" stroke="$muted" stroke-width="2"/>'
+        '<circle cx="-6" cy="-8" r="4" fill="none" stroke="$muted" stroke-width="2"/><circle cx="-6" cy="8" r="4" fill="none" stroke="$muted" stroke-width="2"/></g></g>\n</svg>')
+code, out, _ = build_scene(SCENE.replace("</g>\n</svg>", icon))
+test("a tiny icon of thin lines is warned about", "is an icon of 3 thin shapes" in out, out)
 test("a scene's palette roles are replaced", "$" not in re.sub(r"base64,[^)]+", "", scene_dark))
 test("the scene's figures are printed", "title 44 px, 6 words" in out, out)
 code, out, _ = build_scene(SCENE.replace("0 0 1280 448", "0 0 1280 640"))

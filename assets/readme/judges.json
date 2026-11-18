@@ -1,37 +1,37 @@
 {
   "picture:coldread.src.svg": {
-    "sha": "ec719dd6f4cbd521",
+    "sha": "716539098cb3a17b",
     "pass": true,
-    "why": "The blind judge saw a picture shown alone to a reader, its reading compared with a claims file, ending in pass or redraw."
+    "why": "The blind reader saw a picture cut out, handed to a reader with no context, its description compared with a claim, ending in pass or redraw."
   },
   "section:How it works": {
-    "sha": "343b2ca90b44ef17",
+    "sha": "7973934b01d964b8",
     "pass": true,
-    "why": "The reader described the cold read step: fresh agents read the result and redraw or rewrite what they get wrong, with a blind reader checking a picture against claims."
+    "why": "The reader described the cold read by a stranger whose misses are redone, and found the picture matching."
   },
   "picture:plan.src.svg": {
     "sha": "d40a702518daa665",
     "pass": true,
-    "why": "The blind judge saw a plan listing README sections, each with a word budget and a picture slot, though the per-section job is read only as a keyword tag."
+    "why": "The blind reader saw a plan listing sections each with a word budget and a picture slot, which matches the claim."
   },
   "section:What you get": {
     "sha": "b907c5e494795b83",
     "pass": true,
-    "why": "The reader understood a README planned section by section with word budgets and pictures over the sections that need them."
+    "why": "The reader understood a README plan with per-section word budgets and pictures, and said the picture fits."
   },
   "picture:ask.src.svg": {
     "sha": "70fb1718bba82037",
     "pass": true,
-    "why": "The blind judge saw an agent ask three questions with a Jano-suggested option each, then work on its own."
+    "why": "The blind reader saw one command, a few questions with preselected suggestions, then it works on its own."
   },
   "section:Use": {
     "sha": "8a33e9e0ea68dca7",
     "pass": true,
-    "why": "The reader understood it asks a few questions with a suggested answer, then works alone."
+    "why": "The reader understood one call, a few questions with suggested answers, then it works alone."
   },
   "readme": {
-    "sha": "542bd24fe1114cb3",
+    "sha": "c0796987b8b4edf8",
     "pass": true,
-    "why": "The reader's project sentence and start capture a skill for project owners that asks a few questions and writes a README with animated pictures for strangers, though the cold-read check is left out of the sentence."
+    "why": "The reader said it reads the repo, asks a few questions and writes a README with animated pictures checked by a cold read, which matches in substance."
   }
 }

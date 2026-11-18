@@ -59,6 +59,9 @@ develop) take no scene.
 - **Show the cause, and let it rest.** When one thing makes another happen (a right answer moves
   a mistake up, a check turns a card green), the cause is on the canvas while the effect happens
   and stays a second or more. A cause that flies past between two frames is never seen.
+- **No tiny pictograms.** Scissors, an eye, a gear drawn in thin lines under 40 px turn into
+  something else at README width (a pair of scissors became an arrow with two balls). Name the
+  thing in a word, or draw it 48 px or more with filled shapes; the build warns about the rest.
 - **Draw only what exists.** A command, flag or label on a scene is one the repository really has;
   `readme.py check` refuses a picture that shows `<name> <word>` when no Markdown file of the
   repository mentions it.
