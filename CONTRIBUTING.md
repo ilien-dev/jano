@@ -129,10 +129,11 @@ in the PR; keep extra changes for another PR.
 
 ## How releases happen
 
-Each merge to `main` updates one pull request that a bot keeps open, titled
-`chore(main): release X.Y.Z`. It holds the next version number, computed from the titles
-merged since the last release, and the new section of `CHANGELOG.md`. The maintainer
-merges it when it is time to release, and that creates the tag and the GitHub Release.
+Every merge to `main` that holds a `feat` or a `fix` publishes a version by itself. A
+workflow computes the next number from the titles merged since the last release, writes
+it with the new section of `CHANGELOG.md` in a `chore(main): release X.Y.Z` pull request,
+merges that pull request at once, and creates the tag and the GitHub Release. So the
+title of your pull request decides the version: pick its type with care.
 
 ## Working with an AI agent
 
