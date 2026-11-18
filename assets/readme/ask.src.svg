@@ -1,0 +1,84 @@
+<!--palette
+bg      #0E1628 #EEF2F7
+panel   #1B2A4A #FFFFFF
+panel2  #142038 #E1E7F0
+line    #2F4170 #C5D0E0
+dots    #1D2A47 #D5DDE9
+ink     #EEF2F7 #1B2A4A
+body    #BAC5DB #3F4F73
+muted   #8696B8 #5A6A8C
+accent  #E8553D #E8553D
+hot     #FF8469 #B4381F
+ring    #EEF2F7 #EEF2F7
+onacc   #0E1628 #0E1628
+tile    #1B2A4A #1B2A4A
+-->
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 448" role="img" aria-label="Use: in the agent's chat you type /jano make this repository's README. Jano asks three questions one after another, who reads it, whether to keep an unfinished feature, whether to show a real screenshot, each with the answer it suggests marked. You pick, the question counter fills one, two, three, and then a bar shows Jano working on its own with no more questions.">
+<style>
+@keyframes drift{to{transform:translate(24px,24px)}}
+.drift{animation:drift 4.2s linear infinite}
+@keyframes caret{0%,100%{opacity:1}50%{opacity:0}}
+.caret{animation:caret 1.1s steps(1,end) infinite}
+/* 15 s  q1 |==ask==pick==|q2 |==ask==pick==|q3 |==ask==pick==| on its own ======|
+         cursor  goes to the suggested answer, clicks, comes back, three times
+         ticks   the counter fills as each answer lands; the bar fills after the third */
+@keyframes q1{0%,26%{opacity:1;transform:translateY(0)}29%{opacity:0;transform:translateY(-12px)}40%,97%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes q2{0%,26%{opacity:0;transform:translateY(12px)}29%,52%{opacity:1;transform:translateY(0)}55%,100%{opacity:0;transform:translateY(-12px)}}
+@keyframes q3{0%,52%{opacity:0;transform:translateY(12px)}55%,94%{opacity:1;transform:translateY(0)}97%,100%{opacity:0;transform:translateY(-12px)}}
+.q1{animation:q1 15s cubic-bezier(.4,0,.2,1) infinite}.q2{animation:q2 15s cubic-bezier(.4,0,.2,1) infinite}.q3{animation:q3 15s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes cursor{0%,8%{transform:translate(0,0)}13%,20%{transform:translate(52px,-48px)}25%,36%{transform:translate(0,0)}41%,47%{transform:translate(52px,-48px)}52%,62%{transform:translate(0,0)}67%,73%{transform:translate(52px,-48px)}78%,100%{transform:translate(0,0)}}
+.cursor{animation:cursor 15s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes p1{0%,15%{opacity:0;transform:scale(.6)}17%,95%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(.6)}}
+@keyframes p2{0%,43%{opacity:0;transform:scale(.6)}45%,95%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(.6)}}
+@keyframes p3{0%,69%{opacity:0;transform:scale(.6)}71%,95%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(.6)}}
+.p1,.p2,.p3{transform-box:fill-box;transform-origin:center}
+.p1{animation:p1 15s ease-out infinite}.p2{animation:p2 15s ease-out infinite}.p3{animation:p3 15s ease-out infinite}
+@keyframes work{0%,74%{transform:scaleX(.03)}92%,95%{transform:scaleX(1)}99%,100%{transform:scaleX(.03)}}
+.work{animation:work 15s cubic-bezier(.4,0,.2,1) infinite;transform-box:fill-box;transform-origin:0 50%}
+</style>
+<defs>
+<pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.6" fill="$dots"/></pattern>
+<g id="ok"><circle r="13" fill="$accent"/><path d="M-6 0l4 4 8-8.5" fill="none" stroke="$onacc" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+</defs>
+<rect width="1280" height="448" fill="$bg"/>
+<g id="backdrop"><rect class="drift" x="-24" y="-24" width="1328" height="496" fill="url(#grid)"/></g>
+
+<text id="eyebrow" class="m" x="56" y="56" font-size="15" fill="$hot" letter-spacing="2">USE</text>
+<text id="title" class="b" x="56" y="108" font-size="42" fill="$ink">You answer once. Jano does the rest.</text>
+<text id="sub" class="s" x="56" y="146" font-size="20" fill="$body">Each question comes with the answer Jano suggests.</text>
+
+<g id="stage">
+<!-- the agent's chat -->
+<rect x="56" y="176" width="724" height="252" rx="14" fill="$panel" stroke="$line" stroke-width="1.5"/>
+<path d="M56 208v-18a14 14 0 0 1 14-14h696a14 14 0 0 1 14 14v18z" fill="$panel2"/>
+<circle cx="76" cy="192" r="4.5" fill="$line"/><circle cx="91" cy="192" r="4.5" fill="$line"/>
+<text class="m" x="108" y="198" font-size="16" fill="$muted">your agent</text>
+<rect x="392" y="220" width="372" height="38" rx="12" fill="$panel2" stroke="$line" stroke-width="1.5"/>
+<text class="m" x="410" y="245" font-size="15" fill="$ink">/jano make this repository's README</text>
+<!-- Jano's mark, then its question -->
+<rect x="72" y="276" width="36" height="36" rx="8" fill="$tile" stroke="$line" stroke-width="1.5"/>
+<g transform="translate(75.6 279.6) scale(.1125)"><path fill="$ring" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/><path fill="$accent" d="M114 70A24 24 0 1 0 162 70A24 24 0 1 0 114 70Z"/></g>
+<rect x="120" y="272" width="644" height="144" rx="12" fill="$bg" stroke="$line" stroke-width="1.5"/>
+<circle cx="610" cy="300" r="6" fill="$accent"/><text class="s" x="624" y="306" font-size="16" fill="$muted">Jano suggests</text>
+<g class="q1" opacity="0"><text class="b" x="140" y="308" font-size="20" fill="$ink">Who reads this README?</text><rect x="140" y="332" width="200" height="42" rx="21" fill="$panel" stroke="$accent" stroke-width="2"/><circle cx="162" cy="353" r="6" fill="$accent"/><text class="s" x="246" y="359" font-size="17" fill="$ink" text-anchor="middle">everyone</text><rect x="356" y="332" width="200" height="42" rx="21" fill="$panel" stroke="$muted" stroke-width="1.5"/><text class="s" x="456" y="359" font-size="17" fill="$body" text-anchor="middle">professionals</text><g transform="translate(326 334)"><use class="p1" href="#ok"/></g></g>
+<g class="q2" opacity="0"><text class="b" x="140" y="308" font-size="20" fill="$ink">Keep the beta feature?</text><rect x="140" y="332" width="200" height="42" rx="21" fill="$panel" stroke="$accent" stroke-width="2"/><circle cx="162" cy="353" r="6" fill="$accent"/><text class="s" x="246" y="359" font-size="17" fill="$ink" text-anchor="middle">leave it out</text><rect x="356" y="332" width="200" height="42" rx="21" fill="$panel" stroke="$muted" stroke-width="1.5"/><text class="s" x="456" y="359" font-size="17" fill="$body" text-anchor="middle">keep it</text><g transform="translate(326 334)"><use class="p2" href="#ok"/></g></g>
+<g class="q3"><text class="b" x="140" y="308" font-size="20" fill="$ink">A real screenshot in Use?</text><rect x="140" y="332" width="200" height="42" rx="21" fill="$panel" stroke="$accent" stroke-width="2"/><circle cx="162" cy="353" r="6" fill="$accent"/><text class="s" x="246" y="359" font-size="17" fill="$ink" text-anchor="middle">no, drawn</text><rect x="356" y="332" width="200" height="42" rx="21" fill="$panel" stroke="$muted" stroke-width="1.5"/><text class="s" x="456" y="359" font-size="17" fill="$body" text-anchor="middle">yes</text><g transform="translate(326 334)"><use class="p3" href="#ok"/></g></g>
+<g transform="translate(196 404)"><path class="cursor" d="M0 0l0 30 9-7 5 14 6-3-6-13 11 0z" fill="$ink" stroke="$bg" stroke-width="2"/></g>
+
+<path d="M792 300H830" fill="none" stroke="$muted" stroke-width="2.5"/><path d="M826 292l8 8-8 8" fill="none" stroke="$muted" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- the questions, counted, then the work that carries on alone -->
+<rect x="846" y="176" width="382" height="252" rx="14" fill="$panel" stroke="$line" stroke-width="1.5"/>
+<text class="s" x="870" y="214" font-size="16" fill="$muted">questions</text>
+<path d="M918 258H1094" stroke="$line" stroke-width="3"/>
+<g fill="$panel2" stroke="$muted" stroke-width="2"><circle cx="894" cy="258" r="22"/><circle cx="982" cy="258" r="22"/><circle cx="1070" cy="258" r="22"/></g>
+<g class="b" font-size="20" fill="$body" text-anchor="middle"><text x="894" y="265">1</text><text x="982" y="265">2</text><text x="1070" y="265">3</text></g>
+<g transform="translate(894 258) scale(1.7)"><use class="p1" href="#ok"/></g>
+<g transform="translate(982 258) scale(1.7)"><use class="p2" href="#ok"/></g>
+<g transform="translate(1070 258) scale(1.7)"><use class="p3" href="#ok"/></g>
+<text class="s" x="870" y="334" font-size="16" fill="$muted">then it works on its own</text>
+<rect x="870" y="352" width="334" height="16" rx="8" fill="$line"/>
+<rect class="work" x="870" y="352" width="334" height="16" rx="8" fill="$accent"/>
+<g fill="$muted"><rect x="870" y="384" width="90" height="6" rx="3"/><rect x="972" y="384" width="60" height="6" rx="3"/><rect x="1044" y="384" width="76" height="6" rx="3"/></g>
+</g>
+</svg>

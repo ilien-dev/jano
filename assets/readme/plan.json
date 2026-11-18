@@ -1,0 +1,117 @@
+{
+  "audience": "general",
+  "audience_confirmed": true,
+  "sentence": "People who own a repository call Jano once from their AI agent, answer a few questions, and get back a README that a stranger understands from top to bottom: planned sections, text sized to fit, and a moving picture over the top and over each part that needs one, checked by a reader who never saw the project.",
+  "language": "en",
+  "translations": [
+    "README.es.md"
+  ],
+  "unfinished": [
+    {
+      "item": "A preview page to look at it before you publish",
+      "source": "README.md:150",
+      "match": "preview page",
+      "decision": "not-a-feature"
+    },
+    {
+      "item": "The agent sees the motion as stopped frames; you judge it in the preview",
+      "source": "README.md:166",
+      "match": "stopped frames",
+      "decision": "not-a-feature"
+    }
+  ],
+  "captures_agreed": false,
+  "hero": {
+    "file": "assets/hero.src.svg",
+    "shows": [
+      "a route of six stations",
+      "a repo folder travelling the route",
+      "station cards: read the repo, ask you, plan, draw, check, cold read",
+      "ticks left at each station passed",
+      "the finished README.md card at the end of the route"
+    ]
+  },
+  "sections": [
+    {
+      "heading": "How it works",
+      "role": "how",
+      "docs": null,
+      "picture": {
+        "file": "assets/readme/coldread.src.svg",
+        "type": "drawn",
+        "claim": "Before the README is done, a reader who has never seen the project looks at each picture with its words removed and says what it shows; the answer is held against what the picture was meant to say, and the picture passes or goes back to be redrawn.",
+        "shows": [
+          "a section picture with its title cut away",
+          "a blank reader window that sees only the picture",
+          "the reader's answer typed out",
+          "the intended claim beside it",
+          "a pass stamp or a redraw arrow"
+        ]
+      }
+    },
+    {
+      "heading": "What you get",
+      "role": "features",
+      "docs": null,
+      "picture": {
+        "file": "assets/readme/plan.src.svg",
+        "type": "drawn",
+        "claim": "Jano plans the README section by section: each one gets a job, a word budget and, when it helps, a picture of its own.",
+        "shows": [
+          "a plan sheet with one row per section",
+          "role chips on each row",
+          "word budget bars filling",
+          "picture or no picture marks",
+          "a card naming the lit row"
+        ]
+      }
+    },
+    {
+      "heading": "Made with Jano",
+      "role": "about",
+      "docs": null,
+      "picture": null
+    },
+    {
+      "heading": "Install",
+      "role": "install",
+      "docs": null,
+      "picture": null
+    },
+    {
+      "heading": "Use",
+      "role": "use",
+      "docs": null,
+      "picture": {
+        "file": "assets/readme/ask.src.svg",
+        "type": "drawn",
+        "claim": "You call Jano once and answer a few questions, each with Jano's own suggestion, and after that it works without asking again.",
+        "shows": [
+          "the agent chat with the /jano call",
+          "three questions with a suggested answer each",
+          "answers being picked",
+          "a closed question counter",
+          "work carrying on alone"
+        ]
+      }
+    },
+    {
+      "heading": "Limits",
+      "role": "limits",
+      "docs": null,
+      "picture": null
+    },
+    {
+      "heading": "Contributing",
+      "role": "contributing",
+      "docs": null,
+      "picture": null
+    },
+    {
+      "heading": "License",
+      "role": "license",
+      "docs": null,
+      "picture": null
+    }
+  ]
+}

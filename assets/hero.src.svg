@@ -9,17 +9,22 @@ body    #BAC5DB #3F4F73
 muted   #8696B8 #5A6A8C
 accent  #E8553D #E8553D
 hot     #FF8469 #B4381F
-hl      #2B3A63 #FBDDD6
 tile    #1B2A4A #1B2A4A
 ring    #EEF2F7 #EEF2F7
-d_bg    #0A1020 #0A1020
-d_ink   #EEF2F7 #EEF2F7
-d_mut   #3A4A70 #3A4A70
-l_bg    #FFFFFF #FFFFFF
-l_ink   #1B2A4A #1B2A4A
-l_mut   #C3CEDF #C3CEDF
 -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-label="Jano: your repo, explained before a word is read. At the top of a README, Jano draws a poster part by part; build.py measures it (text size, contrast, loop, speed, file size) and writes hero-dark.svg and hero-light.svg.">
+<!--brief
+sentence: People who own a repository call Jano once from their AI agent, answer a few questions, and get back a README a stranger understands from top to bottom: planned sections, text sized to fit, a moving picture over the top and over each part that needs one, checked by a reader who never saw the project.
+flow: your repo -> read the repo -> ask you (once) -> plan -> draw -> check -> cold read -> a finished README.md
+input and output: the repository itself (README, docs, code) -> README.md, assets/hero-dark.svg / hero-light.svg, assets/readme/<name>-dark.svg / -light.svg, assets/readme/plan.json (skills/jano/SKILL.md steps 1-8)
+stations: read the repo = SKILL.md step 1; ask you = step 2 (readme.py survey); plan = step 3 (plan.json, readme.py rules); draw = steps 4-6 (build.py); check = step 7 (readme.py check); cold read = step 8 (readme.py judge)
+feature "A picture over each section": references/scenes.md
+feature "Text sized to fit each part": readme.py rules (word budget per role)
+feature "Checked by a reader who never saw it": SKILL.md step 8, the blind and reader judges
+feature "Dark and light from one file": build.py writes -dark and -light from one .src.svg
+left out as unfinished: nothing (the two survey lines are not features)
+strip: none; where it runs is in the badges, and fewer than five list facts remain
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-label="Jano: your repo in, a finished README out. A repository travels a route of six stations: Jano reads the repo, asks you once, plans the sections, draws the pictures, checks everything and has a cold reader look at it, and the route ends at a finished README.md.">
 <style>
 @keyframes drift{to{transform:translate(24px,24px)}}
 .drift{animation:drift 4.2s linear infinite}
@@ -27,120 +32,171 @@ l_mut   #C3CEDF #C3CEDF
 .beat{animation:beat 3.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 @keyframes flow{to{stroke-dashoffset:-24}}
 .flow{animation:flow 1.2s linear infinite}
-@keyframes bob{0%,100%{transform:translateX(0)}50%{transform:translateX(74px)}}
-.bob{animation:bob 3.4s ease-in-out infinite}
-@keyframes lit{0%,80%{opacity:0}85%,96%{opacity:1}100%{opacity:0}}
-@keyframes tick{to{transform:translateX(-2313.6px)}}
-.tick{animation:tick 37.3s linear infinite}
-
-/* 12 s  pen     |name|key|about|facts|== picture ==|strip|-> build.py|
-         parts   each one goes just before the pen redraws it
-         scan                                          |== across ==|
-         checks                                            |1|2|3|4|5|
-         files                                                     |glow| */
-@keyframes pen{0%{transform:translate(0,0);opacity:0}2%,6%{transform:translate(0,0);opacity:1}10%,14%{transform:translate(44px,36px);opacity:1}18%,22%{transform:translate(54px,72px);opacity:1}26%,30%{transform:translate(26px,102px);opacity:1}36%,42%{transform:translate(254px,26px);opacity:1}48%,50%{transform:translate(160px,146px);opacity:1}56%,58%{transform:translate(428px,-38px);opacity:1}61%,100%{transform:translate(428px,-38px);opacity:0}}
-.pen{animation:pen 12s cubic-bezier(.4,0,.2,1) infinite}
-@keyframes draw{0%{opacity:0;transform:scaleX(.25)}4%,94%{opacity:1;transform:scaleX(1)}97%,100%{opacity:0;transform:scaleX(.25)}}
-.draw{animation:draw 12s cubic-bezier(0,0,.2,1) infinite;transform-box:fill-box;transform-origin:0 50%}
-@keyframes scan{0%,50%{transform:translateX(0);opacity:0}52%{transform:translateX(0);opacity:1}62%{transform:translateX(410px);opacity:1}64%,100%{transform:translateX(410px);opacity:0}}
-.scan{animation:scan 12s linear infinite}
-@keyframes ok{0%{opacity:1;transform:scale(1.3)}3%,92%{opacity:1;transform:scale(1)}95%,98%{opacity:.15;transform:scale(1)}100%{opacity:1;transform:scale(1.3)}}
-.ok{animation:ok 12s ease-out infinite;transform-box:fill-box;transform-origin:center}
-@keyframes belt{to{transform:translateX(-96px)}}
-.belt{animation:belt 4.8s linear infinite}
-.glow{animation:lit 12s ease-out infinite}
 @keyframes turn{0%{transform:translateY(32px);opacity:0}3%,25.5%{transform:translateY(0);opacity:1}28.5%,100%{transform:translateY(-32px);opacity:0}}
 .turn{animation:turn 12s cubic-bezier(.4,0,.2,1) infinite}
+
+/* 12 s  repo   |S1|>|S2|>|S3|>|S4 (folder becomes page)|>corner>|S5|>|S6|>| README |fade|
+         lit       each station card lights while the repo rests on its stop
+         ticks     each station leaves a tick as the repo departs; all clear at 94-97%
+         readme                                                              |glow + done| */
+@keyframes trip{
+0%{transform:translate(0,0);opacity:0}2%{transform:translate(0,0);opacity:1}
+9%{transform:translate(0,0);animation-timing-function:cubic-bezier(.4,0,.2,1)}13%,21%{transform:translate(150px,0);animation-timing-function:cubic-bezier(.4,0,.2,1)}
+25%,33%{transform:translate(300px,0);animation-timing-function:cubic-bezier(.4,0,.2,1)}37%,45%{transform:translate(450px,0);animation-timing-function:cubic-bezier(.4,0,1,1)}
+49%{transform:translate(550px,0);animation-timing-function:linear}54%{transform:translate(550px,260px);animation-timing-function:cubic-bezier(0,0,.2,1)}
+58%,66%{transform:translate(450px,260px);animation-timing-function:cubic-bezier(.4,0,.2,1)}70%,78%{transform:translate(300px,260px);animation-timing-function:cubic-bezier(.4,0,.2,1)}
+83%{transform:translate(190px,260px);opacity:1}87%,100%{transform:translate(120px,260px);opacity:0}}
+.trip{animation:trip 12s infinite}
+@keyframes f1{0%,39%{opacity:1}41%,98%{opacity:0}100%{opacity:1}}
+@keyframes f2{0%,39%{opacity:0}41%,96%{opacity:1}98%,100%{opacity:0}}
+.f1{animation:f1 12s linear infinite}
+.f2{animation:f2 12s linear infinite}
+@keyframes on{0%{opacity:0}2%,8%{opacity:1}11%,100%{opacity:0}}
+.on{animation:on 12s ease-in-out infinite}
+@keyframes glow{0%{opacity:0}3%,12%{opacity:1}16%,100%{opacity:0}}
+.glow{animation:glow 12s ease-out infinite}
+@keyframes t1{0%,9%{opacity:0;transform:scale(.5)}11%,94%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(.5)}}
+@keyframes t2{0%,21%{opacity:0;transform:scale(.5)}23%,94%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(.5)}}
+@keyframes t3{0%,33%{opacity:0;transform:scale(.5)}35%,94%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(.5)}}
+@keyframes t4{0%,45%{opacity:0;transform:scale(.5)}47%,94%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(.5)}}
+@keyframes t5{0%,66%{opacity:0;transform:scale(.5)}68%,94%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(.5)}}
+@keyframes t6{0%,78%{opacity:0;transform:scale(.5)}80%,94%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(.5)}}
+@keyframes t7{0%,83%{opacity:0;transform:scale(.5)}86%,94%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(.5)}}
+.t1,.t2,.t3,.t4,.t5,.t6,.t7{transform-box:fill-box;transform-origin:center}
+.t1{animation:t1 12s ease-out infinite}.t2{animation:t2 12s ease-out infinite}.t3{animation:t3 12s ease-out infinite}
+.t4{animation:t4 12s ease-out infinite}.t5{animation:t5 12s ease-out infinite}.t6{animation:t6 12s ease-out infinite}.t7{animation:t7 12s ease-out infinite}
+@keyframes grow{0%{transform:scaleX(.25)}5%,88%{transform:scaleX(1)}94%,100%{transform:scaleX(.25)}}
+.grow{animation:grow 12s cubic-bezier(.4,0,.2,1) infinite;transform-box:fill-box;transform-origin:0 50%}
+@keyframes look{0%,100%{transform:translateX(-7px)}50%{transform:translateX(7px)}}
+.look{animation:look 3s ease-in-out infinite}
 </style>
 <defs>
 <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.6" fill="$dots"/></pattern>
-<clipPath id="band"><rect x="0" y="600" width="1280" height="40"/></clipPath>
-<clipPath id="mstrip"><rect x="612" y="284" width="386" height="15"/></clipPath>
-<clipPath id="feat"><rect x="44" y="384" width="520" height="48"/></clipPath>
+<clipPath id="feat"><rect x="44" y="430" width="520" height="48"/></clipPath>
+<g id="tick"><circle r="12" fill="$accent"/><path d="M-5.5 0l3.8 3.8 7-7.6" fill="none" stroke="$ring" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g id="stop"><circle r="9" fill="$bg" stroke="$muted" stroke-width="3"/></g>
 </defs>
 <rect width="1280" height="640" fill="$bg"/>
 <g id="backdrop"><rect class="drift" x="-24" y="-24" width="1328" height="688" fill="url(#grid)"/></g>
-<g transform="translate(0 45)">
+
+<!-- text block -->
 <g id="logo">
-<rect x="48" y="76" width="56" height="56" rx="12.25" fill="$tile" stroke="$line" stroke-width="1.5"/>
-<g transform="translate(53.6 81.6) scale(.175)"><path fill="$ring" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/><path class="beat" fill="$accent" d="M114 70A24 24 0 1 0 162 70A24 24 0 1 0 114 70Z"/></g>
+<rect x="48" y="112" width="56" height="56" rx="12.25" fill="$tile" stroke="$line" stroke-width="1.5"/>
+<g transform="translate(53.6 117.6) scale(.175)"><path fill="$ring" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/><path class="beat" fill="$accent" d="M114 70A24 24 0 1 0 162 70A24 24 0 1 0 114 70Z"/></g>
 </g>
-<text id="name" class="b" x="118" y="116" font-size="34" fill="$ink">Jano</text>
-<text id="tagline" class="b" font-size="42" fill="$ink"><tspan x="48" y="200">Your repo, explained</tspan><tspan x="48" y="250" fill="$hot">before a word is read.</tspan></text>
-<text id="about" class="s" font-size="19" fill="$body"><tspan x="48" y="300">An agent skill that draws your README a looping</tspan><tspan x="48" y="327">SVG poster, dark and light, measured on every build.</tspan></text>
+<text id="name" class="b" x="118" y="152" font-size="34" fill="$ink">Jano</text>
+<text id="tagline" class="b" font-size="44" fill="$ink"><tspan x="48" y="240">Your repo in.</tspan><tspan x="48" y="294" fill="$hot">A finished README out.</tspan></text>
+<text id="about" class="s" font-size="19" fill="$body"><tspan x="48" y="346">An agent skill that plans your README, writes it to</tspan><tspan x="48" y="373">fit and draws a moving picture over each part.</tspan></text>
 <g id="facts">
-<rect x="48" y="372" width="200" height="2" fill="$line"/><rect x="48" y="372" width="56" height="2" fill="$accent"/>
+<rect x="48" y="412" width="200" height="2" fill="$line"/><rect x="48" y="412" width="56" height="2" fill="$accent"/>
 <g clip-path="url(#feat)">
-<g class="turn" opacity="0" style="animation-delay:-9s"><circle cx="56" cy="410" r="7" fill="$accent"/><text x="76" y="418" class="s" font-size="22" fill="$ink">Your README text untouched</text></g>
-<g class="turn" opacity="0" style="animation-delay:-6s"><circle cx="56" cy="410" r="7" fill="$accent"/><text x="76" y="418" class="s" font-size="22" fill="$ink">Loops without a seam</text></g>
-<g class="turn" opacity="0" style="animation-delay:-3s"><circle cx="56" cy="410" r="7" fill="$accent"/><text x="76" y="418" class="s" font-size="22" fill="$ink">Checked before it ships</text></g>
-<g class="turn" style="animation-delay:0s"><circle cx="56" cy="410" r="7" fill="$accent"/><text x="76" y="418" class="s" font-size="22" fill="$ink">Dark and light from one file</text></g>
-</g></g>
+<g class="turn" opacity="0" style="animation-delay:-9s"><circle cx="56" cy="456" r="7" fill="$accent"/><text x="76" y="464" class="s" font-size="22" fill="$ink">A picture over each section</text></g>
+<g class="turn" opacity="0" style="animation-delay:-6s"><circle cx="56" cy="456" r="7" fill="$accent"/><text x="76" y="464" class="s" font-size="22" fill="$ink">Text sized to fit each part</text></g>
+<g class="turn" opacity="0" style="animation-delay:-3s"><circle cx="56" cy="456" r="7" fill="$accent"/><text x="76" y="464" class="s" font-size="22" fill="$ink">Checked by a reader who never saw it</text></g>
+<g class="turn" style="animation-delay:0s"><circle cx="56" cy="456" r="7" fill="$accent"/><text x="76" y="464" class="s" font-size="22" fill="$ink">Dark and light from one file</text></g>
 </g>
+</g>
+
 <g id="stage">
-<rect x="580" y="44" width="450" height="530" rx="14" fill="$panel" stroke="$line" stroke-width="1.5"/>
-<path d="M580 80V58a14 14 0 0 1 14-14h422a14 14 0 0 1 14 14v22z" fill="$panel2"/><circle cx="600" cy="62" r="4.5" fill="$line"/><circle cx="616" cy="62" r="4.5" fill="$line"/><circle cx="632" cy="62" r="4.5" fill="$line"/><text class="m" x="656" y="68" font-size="16" fill="$ink">README.md</text>
-<rect x="928" y="56" width="84" height="12" rx="6" fill="$line"/>
-<rect x="600" y="104" width="410" height="205" rx="10" fill="$bg" stroke="$line" stroke-width="1.5"/>
-<rect x="600" y="104" width="410" height="205" rx="10" fill="url(#grid)"/>
-<g class="draw" style="animation-delay:-11.76s"><rect x="616" y="118" width="20" height="20" rx="5" fill="$tile" stroke="$line" stroke-width="1"/><circle cx="626" cy="125" r="3" fill="$accent"/><rect x="644" y="123" width="46" height="10" rx="3" fill="$ink"/></g>
-<g class="draw" style="animation-delay:-10.80s"><rect x="616" y="154" width="136" height="13" rx="3" fill="$ink"/><rect x="616" y="173" width="112" height="13" rx="3" fill="$hot"/></g>
-<g class="draw" style="animation-delay:-9.84s"><rect x="616" y="198" width="142" height="5" rx="2.5" fill="$muted"/><rect x="616" y="209" width="120" height="5" rx="2.5" fill="$muted"/></g>
-<g class="draw" style="animation-delay:-8.88s"><rect x="616" y="230" width="28" height="12" rx="3" fill="$accent"/><rect x="616" y="247" width="36" height="4" rx="2" fill="$muted"/><rect x="664" y="230" width="14" height="12" rx="3" fill="$ink"/><rect x="664" y="247" width="36" height="4" rx="2" fill="$muted"/><rect x="712" y="230" width="14" height="12" rx="3" fill="$ink"/><rect x="712" y="247" width="36" height="4" rx="2" fill="$muted"/></g>
-<g class="draw" style="animation-delay:-7.68s"><rect x="778" y="118" width="216" height="150" rx="8" fill="$panel" stroke="$line" stroke-width="1.5"/><rect x="790" y="130" width="84" height="52" rx="6" fill="$panel2" stroke="$line" stroke-width="1"/><rect x="800" y="142" width="44" height="5" rx="2.5" fill="$muted"/><rect x="800" y="154" width="60" height="5" rx="2.5" fill="$line"/><rect x="800" y="166" width="36" height="5" rx="2.5" fill="$line"/><path d="M878 156h14" stroke="$muted" stroke-width="2"/><path d="M890 151l6 5-6 5" fill="none" stroke="$muted" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="900" y="130" width="82" height="52" rx="6" fill="$panel2" stroke="$line" stroke-width="1"/><rect x="910" y="142" width="30" height="16" rx="4" fill="$accent"/><rect x="946" y="142" width="26" height="16" rx="4" fill="$muted"/><rect x="910" y="166" width="52" height="5" rx="2.5" fill="$line"/><rect x="790" y="194" width="192" height="62" rx="6" fill="$panel2" stroke="$line" stroke-width="1"/><rect x="802" y="222" width="18" height="14" rx="3" fill="$muted"/><rect x="832" y="214" width="18" height="22" rx="3" fill="$muted"/><rect x="862" y="218" width="18" height="18" rx="3" fill="$muted"/><rect x="892" y="208" width="18" height="28" rx="3" fill="$muted"/><rect x="922" y="202" width="18" height="34" rx="3" fill="$accent"/><rect x="952" y="212" width="18" height="24" rx="3" fill="$muted"/><rect x="802" y="242" width="168" height="2" fill="$line"/></g>
-<g class="draw" style="animation-delay:-6.24s"><rect x="608" y="282" width="394" height="19" rx="6" fill="$panel2" stroke="$line" stroke-width="1"/><g clip-path="url(#mstrip)"><g class="belt"><rect x="616" y="289" width="22" height="5" rx="2.5" fill="$hot"/><rect x="664" y="289" width="30" height="5" rx="2.5" fill="$muted"/><rect x="712" y="289" width="22" height="5" rx="2.5" fill="$hot"/><rect x="760" y="289" width="30" height="5" rx="2.5" fill="$muted"/><rect x="808" y="289" width="22" height="5" rx="2.5" fill="$hot"/><rect x="856" y="289" width="30" height="5" rx="2.5" fill="$muted"/><rect x="904" y="289" width="22" height="5" rx="2.5" fill="$hot"/><rect x="952" y="289" width="30" height="5" rx="2.5" fill="$muted"/><rect x="1000" y="289" width="22" height="5" rx="2.5" fill="$hot"/><rect x="1048" y="289" width="30" height="5" rx="2.5" fill="$muted"/><rect x="1096" y="289" width="22" height="5" rx="2.5" fill="$hot"/><rect x="1144" y="289" width="30" height="5" rx="2.5" fill="$muted"/></g></g></g>
-<g><rect class="scan" opacity="0" x="599" y="98" width="3" height="217" rx="1.5" fill="$accent"/></g>
-<rect x="600" y="358" width="168" height="15" rx="4" fill="$ink"/>
-<rect x="600" y="386" width="58" height="18" rx="9" fill="none" stroke="$muted" stroke-width="1.5"/><circle cx="611" cy="395" r="3.5" fill="$muted"/><rect x="666" y="386" width="70" height="18" rx="9" fill="none" stroke="$muted" stroke-width="1.5"/><circle cx="677" cy="395" r="3.5" fill="$muted"/><rect x="744" y="386" width="50" height="18" rx="9" fill="none" stroke="$muted" stroke-width="1.5"/><circle cx="755" cy="395" r="3.5" fill="$muted"/>
-<rect x="600" y="420" width="396" height="6" rx="3" fill="$line"/><rect x="600" y="435" width="372" height="6" rx="3" fill="$line"/><rect x="600" y="450" width="404" height="6" rx="3" fill="$line"/><rect x="600" y="465" width="240" height="6" rx="3" fill="$line"/>
-<rect x="600" y="488" width="410" height="68" rx="8" fill="$panel2" stroke="$line" stroke-width="1"/><rect x="616" y="503" width="12" height="6" rx="3" fill="$hot"/><rect x="636" y="503" width="150" height="6" rx="3" fill="$muted"/><rect x="616" y="518" width="12" height="6" rx="3" fill="$hot"/><rect x="636" y="518" width="220" height="6" rx="3" fill="$muted"/><rect x="616" y="533" width="12" height="6" rx="3" fill="$hot"/><rect x="636" y="533" width="96" height="6" rx="3" fill="$muted"/>
-<rect x="1050" y="44" width="210" height="530" rx="14" fill="$panel" stroke="$line" stroke-width="1.5"/>
-<path d="M1050 80V58a14 14 0 0 1 14-14h182a14 14 0 0 1 14 14v22z" fill="$panel2"/><text class="m" x="1066" y="68" font-size="16" fill="$ink">build.py</text>
-<g class="ok" style="animation-delay:-5.04s"><circle cx="1074" cy="112" r="9" fill="$accent"/><path d="M1069.5 112l3.2 3.4 6-6.6" fill="none" stroke="$ring" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g><text class="m" x="1092" y="117" font-size="16" fill="$body">text size</text><text class="m" x="1248" y="117" font-size="16" text-anchor="end" fill="$hot">13 px</text>
-<rect x="1062" y="130" width="186" height="1.2" fill="$line"/><g class="ok" style="animation-delay:-4.44s"><circle cx="1074" cy="150" r="9" fill="$accent"/><path d="M1069.5 150l3.2 3.4 6-6.6" fill="none" stroke="$ring" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g><text class="m" x="1092" y="155" font-size="16" fill="$body">contrast</text><text class="m" x="1248" y="155" font-size="16" text-anchor="end" fill="$hot">4.5</text>
-<rect x="1062" y="168" width="186" height="1.2" fill="$line"/><g class="ok" style="animation-delay:-3.84s"><circle cx="1074" cy="188" r="9" fill="$accent"/><path d="M1069.5 188l3.2 3.4 6-6.6" fill="none" stroke="$ring" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g><text class="m" x="1092" y="193" font-size="16" fill="$body">loop</text><text class="m" x="1248" y="193" font-size="16" text-anchor="end" fill="$hot">closes</text>
-<rect x="1062" y="206" width="186" height="1.2" fill="$line"/><g class="ok" style="animation-delay:-3.24s"><circle cx="1074" cy="226" r="9" fill="$accent"/><path d="M1069.5 226l3.2 3.4 6-6.6" fill="none" stroke="$ring" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g><text class="m" x="1092" y="231" font-size="16" fill="$body">speed</text><text class="m" x="1248" y="231" font-size="16" text-anchor="end" fill="$hot">700 px/s</text>
-<rect x="1062" y="244" width="186" height="1.2" fill="$line"/><g class="ok" style="animation-delay:-2.64s"><circle cx="1074" cy="264" r="9" fill="$accent"/><path d="M1069.5 264l3.2 3.4 6-6.6" fill="none" stroke="$ring" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g><text class="m" x="1092" y="269" font-size="16" fill="$body">file</text><text class="m" x="1248" y="269" font-size="16" text-anchor="end" fill="$hot">200 KB</text>
-<path class="flow" d="M1155 290V316" fill="none" stroke="$muted" stroke-width="2" stroke-dasharray="8 16"/><path d="M1147 314l8 9 8-9" fill="none" stroke="$muted" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<g transform="translate(1066 334) scale(0.8641)">
-<rect width="206" height="103" rx="8" fill="$d_bg" stroke="$muted" stroke-width="2"/>
-<rect x="10" y="10" width="10" height="10" rx="2.5" fill="$tile" stroke="$d_mut" stroke-width="1.2"/><circle cx="15" cy="13.6" r="1.8" fill="$accent"/>
-<rect x="24" y="12.5" width="24" height="5" rx="2.5" fill="$d_ink"/>
-<rect x="10" y="28" width="64" height="8" rx="2" fill="$d_ink"/><rect x="10" y="40" width="52" height="8" rx="2" fill="$accent"/>
-<rect x="10" y="55" width="68" height="3" rx="1.5" fill="$d_mut"/><rect x="10" y="61" width="56" height="3" rx="1.5" fill="$d_mut"/>
-<rect x="10" y="72" width="14" height="8" rx="2" fill="$accent"/><rect x="32" y="72" width="14" height="8" rx="2" fill="$d_ink"/><rect x="54" y="72" width="14" height="8" rx="2" fill="$d_ink"/>
-<rect x="90" y="10" width="106" height="72" rx="5" fill="none" stroke="$d_mut" stroke-width="1.5"/>
-<rect x="98" y="18" width="40" height="24" rx="3" fill="$d_mut"/><rect x="148" y="18" width="40" height="24" rx="3" fill="$d_mut"/>
-<rect x="98" y="50" width="90" height="24" rx="3" fill="none" stroke="$d_mut" stroke-width="1.5"/>
-<circle class="bob" cx="106" cy="62" r="5" fill="$accent"/>
-<rect x="10" y="90" width="186" height="5" rx="2.5" fill="$d_mut"/>
-<rect class="glow" style="animation-delay:0s" x="-4" y="-4" width="214" height="111" rx="11" fill="none" stroke="$accent" stroke-width="3"/>
+<!-- the route: a track, walking dashes, chevrons that give its direction -->
+<path d="M650 200H1180a30 30 0 0 1 30 30v200a30 30 0 0 1-30 30H862" fill="none" stroke="$line" stroke-width="8" stroke-linecap="round"/>
+<path class="flow" d="M650 200H1180a30 30 0 0 1 30 30v200a30 30 0 0 1-30 30H862" fill="none" stroke="$muted" stroke-width="2.5" stroke-dasharray="8 16"/>
+<g fill="none" stroke="$muted" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M721 193l7 7-7 7"/><path d="M871 193l7 7-7 7"/><path d="M1021 193l7 7-7 7"/>
+<path d="M1203 326l7 7 7-7"/><path d="M1029 453l-7 7 7 7"/><path d="M879 453l-7 7 7 7"/>
 </g>
-<text class="m" x="1066" y="444" font-size="16" fill="$body">hero-dark.svg</text>
-<g transform="translate(1066 458) scale(0.8641)">
-<rect width="206" height="103" rx="8" fill="$l_bg" stroke="$muted" stroke-width="2"/>
-<rect x="10" y="10" width="10" height="10" rx="2.5" fill="$tile" stroke="$l_mut" stroke-width="1.2"/><circle cx="15" cy="13.6" r="1.8" fill="$accent"/>
-<rect x="24" y="12.5" width="24" height="5" rx="2.5" fill="$l_ink"/>
-<rect x="10" y="28" width="64" height="8" rx="2" fill="$l_ink"/><rect x="10" y="40" width="52" height="8" rx="2" fill="$accent"/>
-<rect x="10" y="55" width="68" height="3" rx="1.5" fill="$l_mut"/><rect x="10" y="61" width="56" height="3" rx="1.5" fill="$l_mut"/>
-<rect x="10" y="72" width="14" height="8" rx="2" fill="$accent"/><rect x="32" y="72" width="14" height="8" rx="2" fill="$l_ink"/><rect x="54" y="72" width="14" height="8" rx="2" fill="$l_ink"/>
-<rect x="90" y="10" width="106" height="72" rx="5" fill="none" stroke="$l_mut" stroke-width="1.5"/>
-<rect x="98" y="18" width="40" height="24" rx="3" fill="$l_mut"/><rect x="148" y="18" width="40" height="24" rx="3" fill="$l_mut"/>
-<rect x="98" y="50" width="90" height="24" rx="3" fill="none" stroke="$l_mut" stroke-width="1.5"/>
-<circle class="bob" cx="106" cy="62" r="5" fill="$accent"/>
-<rect x="10" y="90" width="186" height="5" rx="2.5" fill="$l_mut"/>
-<rect class="glow" style="animation-delay:0s" x="-4" y="-4" width="214" height="111" rx="11" fill="none" stroke="$accent" stroke-width="3"/>
+
+<!-- station cards, above their stop -->
+<g stroke-width="1.5">
+<rect x="600" y="92" width="100" height="80" rx="14" fill="$panel" stroke="$line"/>
+<rect x="750" y="92" width="100" height="80" rx="14" fill="$panel" stroke="$line"/>
+<rect x="900" y="92" width="100" height="80" rx="14" fill="$panel" stroke="$line"/>
+<rect x="1050" y="92" width="100" height="80" rx="14" fill="$panel" stroke="$line"/>
+<rect x="1050" y="352" width="100" height="80" rx="14" fill="$panel" stroke="$line"/>
+<rect x="900" y="352" width="100" height="80" rx="14" fill="$panel" stroke="$line"/>
 </g>
-<text class="m" x="1066" y="566" font-size="16" fill="$body">hero-light.svg</text>
-<g transform="translate(646 150)"><circle class="pen" opacity="0" r="13" fill="$accent" stroke="$bg" stroke-width="2"/></g>
+<!-- lit outlines while the repo stands at the stop -->
+<g fill="none" stroke="$accent" stroke-width="3">
+<rect class="on" opacity="0" style="animation-delay:0s" x="600" y="92" width="100" height="80" rx="14"/>
+<rect class="on" opacity="0" style="animation-delay:-10.44s" x="750" y="92" width="100" height="80" rx="14"/>
+<rect class="on" opacity="0" style="animation-delay:-9s" x="900" y="92" width="100" height="80" rx="14"/>
+<rect class="on" opacity="0" style="animation-delay:-7.56s" x="1050" y="92" width="100" height="80" rx="14"/>
+<rect class="on" opacity="0" style="animation-delay:-5.04s" x="1050" y="352" width="100" height="80" rx="14"/>
+<rect class="on" opacity="0" style="animation-delay:-3.6s" x="900" y="352" width="100" height="80" rx="14"/>
 </g>
-<g id="ticker">
-<rect x="0" y="600" width="1280" height="40" fill="$panel2"/>
-<rect x="0" y="599" width="1280" height="1.5" fill="$line"/>
-<g clip-path="url(#band)"><g class="tick" fill="$body">
-<text x="24.0" y="626" class="m" font-size="16" xml:space="preserve">works in <tspan fill="$hot">Claude Code · Codex</tspan> and others<tspan fill="$muted">     /     </tspan><tspan fill="$hot">CSS only</tspan>, no script<tspan fill="$muted">     /     </tspan>each file <tspan fill="$hot">under 200 KB</tspan><tspan fill="$muted">     /     </tspan><tspan fill="$hot">reduced motion</tspan> respected<tspan fill="$muted">     /     </tspan>install with <tspan fill="$hot">npx skills add</tspan><tspan fill="$muted">     /     </tspan>Python 3.9+, <tspan fill="$hot">uv</tspan> or pip<tspan fill="$muted">     /     </tspan><tspan fill="$hot">MIT</tspan> licence<tspan fill="$muted">     /     </tspan></text>
-<text x="2337.6" y="626" class="m" font-size="16" xml:space="preserve">works in <tspan fill="$hot">Claude Code · Codex</tspan> and others<tspan fill="$muted">     /     </tspan><tspan fill="$hot">CSS only</tspan>, no script<tspan fill="$muted">     /     </tspan>each file <tspan fill="$hot">under 200 KB</tspan><tspan fill="$muted">     /     </tspan><tspan fill="$hot">reduced motion</tspan> respected<tspan fill="$muted">     /     </tspan>install with <tspan fill="$hot">npx skills add</tspan><tspan fill="$muted">     /     </tspan>Python 3.9+, <tspan fill="$hot">uv</tspan> or pip<tspan fill="$muted">     /     </tspan><tspan fill="$hot">MIT</tspan> licence<tspan fill="$muted">     /     </tspan></text>
-<text x="4651.2" y="626" class="m" font-size="16" xml:space="preserve">works in <tspan fill="$hot">Claude Code · Codex</tspan> and others<tspan fill="$muted">     /     </tspan><tspan fill="$hot">CSS only</tspan>, no script<tspan fill="$muted">     /     </tspan>each file <tspan fill="$hot">under 200 KB</tspan><tspan fill="$muted">     /     </tspan><tspan fill="$hot">reduced motion</tspan> respected<tspan fill="$muted">     /     </tspan>install with <tspan fill="$hot">npx skills add</tspan><tspan fill="$muted">     /     </tspan>Python 3.9+, <tspan fill="$hot">uv</tspan> or pip<tspan fill="$muted">     /     </tspan><tspan fill="$hot">MIT</tspan> licence<tspan fill="$muted">     /     </tspan></text>
-</g></g>
+
+<!-- 1 read the repo: a folder of files under a lens -->
+<path d="M620 118h20l6 6h30a4 4 0 0 1 4 4v28a4 4 0 0 1-4 4h-56a4 4 0 0 1-4-4v-34a4 4 0 0 1 4-4z" fill="$panel2" stroke="$muted" stroke-width="2"/>
+<rect x="626" y="134" width="30" height="4" rx="2" fill="$muted"/><rect x="626" y="144" width="22" height="4" rx="2" fill="$muted"/>
+<g class="look"><circle cx="668" cy="140" r="10" fill="none" stroke="$ink" stroke-width="3"/><path d="M675 147l8 8" stroke="$ink" stroke-width="3.5" stroke-linecap="round"/></g>
+
+<!-- 2 ask you: a question with two answers to pick -->
+<path d="M766 106h52a6 6 0 0 1 6 6v22a6 6 0 0 1-6 6h-40l-8 7v-7h-4a6 6 0 0 1-6-6v-22a6 6 0 0 1 6-6z" fill="$panel2" stroke="$muted" stroke-width="2"/>
+<text class="b" x="792" y="131" font-size="20" fill="$ink" text-anchor="middle">?</text>
+<rect x="804" y="146" width="34" height="14" rx="7" fill="$accent"/><rect x="804" y="146" width="34" height="14" rx="7" fill="none"/>
+<rect x="764" y="152" width="30" height="12" rx="6" fill="none" stroke="$muted" stroke-width="2"/>
+
+<!-- 3 plan: rows, each with a role and a budget -->
+<g><rect x="914" y="106" width="16" height="12" rx="3" fill="$accent"/><rect class="grow" style="animation-delay:-9s" x="936" y="109" width="48" height="6" rx="3" fill="$muted"/>
+<rect x="914" y="126" width="16" height="12" rx="3" fill="$muted"/><rect class="grow" style="animation-delay:-8.8s" x="936" y="129" width="34" height="6" rx="3" fill="$muted"/>
+<rect x="914" y="146" width="16" height="12" rx="3" fill="$muted"/><rect class="grow" style="animation-delay:-8.6s" x="936" y="149" width="42" height="6" rx="3" fill="$muted"/></g>
+
+<!-- 4 draw: a picture with a pen -->
+<rect x="1066" y="106" width="56" height="52" rx="6" fill="$panel2" stroke="$muted" stroke-width="2"/>
+<path d="M1072 150l14-16 10 10 8-7 12 13" fill="none" stroke="$accent" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="1108" cy="120" r="5" fill="$ink"/>
+<path d="M1124 152l14-26 6 3-14 26-7 3z" fill="$ink"/>
+
+<!-- 5 check: a checklist -->
+<g><rect x="1066" y="366" width="14" height="14" rx="3" fill="$accent"/><rect x="1088" y="370" width="46" height="6" rx="3" fill="$muted"/>
+<rect x="1066" y="386" width="14" height="14" rx="3" fill="$accent"/><rect x="1088" y="390" width="36" height="6" rx="3" fill="$muted"/>
+<rect x="1066" y="406" width="14" height="14" rx="3" fill="none" stroke="$muted" stroke-width="2"/><rect x="1088" y="410" width="42" height="6" rx="3" fill="$muted"/></g>
+
+<!-- 6 cold read: an eye that sees only a picture -->
+<rect x="916" y="398" width="68" height="24" rx="5" fill="$panel2" stroke="$muted" stroke-width="2"/>
+<path d="M922 416l12-10 9 7 8-5 12 8" fill="none" stroke="$muted" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M922 380q28-24 56 0q-28 24-56 0z" fill="$panel2" stroke="$ink" stroke-width="2.5"/>
+<circle class="look" cx="950" cy="380" r="7" fill="$accent"/>
+
+<!-- stops and ticks -->
+<use href="#stop" x="650" y="200"/><use href="#stop" x="800" y="200"/><use href="#stop" x="950" y="200"/><use href="#stop" x="1100" y="200"/>
+<use href="#stop" x="1100" y="460"/><use href="#stop" x="950" y="460"/>
+<g transform="translate(694 98)"><use class="t1" href="#tick"/></g>
+<g transform="translate(844 98)"><use class="t2" href="#tick"/></g>
+<g transform="translate(994 98)"><use class="t3" href="#tick"/></g>
+<g transform="translate(1144 98)"><use class="t4" href="#tick"/></g>
+<g transform="translate(1144 358)"><use class="t5" href="#tick"/></g>
+<g transform="translate(994 358)"><use class="t6" href="#tick"/></g>
+
+<!-- labels -->
+<g class="s" font-size="17" fill="$ink" text-anchor="middle">
+<text x="650" y="244">Read the repo</text><text x="800" y="244">Ask you</text><text x="950" y="244">Plan</text><text x="1100" y="244">Draw</text>
+<text x="1100" y="512">Check</text><text x="950" y="512">Cold read</text>
+</g>
+
+<!-- the finished README at the end of the route -->
+<rect x="600" y="300" width="250" height="296" rx="16" fill="$panel" stroke="$line" stroke-width="1.5"/>
+<path d="M600 336v-20a16 16 0 0 1 16-16h218a16 16 0 0 1 16 16v20z" fill="$panel2"/>
+<circle cx="618" cy="318" r="4.5" fill="$line"/><circle cx="633" cy="318" r="4.5" fill="$line"/>
+<text class="m" x="650" y="324" font-size="16" fill="$ink">README.md</text>
+<rect x="616" y="350" width="218" height="74" rx="8" fill="$bg" stroke="$line" stroke-width="1.5"/>
+<rect x="626" y="362" width="60" height="8" rx="3" fill="$ink"/><rect x="626" y="376" width="74" height="8" rx="3" fill="$hot"/><rect x="626" y="394" width="64" height="4" rx="2" fill="$muted"/>
+<path d="M724 404h24v-28h30v20h40" fill="none" stroke="$muted" stroke-width="2" stroke-dasharray="4 5"/>
+<circle cx="724" cy="404" r="4" fill="$accent"/><circle cx="778" cy="376" r="4" fill="$muted"/><circle cx="818" cy="396" r="4" fill="$muted"/>
+<rect x="616" y="438" width="96" height="9" rx="3" fill="$ink"/>
+<rect x="616" y="455" width="218" height="40" rx="6" fill="$panel2" stroke="$line" stroke-width="1"/>
+<path d="M628 484l16-12 12 8 14-10 18 14" fill="none" stroke="$accent" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="716" y="466" width="100" height="5" rx="2.5" fill="$muted"/><rect x="716" y="478" width="70" height="5" rx="2.5" fill="$muted"/>
+<rect x="616" y="505" width="210" height="5" rx="2.5" fill="$muted"/><rect x="616" y="517" width="186" height="5" rx="2.5" fill="$muted"/>
+<rect x="616" y="537" width="80" height="9" rx="3" fill="$ink"/>
+<rect x="616" y="556" width="198" height="5" rx="2.5" fill="$muted"/><rect x="616" y="568" width="150" height="5" rx="2.5" fill="$muted"/>
+<rect class="glow" opacity="0" style="animation-delay:-2.04s" x="596" y="296" width="258" height="304" rx="19" fill="none" stroke="$accent" stroke-width="3"/>
+<g transform="translate(846 302)"><g class="t7"><circle r="17" fill="$accent"/><path d="M-7 0l5 5 9-10" fill="none" stroke="$ring" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g></g>
+
+<!-- the repo that travels: a folder, then a page with a picture once it is drawn -->
+<g transform="translate(650 200)"><g class="trip" opacity="0"><g transform="scale(1.2)">
+<g class="f1"><path d="M-18 -14h12l4 5h20a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3h-36a3 3 0 0 1-3-3v-23a3 3 0 0 1 3-3z" fill="$accent" stroke="$bg" stroke-width="2"/></g>
+<g class="f2"><rect x="-15" y="-19" width="30" height="38" rx="4" fill="$accent" stroke="$bg" stroke-width="2"/><path d="M-9 8l6-7 5 4 4-3 5 6" fill="none" stroke="$ring" stroke-width="2" stroke-linejoin="round"/><rect x="-9" y="-12" width="18" height="3.5" rx="1.75" fill="$ring"/></g>
+</g></g></g>
 </g>
 </svg>

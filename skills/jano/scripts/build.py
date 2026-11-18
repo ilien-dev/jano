@@ -3,10 +3,14 @@
 # requires-python = ">=3.9"
 # dependencies = ["fonttools", "brotli"]
 # ///
-"""Build hero-dark.svg and hero-light.svg from one hero.src.svg.
+"""Build <name>-dark.svg and <name>-light.svg from one <name>.src.svg.
 
-    uv run build.py assets/hero.src.svg      (installs what it needs)
-    python build.py assets/hero.src.svg      (after: pip install fonttools brotli)
+    uv run build.py assets/hero.src.svg                (installs what it needs)
+    uv run build.py assets/hero.src.svg assets/readme/*.src.svg
+    python build.py assets/hero.src.svg                (after: pip install fonttools brotli)
+
+The file name says what is built: hero.src.svg is the hero (1280x640), and any
+other name is a section scene (1280x448).
 
 The source starts with a palette comment, one role per line (name dark light):
 
@@ -34,6 +38,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import check  # noqa: E402
 from check import FACES, SVG, XMLSPACE, font, num  # noqa: E402
 
+RASTER_KB = 400  # a real screenshot inside a scene: past this the README loads slowly
+
 
 _whole = {}
 
@@ -45,9 +51,10 @@ def subset_font(face, chars):
     # subsetting changes the font in place: work on a fresh copy, or the next source of the same run loses letters
     if face not in _whole:
         buf = io.BytesIO()
+        font(face).recalcTimestamp = False
         font(face).save(buf)
         _whole[face] = buf.getvalue()
-    f = TTFont(io.BytesIO(_whole[face]))
+    f = TTFont(io.BytesIO(_whole[face]), recalcTimestamp=False)  # no build time in the font: the same source builds the same bytes
     opts = subset.Options()
     opts.flavor = "woff2"
     opts.hinting = False
@@ -240,22 +247,34 @@ def take_pictures(shots):
 def build(src):
     """Builds one source. Returns what the options page needs, or None when the source has errors."""
     out = src.parent
+    kind = check.kind_of(src)
+    stem = src.name.split(".")[0]
     raw = src.read_text(encoding="utf-8")
     brief = re.search(r"<!--\s*brief(.*?)-->", raw, re.S)
     if brief:
         raw = raw.replace(brief.group(0), "")
         brief = brief.group(1).strip()
-    palette, body = check.read_source(raw)
     errors, warns = [], []
+    palette, body = check.read_source(raw)
 
     # ---- what GitHub will not show, or will show wrong
-    if 'viewBox="0 0 1280 640"' not in body:
-        errors.append('viewBox must be "0 0 1280 640"')
+    w, h = check.CANVAS[kind]
+    if f'viewBox="0 0 {w} {h}"' not in body:
+        errors.append(f'viewBox must be "0 0 {w} {h}" for {"the hero" if kind == "hero" else "a section scene"}')
     if 'role="img"' not in body or "aria-label=" not in body:
-        errors.append('root <svg> needs role="img" and an aria-label that says what the hero shows')
-    for bad in ("<script", "<foreignObject", "<image", "@import"):
+        errors.append('root <svg> needs role="img" and an aria-label that says what the picture shows')
+    for bad in ("<script", "<foreignObject", "@import"):
         if bad in body:
             errors.append(f"{bad} is not allowed: GitHub shows the SVG as an image, nothing external loads")
+    # a real screenshot is the one picture a scene may hold, embedded; the hero stays drawn
+    images = re.findall(r"<image\b[^>]*>", body)
+    for im in images:
+        if kind != "section" or not re.search(r"""href\s*=\s*["']data:image/(png|jpeg|webp|gif);base64,""", im):
+            errors.append("<image> is not allowed" + ("" if kind == "section" else " in the " + kind) + ": GitHub shows the SVG as an image, nothing external loads. A section scene may embed a real screenshot as a data:image URI, when the user agreed to one")
+            break
+    raster = sum(len(m) for m in re.findall(r"data:image/[a-z]+;base64,([A-Za-z0-9+/=]+)", body)) * 3 / 4 / 1024
+    if raster > RASTER_KB:
+        warns.append(f"the embedded screenshot(s) weigh {raster:.0f} KB: crop to what the scene shows and save as JPEG or WebP, under {RASTER_KB} KB")
     # only addresses something would load: one written as visible text is fine
     ext = re.findall(r"""(?:href|src)\s*=\s*["'](https?://[^"']+)|url\(\s*["']?(https?://[^"')\s]+)""", body)
     ext = [a or b for a, b in ext if "www.w3.org" not in (a or b)]
@@ -283,7 +302,7 @@ def build(src):
     except ET.ParseError as e:
         print(f"error: the SVG is not well-formed XML: {e}")
         return None
-    hero = check.check(root, palette)
+    hero = check.check(root, palette, kind)
     errors = list(dict.fromkeys(errors + hero.errors))
     warns += hero.warns
     if errors:
@@ -308,21 +327,25 @@ def build(src):
     body = body.replace("<style>", "<style>" + faces, 1)
 
     names, themed = [], []
+    # the outputs carry a fingerprint of their source, so a check can tell a stale build in any clone, whatever the file dates
+    print_sha = hashlib.sha256(src.read_bytes().replace(b"\r\n", b"\n")).hexdigest()[:16]  # line endings as git stores them
+    body = body.replace("<svg ", f'<svg data-jano-src="{print_sha}" ', 1)
     for ti, theme in enumerate(("dark", "light")):
         svg = re.sub(r"\$([a-z][a-z0-9_]*)", lambda k: palette[k.group(1)][ti], body)
-        f = out / f"hero-{theme}.svg"
+        f = out / f"{stem}-{theme}.svg"
         f.write_text(svg + "\n", encoding="utf-8", newline="\n")
         names.append(f)
         themed.append(svg)
         kb = len(svg.encode()) / 1024
-        if kb > 200:
-            warns.append(f"{f.name} is {kb:.0f} KB: simplify, a hero should stay under 200 KB")
+        if kb - raster > 200:
+            warns.append(f"{f.name} is {kb:.0f} KB: simplify, a picture should stay under 200 KB (screenshots apart)")
         print(f"wrote {f} ({kb:.0f} KB)")
     print(f"{outlined} moving text element(s) turned into outlines")
 
     # ---- preview: one folder per source path, so two repos with the same name do not overwrite each other
     tag = hashlib.sha1(str(src).encode()).hexdigest()[:8]
-    folder = Path(tempfile.gettempdir()) / f"hero-preview-{src.parent.parent.name}-{tag}"
+    repo = next((p for p in src.parents if (p / ".git").exists() or (p / "README.md").exists()), src.parent.parent)
+    folder = Path(tempfile.gettempdir()) / f"{stem}-preview-{repo.name}-{tag}"
     folder.mkdir(exist_ok=True)
     cycle = hero.facts.get("cycle_seconds") or 6
     times = [round(cycle * i / 8, 2) for i in range(8)]
@@ -342,8 +365,9 @@ def build(src):
     loop += "".join(f'<div><p>{t:g} s</p><img src="frame-{i}.svg"></div>' for i, t in enumerate(times)) + "</div></section>"
     (folder / "loop.html").write_text(loop, encoding="utf-8")
     # the hero as GitHub shows it with motion off: both themes at README width, a phone, and blurred
-    look = css + '<section><p>dark, README width (838 px), motion off: the finished frame</p><img src="still-dark.svg" width="838"></section>'
-    look += '<section class=w><p>light, README width (838 px), motion off: the finished frame</p><img src="still-light.svg" width="838"></section>'
+    wide = 838
+    look = css + f'<section><p>dark, README width, motion off: the finished frame</p><img src="still-dark.svg" width="{wide}"></section>'
+    look += f'<section class=w><p>light, README width, motion off: the finished frame</p><img src="still-light.svg" width="{wide}"></section>'
     look += ('<section><div class=r><div><p>phone (360 px)</p><img src="still-dark.svg" width="360"></div>'
              '<div><p>words blurred: is the story still there?</p><img src="still-dark.svg" width="400" style="filter:blur(3px)"></div>'
              '<div><p>phone, light</p><img src="still-light.svg" width="360"></div></div></section>')
@@ -374,7 +398,7 @@ def main():
     sources = []
     for a in (a for a in sys.argv[1:] if not a.startswith("--")):
         # PowerShell and cmd hand the pattern over as it is written: expand it here
-        found = sorted(glob.glob(a)) if any(c in a for c in "*?[") else [a]
+        found = sorted(glob.glob(a)) if any(c in a for c in "*?[") else ([a] if Path(a).exists() else [])
         if not found:
             sys.exit(f"error: no file matches {a}")
         sources += [Path(f).resolve() for f in found]
@@ -385,7 +409,7 @@ def main():
         if len(sources) > 1:
             print(f"\n== {src}")
         built.append(build(src))
-    if len(sources) > 1:
+    if len(sources) > 1 and all(s.name == "hero.src.svg" for s in sources):
         # the options side by side, each with its brief, so the user can pick one or mix parts of several
         tag = hashlib.sha1("|".join(map(str, sources)).encode()).hexdigest()[:8]
         page = Path(tempfile.gettempdir()) / f"hero-options-{tag}.html"

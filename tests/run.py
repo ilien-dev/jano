@@ -220,6 +220,171 @@ if build_module.find_browsers():
 else:
     print("skip  pictures (no Chromium-family browser on this machine)")
 
+# ---- section scenes
+SCENE = (ROOT / "tests/fixture/assets/readme/demo.src.svg").read_text(encoding="utf-8")
+
+
+def build_scene(source, name="demo"):
+    folder = Path(tempfile.mkdtemp()) / "repo" / "assets" / "readme"
+    folder.mkdir(parents=True)
+    (folder / f"{name}.src.svg").write_text(source, encoding="utf-8")
+    run = subprocess.run([sys.executable, str(BUILD), str(folder / f"{name}.src.svg"), "--no-pictures"], capture_output=True, text=True, encoding="utf-8")
+    return run.returncode, run.stdout + run.stderr, folder
+
+
+code, out, folder = build_scene(SCENE)
+test("a scene builds clean", code == 0 and "checks passed" in out, out)
+scene_dark = (folder / "demo-dark.svg").read_text(encoding="utf-8") if code == 0 else ""
+test("a scene is written as <name>-dark.svg and <name>-light.svg", bool(scene_dark) and (folder / "demo-light.svg").exists())
+test("a scene's palette roles are replaced", "$" not in re.sub(r"base64,[^)]+", "", scene_dark))
+test("the scene's figures are printed", "title 44 px, 6 words" in out, out)
+code, out, _ = build_scene(SCENE.replace("0 0 1280 448", "0 0 1280 640"))
+test("a scene on the hero's canvas is refused", code != 0 and '"0 0 1280 448"' in out, out)
+code, out, _ = build_scene(SCENE.replace('<text id="title"', "<text"))
+test("a scene without a title is refused", code != 0 and 'id="title"' in out, out)
+code, out, _ = build_scene(SCENE.replace('id="title" x="72" y="116" class="b"', 'id="title" x="72" y="116" class="b light"'))
+test("a title that moves is refused", code != 0 and "the title is animated" in out, out)
+code, out, _ = build_scene(SCENE.replace("Cards go in, done comes out", "Cards go in and then after a while done comes out"))
+test("a long title is warned about", "the title has 11 words" in out, out)
+code, out, _ = build_scene(SCENE.replace('<g transform="translate(400 280)"><rect class="carry" opacity="0"', '<g transform="translate(400 280)"><rect class="carry"'))
+test("a parcel left frozen when motion is off is warned about in a scene", "sits frozen" in out and "data-rest" in out, out)
+code, out, _ = build_scene(SCENE.replace('<g transform="translate(400 280)"><rect class="carry" opacity="0"', '<g transform="translate(400 280)" data-rest="shown"><rect class="carry"'))
+test("something that rests where it is drawn on purpose is not warned about", "sits frozen" not in out, out)
+pixel = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+shot = f'<image x="900" y="210" width="200" height="120" href="data:image/png;base64,{pixel}"/></g>\n</svg>'
+code, out, _ = build_scene(SCENE.replace("</g>\n</svg>", shot))
+test("a scene may embed a real screenshot", code == 0 and "<image" not in out, out)
+code, out, _ = build(swap("</svg>", f'<image width="10" height="10" href="data:image/png;base64,{pixel}"/></svg>'))
+test("the hero may not embed a screenshot", code != 0 and "<image" in out, out)
+
+# ---- readme.py: the plan, the README and the judges
+READMEPY = ROOT / "skills/jano/scripts/readme.py"
+sys.path.insert(0, str(READMEPY.parent))
+import readme as readme_module  # noqa: E402
+
+
+def built(src_file, stale=False):
+    """Stand-in outputs that carry their source's fingerprint, as build.py writes it."""
+    import hashlib
+    mark = "0" * 16 if stale else hashlib.sha256(src_file.read_bytes().replace(b"\r\n", b"\n")).hexdigest()[:16]
+    stem = src_file.name.replace(".src.svg", "")
+    for t in ("dark", "light"):
+        (src_file.parent / f"{stem}-{t}.svg").write_text(f'<svg data-jano-src="{mark}">{stem}{t}</svg>', encoding="utf-8")
+
+
+def repo_with(readme, plan, scenes=("demo",), judges=None, scene=None, stale=False):
+    repo = Path(tempfile.mkdtemp()) / "proj"
+    (repo / "assets/readme").mkdir(parents=True)
+    (repo / "assets/hero.src.svg").write_text(FIXTURE, encoding="utf-8")
+    built(repo / "assets/hero.src.svg")
+    for i, s in enumerate(scenes):
+        src = (scene if scene and i == 0 else SCENE).replace("Cards go in, done comes out", ["Cards go in, done comes out", "Install it in one line", "Three ways people use it"][i % 3])
+        if i:
+            src = src.replace(">inbox<", f">queue{i}<").replace(">done<", f">shelf{i}<")
+        (repo / f"assets/readme/{s}.src.svg").write_text(src, encoding="utf-8")
+        built(repo / f"assets/readme/{s}.src.svg", stale and i == 0)
+    (repo / "README.md").write_text(readme, encoding="utf-8")
+    (repo / "assets/readme/plan.json").write_text(json.dumps(plan), encoding="utf-8")
+    if judges is not None:
+        (repo / "assets/readme/judges.json").write_text(json.dumps(judges(repo, plan) if callable(judges) else judges), encoding="utf-8")
+    run = subprocess.run([sys.executable, str(READMEPY), "check", str(repo)], capture_output=True, text=True, encoding="utf-8")
+    return run.returncode, run.stdout + run.stderr
+
+
+def pic(name):
+    return (f'<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/{name}-dark.svg">'
+            f'<img src="assets/readme/{name}-light.svg" alt="A card travels from the inbox to the done panel while rows light up" width="100%"></picture></p>\n\n')
+
+
+WORDS20 = "It does one plain thing for the people who use it, every day, and it does it well enough that they keep it. "
+GOOD = ("<h1 align=\"center\">Proj</h1>\n\n**Proj sorts your cards for you.** " + WORDS20 * 2 + "\n\n"
+        "## What you get\n\n" + pic("demo") + "- **Sorted cards.** " + WORDS20 + "\n- **Less work.** " + WORDS20 + "\n- **Calm.** " + WORDS20 + "\n\n"
+        "## Install\n\n" + pic("install") + "Run this in a terminal and you are done with it in a minute or so.\n\n```bash\npip install proj\n```\n\n"
+        "## Who it is for\n\n" + pic("people") + WORDS20 + WORDS20 + "\n\n"
+        "## Questions\n\n<details><summary><b>Is it free?</b></summary>\n\nYes.\n\n</details>\n\n" + WORDS20 + WORDS20 + "\n\n"
+        "## License\n\nMIT, see the LICENSE file in this folder.\n")
+PLAN_OK = {"audience": "general", "audience_confirmed": True, "sentence": "sorts cards", "unfinished": [],
+           "hero": {"file": "assets/hero.src.svg", "shows": ["lines", "parcel"]},
+           "sections": [
+               {"heading": "What you get", "role": "features", "picture": {"file": "assets/readme/demo.src.svg", "claim": "cards get sorted", "shows": ["inbox", "done", "card"]}},
+               {"heading": "Install", "role": "install", "picture": {"file": "assets/readme/install.src.svg", "claim": "one line installs it", "shows": ["terminal"]}},
+               {"heading": "Who it is for", "role": "audience", "picture": {"file": "assets/readme/people.src.svg", "claim": "three people use it", "shows": ["people"]}},
+               {"heading": "Questions", "role": "faq"},
+               {"heading": "License", "role": "license"}]}
+SCENES = ("demo", "install", "people")
+
+
+def passing(repo, plan):
+    return {i["id"]: {"sha": i["sha"], "pass": True} for i in readme_module.judge_items(repo, plan)}
+
+
+code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=passing)
+test("readme.py: a README that keeps its plan passes", code == 0 and "checks passed" in out, out)
+code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=passing, stale=True)
+test("readme.py: a picture built from another version of its source fails", code == 1 and "built from another version of its source" in out, out)
+test("the build writes its source's fingerprint into each output", 'data-jano-src="' in scene_dark)
+_, _, again = build_scene(SCENE)
+test("the same source builds the same bytes", (again / "demo-dark.svg").read_text(encoding="utf-8") == scene_dark)
+marks = []
+for ending in (b"\n", b"\r\n"):  # the same source as git stores it and as a Windows checkout writes it
+    folder = Path(tempfile.mkdtemp()) / "repo" / "assets" / "readme"
+    folder.mkdir(parents=True)
+    (folder / "demo.src.svg").write_bytes(SCENE.replace("\r\n", "\n").encode("utf-8").replace(b"\n", ending))
+    subprocess.run([sys.executable, str(BUILD), str(folder / "demo.src.svg"), "--no-pictures"], capture_output=True)
+    out_file = folder / "demo-dark.svg"
+    found = re.search(r'data-jano-src="([0-9a-f]+)"', out_file.read_text(encoding="utf-8")) if out_file.exists() else None
+    marks.append(found.group(1) if found else None)
+test("a source with Windows line endings has the fingerprint git will see", marks[0] is not None and marks[0] == marks[1], str(marks))
+code, out = repo_with(GOOD, PLAN_OK, SCENES)
+test("readme.py: a README nobody judged fails", code == 1 and "no judges yet" in out, out)
+code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=lambda r, p: {**passing(r, p), "readme": {"sha": "old", "pass": True}})
+test("readme.py: a verdict on an older version does not count", code == 1 and "judged on an older version" in out, out)
+code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=lambda r, p: {**passing(r, p), "readme": {"sha": passing(r, p)["readme"]["sha"], "pass": False, "why": "unclear"}})
+test("readme.py: a failed cold read fails the README", code == 1 and "failed its cold read" in out, out)
+code, out = repo_with(GOOD, {**PLAN_OK, "audience_confirmed": False}, SCENES, judges=passing)
+test("readme.py: an audience nobody confirmed fails", code == 1 and "audience_confirmed" in out, out)
+code, out = repo_with(GOOD, {**PLAN_OK, "audience": "technical"}, SCENES, judges=passing)
+test("readme.py: a technical README needs a section on how to use it", code == 1 and "none of use, reference" in out, out)
+code, out = repo_with(GOOD.replace("```bash", "```"), PLAN_OK, SCENES, judges=passing)
+test("readme.py: a code block without a language fails", code == 1 and "has no language" in out, out)
+code, out = repo_with(GOOD.replace("**Proj sorts", "> [!NOTE]\n> Hi.\n\n**Proj sorts"), PLAN_OK, SCENES, judges=passing)
+test("readme.py: an alert in the lead fails", code == 1 and "an alert in the lead" in out, out)
+code, out = repo_with(GOOD.replace("Run this in a terminal", "> [!CAUTION]\n> Careful.\n\nRun this in a terminal"), PLAN_OK, SCENES, judges=passing)
+test("readme.py: an alert the role does not take fails", code == 1 and "[!CAUTION] alert where the install role takes" in out, out)
+code, out = repo_with(GOOD.replace("- **Calm.**", "| a | b |\n|---|---|\n| 1 | 2 |\n\n- **Calm.**"), PLAN_OK, SCENES, judges=passing)
+test("readme.py: a table where the role takes none fails", code == 1 and "a table in the features role" in out, out)
+code, out = repo_with(GOOD.replace("- **Calm.** ", "- **Calm.** x\n- **Quiet.** x\n- **Fast.** x\n- **Small.** x\n- **Kind.** "), PLAN_OK, SCENES, judges=passing)
+test("readme.py: more feature items than the role holds are warned about", "feature items: 3 to 6" in out, out)
+test("readme.py: three feature items are fine", "feature items: 3 to 6" not in repo_with(GOOD, PLAN_OK, SCENES, judges=passing)[1])
+code, out = repo_with(GOOD.replace("## Who it is for\n\n", "## Who it is for\n\n" + WORDS20 * 8), PLAN_OK, SCENES, judges=passing)
+test("readme.py: a section over its words is sent to docs/", code == 1 and "Move the detail to a file in docs/" in out, out)
+SCENE_CMD = SCENE.replace(">inbox<", ">proj frobnicate<")
+code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=passing, scene=SCENE_CMD)
+test("readme.py: a picture that draws a command the repo never mentions fails", code == 1 and "proj frobnicate" in out, out)
+code, out = repo_with(GOOD.replace("pip install proj", "pip install proj\nproj frobnicate"), PLAN_OK, SCENES, judges=passing, scene=SCENE_CMD)
+test("readme.py: a picture may draw a command the README documents", "proj frobnicate" not in out, out)
+code, out = repo_with(GOOD.replace("MIT, see", '<img src="assets/readme/demo-dark.svg" alt=""> MIT, see'), PLAN_OK, SCENES, judges=passing)
+test("readme.py: a decorative image may have an empty alt text", "without alt text" not in out, out)
+code, out = repo_with(GOOD.replace('<h1 align="center">Proj</h1>', '<h1 align="center" style="color:red">Proj</h1>'), PLAN_OK, SCENES, judges=passing)
+test("readme.py: style= fails, GitHub removes it", code == 1 and "GitHub removes them" in out, out)
+same = json.loads(json.dumps(PLAN_OK))
+same["sections"][2]["picture"]["shows"] = ["inbox", "done", "card"]
+code, out = repo_with(GOOD, same, SCENES, judges=passing)
+test("readme.py: two pictures that show the same things fail", code == 1 and "the same things" in out, out)
+dropped = {**PLAN_OK, "unfinished": [{"item": "sync", "match": "cloud sync", "decision": "drop"}]}
+code, out = repo_with(GOOD.replace("Less work.", "Cloud sync."), dropped, SCENES, judges=passing)
+test("readme.py: an unfinished feature the user dropped may not appear", code == 1 and "chose to leave out" in out, out)
+code, out = repo_with(GOOD.replace(pic("install"), ""), PLAN_OK, SCENES, judges=passing)
+test("readme.py: a scene the plan names must be shown under its heading", code == 1 and "the scene is not shown as the plan says" in out, out)
+captured = json.loads(json.dumps(PLAN_OK))
+captured["sections"][0]["picture"]["type"] = "capture"
+code, out = repo_with(GOOD, captured, SCENES, judges=passing)
+test("readme.py: a screenshot the user did not agree to fails", code == 1 and "captures_agreed" in out, out)
+code, out = repo_with(GOOD.replace("see the LICENSE file", "see [the details](docs/licence.md)"), PLAN_OK, SCENES, judges=passing)
+test("readme.py: a link to a file that does not exist fails", code == 1 and "docs/licence.md, which does not exist" in out, out)
+run = subprocess.run([sys.executable, str(READMEPY), "rules"], capture_output=True, text=True, encoding="utf-8")
+test("readme.py rules prints every role", run.returncode == 0 and all(k in run.stdout for k in readme_module.ROLES), run.stderr)
+
 # ---- skill files: a ": " in an unquoted YAML value makes installers skip the skill
 for skill in sorted(ROOT.glob("**/SKILL.md")):
     head = skill.read_text(encoding="utf-8").split("---")[1]

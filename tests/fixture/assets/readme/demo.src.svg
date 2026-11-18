@@ -1,0 +1,47 @@
+<!--palette
+bg     #0F1115 #F0F5FB
+panel  #171A20 #FFFFFF
+line   #2A2F37 #DCE3EC
+ink    #F2F0EA #0F1115
+body   #C9CDD3 #3A3F48
+muted  #A3A8B0 #555B64
+accent #4FD1C5 #0B7A70
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 448" role="img" aria-label="Test scene: a card travels from an inbox panel to a done panel while rows light one by one.">
+<style>
+@keyframes drift{to{transform:translate(24px,24px)}}
+@keyframes carry{0%{transform:translateX(0);opacity:0}10%,85%{opacity:1}100%{transform:translateX(360px);opacity:0}}
+@keyframes walk{0%,100%{transform:translateX(0)}50%{transform:translateX(120px)}}
+@keyframes light{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes flow{to{stroke-dashoffset:-24}}
+.drift{animation:drift 4s linear infinite}
+.carry{animation:carry 8s ease-in-out infinite}
+.walk{animation:walk 8s ease-in-out infinite}
+.light{animation:light 2s ease-in-out infinite}
+.l2{animation-delay:-.5s}.l3{animation-delay:-1s}
+.flow{animation:flow 2s linear infinite}
+</style>
+<defs><pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="2" fill="$panel"/></pattern></defs>
+<rect width="1280" height="448" fill="$bg"/>
+<g id="backdrop"><rect class="drift" x="-24" y="-24" width="1328" height="496" fill="url(#dots)"/></g>
+<text id="eyebrow" x="72" y="64" class="m" font-size="15" letter-spacing="3" fill="$accent">THE DEMO</text>
+<text id="title" x="72" y="116" class="b" font-size="44" fill="$ink">Cards go in, done comes out</text>
+<text id="sub" x="72" y="156" class="s" font-size="20" fill="$body">A test scene for the build.</text>
+<g id="stage">
+<rect x="72" y="200" width="300" height="208" rx="16" fill="$panel"/>
+<text x="96" y="236" class="m" font-size="16" fill="$muted">inbox</text>
+<rect class="light" x="96" y="256" width="200" height="24" rx="6" fill="$line"/>
+<rect class="light l2" x="96" y="296" width="160" height="24" rx="6" fill="$line"/>
+<rect class="light l3" x="96" y="336" width="180" height="24" rx="6" fill="$line"/>
+<rect x="836" y="200" width="372" height="208" rx="16" fill="$panel"/>
+<text x="860" y="236" class="m" font-size="16" fill="$muted">done</text>
+<rect x="860" y="256" width="24" height="24" rx="6" fill="$accent"/><rect x="896" y="260" width="180" height="16" rx="6" fill="$line"/>
+<rect x="860" y="296" width="24" height="24" rx="6" fill="$accent"/><rect x="896" y="300" width="140" height="16" rx="6" fill="$line"/>
+<rect x="860" y="336" width="24" height="24" rx="6" fill="$accent"/><rect x="896" y="340" width="200" height="16" rx="6" fill="$line"/>
+<path class="flow" d="M392 300 H816" stroke="$muted" stroke-width="2" stroke-dasharray="12 12" fill="none"/>
+<path d="M806 292 L818 300 L806 308" stroke="$muted" stroke-width="2" fill="none"/>
+<g transform="translate(400 280)"><rect class="carry" opacity="0" width="40" height="28" rx="6" fill="$accent"/></g>
+<g transform="translate(560 330)"><rect class="walk" width="64" height="40" rx="8" fill="$line"/></g>
+<circle cx="1180" cy="60" r="8" fill="$accent"/><circle cx="1150" cy="60" r="8" fill="$line"/><circle cx="1120" cy="60" r="8" fill="$line"/>
+</g>
+</svg>
