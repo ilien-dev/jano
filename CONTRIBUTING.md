@@ -3,9 +3,10 @@
 Thanks for wanting to help. Contributing to Jano does not only mean pull requests:
 a clear issue that reports a bug or proposes an improvement is a contribution too.
 
-Jano does one job: it draws a repository a looping animated SVG hero for its README, in
-dark and light. It does not write the README's text, and it does not make GIFs, videos,
-social cards or logos for anything else. **A contribution that drifts away from that job
+Jano does one job: it makes a repository's README explain itself. It plans the sections
+and writes the text to measured rules, and draws a looping animated SVG hero and a scene
+for the sections that need one, in dark and light. It does not make GIFs, videos, social
+cards or logos for anything else. **A contribution that drifts away from that job
 will be rejected**, however well it is made.
 
 ## Nothing is guaranteed

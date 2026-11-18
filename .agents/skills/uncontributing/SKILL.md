@@ -12,9 +12,9 @@ two disagree, follow `CONTRIBUTING.md` and point out the difference.
 
 ## 1. Is it in scope, and is it new?
 
-- Jano does one job: it draws a repository a looping animated SVG hero for its README.
-  It does not write README text, and it does not make GIFs, videos, social cards or other
-  images. If the change does not serve that job, say so and stop: it will be rejected.
+- Jano does one job: it makes a repository's README explain itself, its sections and
+  text measured by `readme.py`, its hero and section scenes drawn as animated SVG. It does
+  not make GIFs, videos, social cards or other images. If the change does not serve that job, say so and stop: it will be rejected.
 - Search for the same work before writing anything:
   ```
   gh pr list --repo ilien-dev/jano --state all --search "<keywords>"

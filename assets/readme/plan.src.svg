@@ -1,0 +1,88 @@
+<!--palette
+bg      #0E1628 #EEF2F7
+panel   #1B2A4A #FFFFFF
+panel2  #142038 #E1E7F0
+line    #2F4170 #C5D0E0
+dots    #1D2A47 #D5DDE9
+ink     #EEF2F7 #1B2A4A
+body    #BAC5DB #3F4F73
+muted   #8696B8 #5A6A8C
+accent  #E8553D #E8553D
+hot     #FF8469 #B4381F
+ring    #EEF2F7 #EEF2F7
+onacc   #0E1628 #0E1628
+-->
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 448" role="img" aria-label="What you get, the plan: a plan.json sheet lists the README's sections one per row, each with its job (how, features, install, use, limits), a word budget bar and a mark for whether it gets a picture. One row lights at a time and a card beside it names that section, its word budget filling up to the limit and whether it has a picture of its own.">
+<style>
+@keyframes drift{to{transform:translate(24px,24px)}}
+.drift{animation:drift 4.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-24}}
+.flow{animation:flow 1.2s linear infinite}
+/* 15 s  row i lit for 3 s, one after the other (delay i*3 - 15)
+         card i fades in as its row lights, budget bar fills, rests, fades as the next arrives */
+@keyframes lit{0%{opacity:0}2%,18%{opacity:1}21%,100%{opacity:0}}
+.lit{animation:lit 15s ease-in-out infinite}
+@keyframes card{0%{opacity:0}3%,19%{opacity:1}21%,100%{opacity:0}}
+.card{animation:card 15s ease-in-out infinite}
+@keyframes fill{0%,3%{transform:scaleX(.08)}12%,92%{transform:scaleX(1)}100%{transform:scaleX(.08)}}
+.fill{animation:fill 15s cubic-bezier(.4,0,.2,1) infinite;transform-box:fill-box;transform-origin:0 50%}
+</style>
+<defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.6" fill="$dots"/></pattern></defs>
+<rect width="1280" height="448" fill="$bg"/>
+<g id="backdrop"><rect class="drift" x="-24" y="-24" width="1328" height="496" fill="url(#grid)"/></g>
+
+<text id="eyebrow" class="m" x="56" y="56" font-size="16" fill="$hot" letter-spacing="2">WHAT YOU GET</text>
+<text id="title" class="b" x="56" y="108" font-size="42" fill="$ink">Each part gets a job and a budget</text>
+<text id="sub" class="s" x="56" y="146" font-size="20" fill="$body">Some parts get a picture of their own. The rest are read.</text>
+
+<g id="stage">
+<!-- the plan sheet -->
+<rect x="56" y="176" width="724" height="252" rx="14" fill="$panel" stroke="$line" stroke-width="1.5"/>
+<path d="M56 210v-20a14 14 0 0 1 14-14h696a14 14 0 0 1 14 14v20z" fill="$panel2"/>
+<text class="m" x="76" y="199" font-size="16" fill="$ink">plan.json</text>
+<rect x="640" y="188" width="120" height="10" rx="5" fill="$line"/>
+<!-- row 1: How it works -->
+<rect class="lit" style="animation-delay:0s" x="66" y="220" width="704" height="36" rx="8" fill="$panel2" stroke="$accent" stroke-width="2"/>
+<text class="s" x="82" y="244" font-size="16" fill="$ink">How it works</text>
+<rect x="250" y="227" width="51" height="22" rx="11" fill="none" stroke="$muted" stroke-width="1.5"/><text class="m" x="260" y="243" font-size="16" fill="$body">how</text>
+<rect x="420" y="234" width="200" height="8" rx="4" fill="$line"/><rect x="420" y="234" width="200" height="8" rx="4" fill="$muted"/>
+<g transform="translate(680 225)"><rect width="34" height="26" rx="4" fill="$accent"/><path d="M5 21l8-9 6 5 5-4 6 8" fill="none" stroke="$bg" stroke-width="2" stroke-linejoin="round"/></g>
+<!-- row 2: What you get -->
+<rect class="lit" opacity="0" style="animation-delay:-12s" x="66" y="261" width="704" height="36" rx="8" fill="$panel2" stroke="$accent" stroke-width="2"/>
+<text class="s" x="82" y="285" font-size="16" fill="$ink">What you get</text>
+<rect x="250" y="268" width="99" height="22" rx="11" fill="none" stroke="$muted" stroke-width="1.5"/><text class="m" x="260" y="284" font-size="16" fill="$body">features</text>
+<rect x="420" y="275" width="200" height="8" rx="4" fill="$line"/><rect x="420" y="275" width="182" height="8" rx="4" fill="$muted"/>
+<g transform="translate(680 266)"><rect width="34" height="26" rx="4" fill="$accent"/><path d="M5 21l8-9 6 5 5-4 6 8" fill="none" stroke="$bg" stroke-width="2" stroke-linejoin="round"/></g>
+<!-- row 3: Install -->
+<rect class="lit" opacity="0" style="animation-delay:-9s" x="66" y="302" width="704" height="36" rx="8" fill="$panel2" stroke="$accent" stroke-width="2"/>
+<text class="s" x="82" y="326" font-size="16" fill="$ink">Install</text>
+<rect x="250" y="309" width="89" height="22" rx="11" fill="none" stroke="$muted" stroke-width="1.5"/><text class="m" x="260" y="325" font-size="16" fill="$body">install</text>
+<rect x="420" y="316" width="200" height="8" rx="4" fill="$line"/><rect x="420" y="316" width="155" height="8" rx="4" fill="$muted"/>
+<g transform="translate(680 307)"><rect x="1" y="1" width="32" height="24" rx="4" fill="none" stroke="$muted" stroke-width="2" stroke-dasharray="4 4"/></g>
+<!-- row 4: Use -->
+<rect class="lit" opacity="0" style="animation-delay:-6s" x="66" y="343" width="704" height="36" rx="8" fill="$panel2" stroke="$accent" stroke-width="2"/>
+<text class="s" x="82" y="367" font-size="16" fill="$ink">Use</text>
+<rect x="250" y="350" width="51" height="22" rx="11" fill="none" stroke="$muted" stroke-width="1.5"/><text class="m" x="260" y="366" font-size="16" fill="$body">use</text>
+<rect x="420" y="357" width="200" height="8" rx="4" fill="$line"/><rect x="420" y="357" width="200" height="8" rx="4" fill="$muted"/>
+<g transform="translate(680 348)"><rect width="34" height="26" rx="4" fill="$accent"/><path d="M5 21l8-9 6 5 5-4 6 8" fill="none" stroke="$bg" stroke-width="2" stroke-linejoin="round"/></g>
+<!-- row 5: Limits -->
+<rect class="lit" opacity="0" style="animation-delay:-3s" x="66" y="384" width="704" height="36" rx="8" fill="$panel2" stroke="$accent" stroke-width="2"/>
+<text class="s" x="82" y="408" font-size="16" fill="$ink">Limits</text>
+<rect x="250" y="391" width="80" height="22" rx="11" fill="none" stroke="$muted" stroke-width="1.5"/><text class="m" x="260" y="407" font-size="16" fill="$body">limits</text>
+<rect x="420" y="398" width="200" height="8" rx="4" fill="$line"/><rect x="420" y="398" width="155" height="8" rx="4" fill="$muted"/>
+<g transform="translate(680 389)"><rect x="1" y="1" width="32" height="24" rx="4" fill="none" stroke="$muted" stroke-width="2" stroke-dasharray="4 4"/></g>
+<path class="flow" d="M790 300H834" fill="none" stroke="$muted" stroke-width="2.5" stroke-dasharray="8 16"/>
+<path d="M830 292l8 8-8 8" fill="none" stroke="$muted" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- the card that names the lit row -->
+<rect x="852" y="176" width="376" height="252" rx="14" fill="$panel" stroke="$accent" stroke-width="2"/>
+<text class="s" x="876" y="298" font-size="16" fill="$muted">word budget</text>
+<rect x="876" y="316" width="320" height="12" rx="6" fill="$line"/>
+<text class="s" x="876" y="366" font-size="16" fill="$muted">picture</text>
+<g class="card" opacity="0" style="animation-delay:-12s"><text class="b" x="876" y="226" font-size="28" fill="$ink">What you get</text><text class="b" x="1196" y="300" font-size="30" fill="$hot" text-anchor="end">200</text><rect class="fill" style="animation-delay:-12s" x="876" y="316" width="291" height="12" rx="6" fill="$accent"/><g transform="translate(876 378)"><rect width="52" height="36" rx="6" fill="$accent"/><path d="M8 29l12-13 9 7 7-6 9 12" fill="none" stroke="$bg" stroke-width="2.5" stroke-linejoin="round"/></g><path d="M944 396l7 7 13-14" fill="none" stroke="$hot" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g class="card" opacity="0" style="animation-delay:-9s"><text class="b" x="876" y="226" font-size="28" fill="$ink">Install</text><text class="b" x="1196" y="300" font-size="30" fill="$hot" text-anchor="end">170</text><rect class="fill" style="animation-delay:-9s" x="876" y="316" width="247" height="12" rx="6" fill="$accent"/><g transform="translate(876 378)"><rect x="1" y="1" width="50" height="34" rx="6" fill="none" stroke="$muted" stroke-width="2" stroke-dasharray="5 5"/></g><path d="M946 390l14 14M960 390l-14 14" fill="none" stroke="$muted" stroke-width="3" stroke-linecap="round"/></g>
+<g class="card" opacity="0" style="animation-delay:-6s"><text class="b" x="876" y="226" font-size="28" fill="$ink">Use</text><text class="b" x="1196" y="300" font-size="30" fill="$hot" text-anchor="end">220</text><rect class="fill" style="animation-delay:-6s" x="876" y="316" width="320" height="12" rx="6" fill="$accent"/><g transform="translate(876 378)"><rect width="52" height="36" rx="6" fill="$accent"/><path d="M8 29l12-13 9 7 7-6 9 12" fill="none" stroke="$bg" stroke-width="2.5" stroke-linejoin="round"/></g><path d="M944 396l7 7 13-14" fill="none" stroke="$hot" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g class="card" opacity="0" style="animation-delay:-3s"><text class="b" x="876" y="226" font-size="28" fill="$ink">Limits</text><text class="b" x="1196" y="300" font-size="30" fill="$hot" text-anchor="end">170</text><rect class="fill" style="animation-delay:-3s" x="876" y="316" width="247" height="12" rx="6" fill="$accent"/><g transform="translate(876 378)"><rect x="1" y="1" width="50" height="34" rx="6" fill="none" stroke="$muted" stroke-width="2" stroke-dasharray="5 5"/></g><path d="M946 390l14 14M960 390l-14 14" fill="none" stroke="$muted" stroke-width="3" stroke-linecap="round"/></g>
+<g class="card" style="animation-delay:0s"><text class="b" x="876" y="226" font-size="28" fill="$ink">How it works</text><text class="b" x="1196" y="300" font-size="30" fill="$hot" text-anchor="end">220</text><rect class="fill" style="animation-delay:0s" x="876" y="316" width="320" height="12" rx="6" fill="$accent"/><g transform="translate(876 378)"><rect width="52" height="36" rx="6" fill="$accent"/><path d="M8 29l12-13 9 7 7-6 9 12" fill="none" stroke="$bg" stroke-width="2.5" stroke-linejoin="round"/></g><path d="M944 396l7 7 13-14" fill="none" stroke="$hot" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+</g>
+</svg>

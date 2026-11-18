@@ -23,8 +23,9 @@ SVG = "http://www.w3.org/2000/svg"
 XLINK = "{http://www.w3.org/1999/xlink}href"
 XMLSPACE = "{http://www.w3.org/XML/1998/namespace}space"
 FACES = {"s": ("SpaceGrotesk.ttf", 500), "b": ("SpaceGrotesk.ttf", 700), "m": ("JetBrainsMono.ttf", None)}
-W, H = 1280, 640
-README = 838 / W  # GitHub shows the hero at about this scale
+W, H = 1280, 640       # the canvas of the source being checked: set by check() from its kind
+CANVAS = {"hero": (1280, 640), "section": (1280, 448)}
+README = 838 / 1280    # GitHub shows a 1280 px wide picture at about this scale
 SKIP = {"defs", "clipPath", "mask", "pattern", "linearGradient", "radialGradient", "symbol", "style", "title",
         "desc", "metadata", "filter", "marker"}
 CHEAP = {"transform", "opacity"}  # composited: smooth everywhere
@@ -64,6 +65,16 @@ DURATION = (0.4, 60)   # s
 LEAD_TRAVEL = 40       # px: something in the stage travels at least this far
 LEAD_SIZE = 20         # px: and the largest thing that travels is at least this big on its shorter side
 LINE_CONTRAST = 3      # a connector with walking dashes against the background
+# a section scene: a short canvas with a headline that says what the section claims, and a picture that shows it
+TITLE_SIZE = (34, 56)  # the headline of the scene: the largest text on it
+TITLE_WORDS = 8
+SUB_SIZE = (16, 24)
+SUB_WORDS = (3, 18)
+EYEBROW_SIZE = (13, 18)  # a short label over the headline, in the accent
+SCENE_STAGE_SHARE = 0.45
+SCENE_COPY_SHARE = (0.1, 0.45)
+SCENE_PARTS = 18
+SCENE_LARGE = 110
 
 _fonts = {}
 
@@ -294,8 +305,8 @@ def transform_parts(v):
 
 
 class Hero:
-    def __init__(self, root, palette):
-        self.root, self.palette = root, palette
+    def __init__(self, root, palette, kind="hero"):
+        self.root, self.palette, self.kind = root, palette, kind
         self.errors, self.warns, self.facts = [], [], {}
         self.parent = {c: p for p in root.iter() for c in p}
         self.byid = {e.get("id"): e for e in root.iter() if e.get("id")}
@@ -493,7 +504,7 @@ class Hero:
 
     # ---- the checks
     def run(self):
-        self.check_slots()
+        {"hero": self.check_slots, "section": self.check_scene_slots}[self.kind]()
         self.check_text()
         self.check_contrast()
         self.check_strokes()
@@ -601,48 +612,105 @@ class Hero:
             self.warns.append("no text travels in #ticker: it is a strip of text that never stops, behind a clip")
         if backdrop is not None and not any(self.anims(e) for e in backdrop.iter()):
             self.warns.append("nothing in #backdrop is animated: the background drifts all the time, slowly")
-        if stage is not None:
-            b = None  # what can be seen of the picture: each part cut by the canvas and by its clip or mask
-            parts = [x for x in self.shapes + self.texts if self.inside(x["el"], stage)]
-            parts += [{"el": e, "box": self.box[e]} for e in stage.iter() if local(e.tag) == "use" and self.box.get(e)]
-            for x in parts:
-                if area(x["box"]) < 0.9 * W * H:
-                    b = union(b, inter(x["box"], self.region(x["el"])))
-            share = area(b) / (W * H)
-            f["stage_share"] = round(share, 2)
-            if share < STAGE_SHARE:
-                self.warns.append(f"the picture in #stage covers {share:.0%} of the canvas; give it at least {STAGE_SHARE:.0%}, it is what explains the repository")
-            for el in (logo, name, tagline, about, facts, ticker, backdrop):
-                if el is not None and self.inside(el, stage):
-                    self.errors.append(f'id="{el.get("id")}" is inside #stage: the text, the picture, the strip and the background are separate groups')
-            copy = None
-            for el in (logo, name, tagline, about, facts):
-                copy = union(copy, self.box.get(el) if el is not None else None)
-            if copy and b:
-                ratio = area(copy) / (area(copy) + area(b))
-                f["copy_share"] = round(ratio, 2)
-                if not COPY_SHARE[0] <= ratio <= COPY_SHARE[1]:
-                    much = "the text block is too small beside the picture and gets lost" if ratio < COPY_SHARE[0] else "the text block crowds out the picture"
-                    self.warns.append(f"text and picture are {ratio:.0%} / {1 - ratio:.0%}: {much}. Most heroes sit between 35 / 65 and 45 / 55; keep this one only when the picture needs it")
-                hit = inter(copy, b)
-                if hit and area(hit) > 0.05 * area(copy):
-                    self.warns.append("the picture in #stage runs under the text block: give each its own side of the canvas")
-            sides = [min(x["box"][2] - x["box"][0], x["box"][3] - x["box"][1]) for x in parts if "s" not in x]
-            small = sum(1 for s in sides if s <= STAGE_SMALL[0])
-            moving = sum(1 for e in stage.iter() if self.anims(e))
-            f["stage_parts"], f["stage_moving"] = len(parts), moving
-            if len(parts) < STAGE_PARTS:
-                self.warns.append(f"the picture in #stage is made of {len(parts)} parts: it reads as empty. Draw the real thing with its detail ({STAGE_PARTS} parts or more): rows, chips, counters, sample content")
-            if not any(s >= STAGE_LARGE for s in sides):
-                self.warns.append(f"nothing in #stage is large: one object {STAGE_LARGE} px or more on its shorter side anchors the picture")
-            if small < STAGE_SMALL[1]:
-                self.warns.append(f"#stage has {small} small detail(s): mix sizes, a large object with medium ones and {STAGE_SMALL[1]} or more small ones ({STAGE_SMALL[0]} px or less)")
-            if moving < STAGE_MOVING:
-                self.warns.append(f"{moving} thing(s) move in #stage: a picture that is alive has {STAGE_MOVING} or more, one leading and the others following or ambient")
+        self.check_stage(stage, (logo, name, tagline, about, facts), (logo, name, tagline, about, facts, ticker, backdrop))
+
+    def check_stage(self, stage, copy_els, separate, share_min=STAGE_SHARE, copy_range=COPY_SHARE, parts_min=STAGE_PARTS, large=STAGE_LARGE):
+        """The picture: how much of the canvas it takes, against the text block, and what it is made of."""
+        f = self.facts
+        if stage is None:
+            return
+        b = None  # what can be seen of the picture: each part cut by the canvas and by its clip or mask
+        parts = [x for x in self.shapes + self.texts if self.inside(x["el"], stage)]
+        parts += [{"el": e, "box": self.box[e]} for e in stage.iter() if local(e.tag) == "use" and self.box.get(e)]
+        for x in parts:
+            if area(x["box"]) < 0.9 * W * H:
+                b = union(b, inter(x["box"], self.region(x["el"])))
+        share = area(b) / (W * H) if b else 0
+        f["stage_share"] = round(share, 2)
+        what = "repository" if self.kind == "hero" else "section"
+        if share < share_min:
+            self.warns.append(f"the picture in #stage covers {share:.0%} of the canvas; give it at least {share_min:.0%}, it is what explains the {what}")
+        for el in separate:
+            if el is not None and self.inside(el, stage):
+                self.errors.append(f'id="{el.get("id")}" is inside #stage: the text, the picture, the strip and the background are separate groups')
+        copy = None
+        for el in copy_els:
+            copy = union(copy, self.box.get(el) if el is not None else None)
+        if copy and b:
+            ratio = area(copy) / (area(copy) + area(b))
+            f["copy_share"] = round(ratio, 2)
+            if not copy_range[0] <= ratio <= copy_range[1]:
+                much = "the text block is too small beside the picture and gets lost" if ratio < copy_range[0] else "the text block crowds out the picture"
+                usual = "heroes sit between 35 / 65 and 45 / 55" if self.kind == "hero" else "scenes sit between 15 / 85 and 35 / 65"
+                self.warns.append(f"text and picture are {ratio:.0%} / {1 - ratio:.0%}: {much}. Most {usual}; keep this one only when the picture needs it")
+            hit = sum(area(inter(copy, x["box"]) or (0, 0, 0, 0)) for x in parts if area(x["box"]) < 0.9 * W * H)
+            if hit > 0.05 * area(copy):
+                self.warns.append("the picture in #stage runs under the text block: give each its own side of the canvas")
+        sides = [min(x["box"][2] - x["box"][0], x["box"][3] - x["box"][1]) for x in parts if "s" not in x]
+        small = sum(1 for s in sides if s <= STAGE_SMALL[0])
+        moving = sum(1 for e in stage.iter() if self.anims(e))
+        f["stage_parts"], f["stage_moving"] = len(parts), moving
+        if len(parts) < parts_min:
+            self.warns.append(f"the picture in #stage is made of {len(parts)} parts: it reads as empty. Draw the real thing with its detail ({parts_min} parts or more): rows, chips, counters, sample content")
+        if not any(s >= large for s in sides):
+            self.warns.append(f"nothing in #stage is large: one object {large} px or more on its shorter side anchors the picture")
+        if small < STAGE_SMALL[1]:
+            self.warns.append(f"#stage has {small} small detail(s): mix sizes, a large object with medium ones and {STAGE_SMALL[1]} or more small ones ({STAGE_SMALL[0]} px or less)")
+        if moving < STAGE_MOVING:
+            self.warns.append(f"{moving} thing(s) move in #stage: a picture that is alive has {STAGE_MOVING} or more, one leading and the others following or ambient")
+
+    def check_scene_slots(self):
+        """A section scene: eyebrow, title and sub are the text block, the stage shows what the section says."""
+        for k in self.twice:
+            self.errors.append(f"@keyframes {k} is written twice, differently: the last one replaces the first for every element that uses it. Give each its own name")
+        title = self.slot("title", "the headline of the scene: what this section claims, in a few words")
+        stage = self.slot("stage", "the group that holds the picture of what this section explains")
+        eyebrow, sub = self.byid.get("eyebrow"), self.byid.get("sub")
+        eyebrow = eyebrow if eyebrow is not None and self.box.get(eyebrow) else None
+        sub = sub if sub is not None and self.box.get(sub) else None
+        backdrop = self.part("backdrop", "the background is a quiet pattern that moves all the time")
+        for bad in ("name", "tagline", "about", "facts", "ticker", "logo"):
+            if self.byid.get(bad) is not None:
+                self.warns.append(f'id="{bad}" belongs to the hero: a scene has #eyebrow, #title, #sub and #stage, and does not sign itself again')
+        f = self.facts
+        if title is not None:
+            lines = [t for t in self.texts if self.inside(t["el"], title)]
+            words = sum(t["words"] for t in lines)
+            f["title_words"] = words
+            if lines:
+                size = max(t["fs"] for t in lines)
+                f["title_px"] = round(size)
+                if not TITLE_SIZE[0] <= size <= TITLE_SIZE[1]:
+                    self.warns.append(f"the title is {size:.0f} px; keep it between {TITLE_SIZE[0]} and {TITLE_SIZE[1]}: it is what the section claims, read first")
+                rivals = [x for x in self.texts if not self.inside(x["el"], title) and x["fs"] >= size]
+                if rivals:
+                    self.warns.append(f"{self.describe(rivals[0]['el'])} is {rivals[0]['fs']:.0f} px, as large as the title ({size:.0f} px): the title is the largest text on the scene")
+            if words > TITLE_WORDS:
+                self.warns.append(f"the title has {words} words; say it in {TITLE_WORDS} or fewer")
+        if sub is not None:
+            lines = [t for t in self.texts if self.inside(t["el"], sub)]
+            words = sum(t["words"] for t in lines)
+            f["sub_words"] = words
+            if lines and not SUB_SIZE[0] <= max(t["fs"] for t in lines) <= SUB_SIZE[1]:
+                self.warns.append(f"#sub is {max(t['fs'] for t in lines):.0f} px; keep it between {SUB_SIZE[0]} and {SUB_SIZE[1]}")
+            if not SUB_WORDS[0] <= words <= SUB_WORDS[1]:
+                self.warns.append(f"#sub has {words} words; write {SUB_WORDS[0]} to {SUB_WORDS[1]}, one line")
+        if eyebrow is not None:
+            lines = [t for t in self.texts if self.inside(t["el"], eyebrow)]
+            if lines and not EYEBROW_SIZE[0] <= max(t["fs"] for t in lines) <= EYEBROW_SIZE[1]:
+                self.warns.append(f"#eyebrow is {max(t['fs'] for t in lines):.0f} px; keep it between {EYEBROW_SIZE[0]} and {EYEBROW_SIZE[1]}")
+            if sum(t["words"] for t in lines) > 4:
+                self.warns.append("#eyebrow is a label of one to four words: the name of the section")
+        for el, label in ((eyebrow, "eyebrow"), (title, "title"), (sub, "sub")):
+            if el is not None and (self.mover(el) is not None or self.fades(el)):
+                self.errors.append(f"the {label} is animated: it stays still, so it can be read at any moment")
+        if backdrop is not None and not any(self.anims(e) for e in backdrop.iter()):
+            self.warns.append("nothing in #backdrop is animated: the background drifts all the time, slowly")
+        self.check_stage(stage, (eyebrow, title, sub), (eyebrow, title, sub, backdrop), SCENE_STAGE_SHARE, SCENE_COPY_SHARE, SCENE_PARTS, SCENE_LARGE)
 
     def check_text(self):
         f, canvas = self.facts, (0, 0, W, H)
-        apart = [self.byid.get(i) for i in ("name", "tagline", "about", "facts")]
+        apart = [self.byid.get(i) for i in ("name", "tagline", "about", "facts", "eyebrow", "title", "sub")]
         still = [t for t in self.texts if self.mover(t["el"]) is None]
         for t in self.texts:
             if not t["classed"]:
@@ -884,8 +952,9 @@ class Hero:
                     Wn.append(f"{who} follows an open path and is visible at both ends: fade it to opacity 0 at 0% and 100%, or close the path")
 
             # what is seen when motion is off, and what a connector looks like at rest
-            if hidden_ends and far >= LEAD_TRAVEL and num(el.get("opacity"), 1) > 0.02 and not self.inside(el, self.byid.get("facts")):
-                Wn.append(f"{who} exists only while it travels, but with motion off it sits frozen where it starts. Give the element opacity=\"0\" as an attribute: the animation overrides it while it runs")
+            resting = self.inside(el, self.byid.get("facts")) or any(a.get("data-rest") == "shown" for a in self.chain(el))  # what takes turns on purpose
+            if hidden_ends and far >= LEAD_TRAVEL and num(el.get("opacity"), 1) > 0.02 and not resting:
+                Wn.append(f"{who} exists only while it travels, but with motion off it sits frozen where it starts. Give the element opacity=\"0\" as an attribute: the animation overrides it while it runs. When it is drawn where it rests on purpose, put it in a <g data-rest=\"shown\">")
             if first and "stroke-dashoffset" in props:
                 stroke, width = self.inherit(el, "stroke", "none"), num(self.inherit(el, "stroke-width"), 1) * mscale(self.M.get(el, IDENT))
                 for ti, theme in enumerate(("dark", "light")):
@@ -989,13 +1058,22 @@ def read_source(raw):
     return palette, raw.replace(m.group(0), "").strip()
 
 
-def check(root, palette):
-    return Hero(root, palette).run()
+def kind_of(path):
+    """hero.src.svg is the hero, any other *.src.svg a section scene."""
+    return "hero" if Path(path).name.split(".")[0] == "hero" else "section"
+
+
+def check(root, palette, kind="hero"):
+    global W, H
+    W, H = CANVAS[kind]
+    return Hero(root, palette, kind).run()
 
 
 def summary(facts):
     f = facts
     bits = []
+    if "title_px" in f:
+        bits.append(f"title {f['title_px']} px, {f.get('title_words', 0)} words")
     if "name_px" in f:
         bits.append(f"name {f['name_px']} px")
     if "logo_px" in f:
@@ -1029,7 +1107,7 @@ def main():
         root = ET.fromstring(body)
     except ET.ParseError as e:
         sys.exit(f"error: the SVG is not well-formed XML: {e}")
-    hero = check(root, palette)
+    hero = check(root, palette, kind_of(args[0]))
     hero.errors = list(dict.fromkeys(hero.errors))
     warns = list(dict.fromkeys(hero.warns))
     if "--json" in sys.argv:
