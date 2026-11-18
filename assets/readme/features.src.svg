@@ -1,0 +1,130 @@
+<!--palette
+bg     #0E1526 #F5F7FB
+panel  #172138 #FFFFFF
+raised #22304F #E6ECF5
+line   #34446A #C9D3E3
+ink    #EEF2F7 #1B2A4A
+body   #C3CBD9 #3A4560
+muted  #95A0B6 #586380
+accent #E8553D #C23B25
+dots   #1E2A44 #DDE4EF
+pgd    #141C30 #141C30
+pgdl   #33415F #33415F
+pgdi   #EEF2F7 #EEF2F7
+pgdw   #3A2333 #3A2333
+pgl    #FFFFFF #FFFFFF
+pgll   #D3DBE8 #D3DBE8
+pgli   #1B2A4A #1B2A4A
+pglw   #FBE1DB #FBE1DB
+spot   #E8553D #E8553D
+frame  #4A5A80 #9AA7BF
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 448" role="img" aria-label="What you get: a finished front page, zoomed in. Its parts light one at a time while a card names each: a moving picture on top, a picture where it helps, short plain text. Then a pointer clicks the dark and light switch and the whole page turns light, then dark again.">
+<style>
+/* 16 s story
+   ring1 banner  |====|                      (0-25%)
+   ring2 picture      |====|                 (25-50%)
+   ring3 text              |====|            (50-75%)
+   cursor                    |go|==on switch==|home|  (62-70, 70-96, 96-100)
+   ring4 page                     |=========| (75-97%)
+   light page                       |=====|   (77-94%)  */
+@keyframes drift{to{transform:translate(24px,24px)}}
+@keyframes turn{0%{transform:translateY(40px);opacity:0}4%,25%{transform:translateY(0);opacity:1}29%,100%{transform:translateY(-40px);opacity:0}}
+@keyframes ring1{0%,22%{opacity:1}25%,97%{opacity:0}100%{opacity:1}}
+@keyframes ring2{0%,24%{opacity:0}26%,47%{opacity:1}50%,100%{opacity:0}}
+@keyframes ring3{0%,49%{opacity:0}51%,72%{opacity:1}75%,100%{opacity:0}}
+@keyframes ring4{0%,74%{opacity:0}76%,96%{opacity:1}98%,100%{opacity:0}}
+@keyframes lp{0%,76%{opacity:0}78%,93%{opacity:1}95%,100%{opacity:0}}
+@keyframes knob{0%,76%{transform:translateX(0)}77.5%,93.5%{transform:translateX(26px)}95%,100%{transform:translateX(0)}}
+@keyframes press{0%,75%{transform:scale(1)}76%{transform:scale(.88)}78%,92.5%{transform:scale(1)}93.5%{transform:scale(.88)}95.5%,100%{transform:scale(1)}}
+@keyframes cm{0%,62%{transform:translate(0,0)}70%,96%{transform:translate(-92px,-81px)}100%{transform:translate(0,0)}}
+@keyframes roam{0%,100%{transform:translateX(0)}50%{transform:translateX(380px)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+@keyframes cur-ptr{0%{opacity:0}70%{opacity:0}70.5%,96%{opacity:1}96.5%{opacity:0}100%{opacity:0}}
+@keyframes cur-arr{0%{opacity:1}70%{opacity:1}70.5%,96%{opacity:0}96.5%{opacity:1}100%{opacity:1}}
+.drift{animation:drift 6s linear infinite}
+.turn{animation:turn 16s cubic-bezier(.4,0,.2,1) infinite}
+.ring1{animation:ring1 16s ease-in-out infinite}
+.ring2{animation:ring2 16s ease-in-out infinite}
+.ring3{animation:ring3 16s ease-in-out infinite}
+.ring4{animation:ring4 16s ease-in-out infinite}
+.lp{animation:lp 16s ease-in-out infinite}
+.knob{animation:knob 16s cubic-bezier(.4,0,.2,1) infinite}
+.press{animation:press 16s ease-out infinite;transform-box:fill-box;transform-origin:center}
+.cm{animation:cm 16s cubic-bezier(.4,0,.2,1) infinite}
+.roam{animation:roam 8s ease-in-out infinite}
+.bob{animation:bob 4s ease-in-out infinite}
+.cur-ptr{animation:cur-ptr 16s step-end infinite}
+.cur-arr{animation:cur-arr 16s step-end infinite}
+</style>
+<defs>
+<pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.6" fill="$dots"/></pattern>
+<clipPath id="feat"><rect x="88" y="200" width="456" height="68"/></clipPath>
+<clipPath id="ban"><rect x="660" y="80" width="536" height="128" rx="12"/></clipPath>
+</defs>
+<rect width="1280" height="448" fill="$bg"/>
+<g id="backdrop"><rect class="drift" x="-24" y="-24" width="1328" height="496" fill="url(#grid)"/></g>
+
+<text id="eyebrow" x="72" y="56" class="m" font-size="15" letter-spacing="3" fill="$accent">WHAT YOU GET</text>
+<text id="title" x="72" y="108" class="b" font-size="42" fill="$ink">Your front page, finished</text>
+<text id="sub" x="72" y="146" class="s" font-size="20" fill="$body">A moving picture, short text, dark and light.</text>
+
+<g id="stage">
+<!-- the card that names the lit part -->
+<rect x="72" y="196" width="480" height="76" rx="14" fill="$panel" stroke="$line" stroke-width="2"/>
+<g clip-path="url(#feat)">
+<g class="turn" opacity="0" style="animation-delay:-.8s"><text x="100" y="243" class="b" font-size="24" fill="$ink">A moving picture on top</text></g>
+<g class="turn" opacity="0" style="animation-delay:-12.8s"><text x="100" y="243" class="b" font-size="24" fill="$ink">Pictures where they help</text></g>
+<g class="turn" opacity="0" style="animation-delay:-8.8s"><text x="100" y="243" class="b" font-size="24" fill="$ink">Short, plain text</text></g>
+<g data-rest="shown"><g class="turn" style="animation-delay:-4.8s"><text x="100" y="243" class="b" font-size="24" fill="$ink">Dark and light, both ready</text></g></g>
+</g>
+
+<!-- the four parts, as tiles that light with the page -->
+<rect x="72" y="296" width="60" height="60" rx="12" fill="$panel" stroke="$line" stroke-width="2"/>
+<rect x="144" y="296" width="60" height="60" rx="12" fill="$panel" stroke="$line" stroke-width="2"/>
+<rect x="216" y="296" width="60" height="60" rx="12" fill="$panel" stroke="$line" stroke-width="2"/>
+<rect x="288" y="296" width="60" height="60" rx="12" fill="$panel" stroke="$line" stroke-width="2"/>
+<rect class="ring1" opacity="0" x="72" y="296" width="60" height="60" rx="12" fill="none" stroke="$accent" stroke-width="3"/>
+<rect class="ring2" opacity="0" x="144" y="296" width="60" height="60" rx="12" fill="none" stroke="$accent" stroke-width="3"/>
+<rect class="ring3" opacity="0" x="216" y="296" width="60" height="60" rx="12" fill="none" stroke="$accent" stroke-width="3"/>
+<rect class="ring4" x="288" y="296" width="60" height="60" rx="12" fill="none" stroke="$accent" stroke-width="3"/>
+<g data-asset="ph:play-circle-bold" data-icon="a moving picture" data-size="32" transform="translate(86 310) scale(0.125)" color="$ink"><path fill="currentColor" d="M176 128a12 12 0 0 1-5.17 9.87l-52 36A12 12 0 0 1 100 164V92a12 12 0 0 1 18.83-9.87l52 36A12 12 0 0 1 176 128m60 0A108 108 0 1 1 128 20a108.12 108.12 0 0 1 108 108m-24 0a84 84 0 1 0-84 84a84.09 84.09 0 0 0 84-84"/></g>
+<g data-asset="ph:images-bold" data-icon="several pictures" data-size="32" transform="translate(158 310) scale(0.125)" color="$ink"><path fill="currentColor" d="M160 88a16 16 0 1 1 16 16a16 16 0 0 1-16-16m76-32v104a20 20 0 0 1-20 20h-12v20a20 20 0 0 1-20 20H40a20 20 0 0 1-20-20V88a20 20 0 0 1 20-20h20V56a20 20 0 0 1 20-20h136a20 20 0 0 1 20 20m-56 124H80a20 20 0 0 1-20-20V92H44v104h136Zm-21.66-24L124 121.66L89.66 156ZM212 60H84v67.72l25.86-25.86a20 20 0 0 1 28.28 0L192.28 156H212Z"/></g>
+<g data-asset="ph:text-align-left-bold" data-icon="lines of text" data-size="32" transform="translate(230 310) scale(0.125)" color="$ink"><path fill="currentColor" d="M28 64a12 12 0 0 1 12-12h176a12 12 0 0 1 0 24H40a12 12 0 0 1-12-12m12 52h128a12 12 0 0 0 0-24H40a12 12 0 0 0 0 24m176 16H40a12 12 0 0 0 0 24h176a12 12 0 0 0 0-24m-48 40H40a12 12 0 0 0 0 24h128a12 12 0 0 0 0-24"/></g>
+<g data-asset="ph:moon-bold" data-icon="dark mode" data-size="40" transform="translate(298 306) scale(0.1562)" color="$ink"><path fill="currentColor" d="M236.37 139.4a12 12 0 0 0-12-3A84.07 84.07 0 0 1 119.6 31.59a12 12 0 0 0-15-15a108.86 108.86 0 0 0-54.91 38.48A108 108 0 0 0 136 228a107.1 107.1 0 0 0 64.93-21.69a108.86 108.86 0 0 0 38.44-54.94a12 12 0 0 0-3-11.97m-49.88 47.74A84 84 0 0 1 68.86 69.51a84.9 84.9 0 0 1 23.41-21.22Q92 52.13 92 56a108.12 108.12 0 0 0 108 108q3.87 0 7.71-.27a84.8 84.8 0 0 1-21.22 23.41"/></g>
+
+<!-- the switch -->
+<text x="384" y="333" class="s" font-size="16" fill="$body">Dark</text>
+<g data-kit="toggle" data-clickable="true"><g class="press"><rect x="430" y="312" width="56" height="30" rx="15" fill="$raised" stroke="$line" stroke-width="2"/><rect class="lp" opacity="0" x="430" y="312" width="56" height="30" rx="15" fill="$accent"/><g transform="translate(446 327)"><circle class="knob" cx="0" cy="0" r="10" fill="$ink"/></g></g></g>
+<text x="498" y="333" class="s" font-size="16" fill="$body">Light</text>
+
+<!-- the front page, dark -->
+<rect x="640" y="32" width="576" height="392" rx="14" fill="$pgd" stroke="$frame" stroke-width="2"/>
+<circle cx="662" cy="52" r="5" fill="$pgdl"/><circle cx="678" cy="52" r="5" fill="$pgdl"/><circle cx="694" cy="52" r="5" fill="$pgdl"/>
+<g clip-path="url(#ban)"><rect x="660" y="80" width="536" height="128" fill="$pgdw"/><path d="M660 208L760 140L840 184L960 112L1080 176L1196 128V208Z" fill="$spot" opacity=".6"/><g transform="translate(700 118)"><circle class="roam" r="14" fill="$spot"/></g></g>
+<rect x="660" y="226" width="220" height="16" rx="8" fill="$pgdi"/>
+<rect x="660" y="254" width="480" height="8" rx="4" fill="$pgdl"/>
+<rect x="660" y="282" width="200" height="112" rx="10" fill="$pgdw"/><g transform="translate(742 330)"><rect class="bob" width="36" height="30" rx="6" fill="$spot"/></g>
+<rect x="880" y="296" width="300" height="8" rx="4" fill="$pgdl"/><rect x="880" y="316" width="270" height="8" rx="4" fill="$pgdl"/><rect x="880" y="336" width="300" height="8" rx="4" fill="$pgdl"/><rect x="880" y="356" width="240" height="8" rx="4" fill="$pgdl"/><rect x="880" y="376" width="200" height="8" rx="4" fill="$pgdl"/>
+
+<!-- the same page, light: it shows while the switch is on -->
+<g class="lp" opacity="0">
+<rect x="640" y="32" width="576" height="392" rx="14" fill="$pgl" stroke="$frame" stroke-width="2"/>
+<circle cx="662" cy="52" r="5" fill="$pgll"/><circle cx="678" cy="52" r="5" fill="$pgll"/><circle cx="694" cy="52" r="5" fill="$pgll"/>
+<g clip-path="url(#ban)"><rect x="660" y="80" width="536" height="128" fill="$pglw"/><path d="M660 208L760 140L840 184L960 112L1080 176L1196 128V208Z" fill="$spot" opacity=".6"/><g transform="translate(700 118)"><circle class="roam" r="14" fill="$spot"/></g></g>
+<rect x="660" y="226" width="220" height="16" rx="8" fill="$pgli"/>
+<rect x="660" y="254" width="480" height="8" rx="4" fill="$pgll"/>
+<rect x="660" y="282" width="200" height="112" rx="10" fill="$pglw"/><g transform="translate(742 330)"><rect class="bob" width="36" height="30" rx="6" fill="$spot"/></g>
+<rect x="880" y="296" width="300" height="8" rx="4" fill="$pgll"/><rect x="880" y="316" width="270" height="8" rx="4" fill="$pgll"/><rect x="880" y="336" width="300" height="8" rx="4" fill="$pgll"/><rect x="880" y="356" width="240" height="8" rx="4" fill="$pgll"/><rect x="880" y="376" width="200" height="8" rx="4" fill="$pgll"/>
+</g>
+
+<!-- the lit part of the page -->
+<rect class="ring1" opacity="0" x="652" y="72" width="552" height="144" rx="16" fill="none" stroke="$accent" stroke-width="3"/>
+<rect class="ring2" opacity="0" x="652" y="274" width="216" height="128" rx="14" fill="none" stroke="$accent" stroke-width="3"/>
+<rect class="ring3" opacity="0" x="870" y="284" width="324" height="112" rx="12" fill="none" stroke="$accent" stroke-width="3"/>
+<rect class="ring4" x="632" y="24" width="592" height="408" rx="18" fill="none" stroke="$accent" stroke-width="3"/>
+
+<!-- the cursor -->
+<g class="cm"><g data-kit="cursor-swap"><g class="cur-arr"><g data-kit="cursor" data-cursor="arrow" transform="translate(560.0 408.0) scale(1.08)"><path transform="translate(0 0)" d="M0 0V19L5 14.5L8.6 22.3L12 20.8L8.5 13.2H15Z" fill="$ink" stroke="$bg" stroke-width="1.6" stroke-linejoin="round"/></g></g><g class="cur-ptr" opacity="0"><g data-kit="cursor" data-cursor="pointer" transform="translate(560.0 408.0) scale(1.08)"><path transform="translate(-6.5 0)" d="M6.5 0C7.9 0 9 1.1 9 2.5V9.2C9.4 9 9.9 8.9 10.4 8.9C11.6 8.9 12.6 9.6 13 10.6C13.4 10.4 13.9 10.3 14.4 10.3C15.7 10.3 16.8 11.2 17.1 12.4C17.5 12.2 17.9 12.1 18.4 12.1C19.8 12.1 21 13.3 21 14.7V19C21 23.4 17.4 27 13 27H11.5C8.8 27 6.4 25.6 5 23.4L1 17C.3 15.9 .6 14.5 1.7 13.8C2.7 13.2 4 13.4 4.7 14.4L4 13.6V2.5C4 1.1 5.1 0 6.5 0Z" fill="$ink" stroke="$bg" stroke-width="1.6" stroke-linejoin="round"/></g></g></g></g>
+</g>
+</svg>
