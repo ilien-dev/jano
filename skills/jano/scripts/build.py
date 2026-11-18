@@ -328,7 +328,7 @@ def build(src):
 
     names, themed = [], []
     # the outputs carry a fingerprint of their source, so a check can tell a stale build in any clone, whatever the file dates
-    print_sha = hashlib.sha256(src.read_bytes()).hexdigest()[:16]
+    print_sha = hashlib.sha256(src.read_bytes().replace(b"\r\n", b"\n")).hexdigest()[:16]  # line endings as git stores them
     body = body.replace("<svg ", f'<svg data-jano-src="{print_sha}" ', 1)
     for ti, theme in enumerate(("dark", "light")):
         svg = re.sub(r"\$([a-z][a-z0-9_]*)", lambda k: palette[k.group(1)][ti], body)

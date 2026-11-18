@@ -88,9 +88,14 @@ def sha(*parts):
     return h.hexdigest()[:16]
 
 
+def source_bytes(path):
+    """A source's bytes with line endings as git stores them, so a clone on any system has the same fingerprint."""
+    return path.read_bytes().replace(b"\r\n", b"\n") if path.exists() else b""
+
+
 def stale(src):
     """The outputs of a source that are missing or were built from another version of it."""
-    want = hashlib.sha256(src.read_bytes()).hexdigest()[:16]
+    want = hashlib.sha256(source_bytes(src)).hexdigest()[:16]
     out = []
     for theme in ("dark", "light"):
         f = src.with_name(src.name.replace(".src.svg", f"-{theme}.svg"))
@@ -602,14 +607,14 @@ def judge_items(repo, plan):
             continue
         dark = repo / p.get("file", "").replace(".src.svg", "-dark.svg")
         source = repo / p.get("file", "")
-        pic = source.read_bytes() if source.exists() else b""  # judged on its source: a rebuild of the same source keeps its verdict
+        pic = source_bytes(source)  # judged on its source: a rebuild of the same source keeps its verdict
         body = next((b for h, b in secs if norm(h) == norm(s.get("heading", ""))), "")
         items.append({"id": f"picture:{Path(p.get('file', '')).name}", "kind": "picture", "sha": sha(pic), "file": str(dark), "claim": p.get("claim", ""),
                       "heading": s.get("heading")})
         items.append({"id": f"section:{s.get('heading')}", "kind": "section", "sha": sha(pic, body), "file": str(dark), "text": body,
                       "claim": p.get("claim", ""), "heading": s.get("heading")})
     hero = repo / "assets/hero-dark.svg"
-    scenes = [p.read_bytes() for p in sorted(repo.glob("assets/**/*.src.svg"))]
+    scenes = [source_bytes(p) for p in sorted(repo.glob("assets/**/*.src.svg"))]
     items.append({"id": "readme", "kind": "readme", "sha": sha(md, *scenes), "file": str(repo / "README.md"), "hero": str(hero),
                   "claim": plan.get("sentence", "")})
     return items

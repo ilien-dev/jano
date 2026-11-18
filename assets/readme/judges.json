@@ -10,27 +10,27 @@
     "why": "The reader described the cold read step: fresh agents read the result and redraw or rewrite what they get wrong, with a blind reader checking a picture against claims."
   },
   "picture:plan.src.svg": {
-    "sha": "d128e930119833ba",
+    "sha": "d40a702518daa665",
     "pass": true,
     "why": "The blind judge saw a plan listing README sections, each with a word budget and a picture slot, though the per-section job is read only as a keyword tag."
   },
   "section:What you get": {
-    "sha": "aafd9c8c31002440",
+    "sha": "b907c5e494795b83",
     "pass": true,
     "why": "The reader understood a README planned section by section with word budgets and pictures over the sections that need them."
   },
   "picture:ask.src.svg": {
-    "sha": "342375296fc78130",
+    "sha": "70fb1718bba82037",
     "pass": true,
     "why": "The blind judge saw an agent ask three questions with a Jano-suggested option each, then work on its own."
   },
   "section:Use": {
-    "sha": "1f17b5c7971013b2",
+    "sha": "8a33e9e0ea68dca7",
     "pass": true,
     "why": "The reader understood it asks a few questions with a suggested answer, then works alone."
   },
   "readme": {
-    "sha": "417231ae0d0327c1",
+    "sha": "542bd24fe1114cb3",
     "pass": true,
     "why": "The reader's project sentence and start capture a skill for project owners that asks a few questions and writes a README with animated pictures for strangers, though the cold-read check is left out of the sentence."
   }

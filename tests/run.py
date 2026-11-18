@@ -266,7 +266,7 @@ import readme as readme_module  # noqa: E402
 def built(src_file, stale=False):
     """Stand-in outputs that carry their source's fingerprint, as build.py writes it."""
     import hashlib
-    mark = "0" * 16 if stale else hashlib.sha256(src_file.read_bytes()).hexdigest()[:16]
+    mark = "0" * 16 if stale else hashlib.sha256(src_file.read_bytes().replace(b"\r\n", b"\n")).hexdigest()[:16]
     stem = src_file.name.replace(".src.svg", "")
     for t in ("dark", "light"):
         (src_file.parent / f"{stem}-{t}.svg").write_text(f'<svg data-jano-src="{mark}">{stem}{t}</svg>', encoding="utf-8")
@@ -325,6 +325,16 @@ test("readme.py: a picture built from another version of its source fails", code
 test("the build writes its source's fingerprint into each output", 'data-jano-src="' in scene_dark)
 _, _, again = build_scene(SCENE)
 test("the same source builds the same bytes", (again / "demo-dark.svg").read_text(encoding="utf-8") == scene_dark)
+marks = []
+for ending in (b"\n", b"\r\n"):  # the same source as git stores it and as a Windows checkout writes it
+    folder = Path(tempfile.mkdtemp()) / "repo" / "assets" / "readme"
+    folder.mkdir(parents=True)
+    (folder / "demo.src.svg").write_bytes(SCENE.replace("\r\n", "\n").encode("utf-8").replace(b"\n", ending))
+    subprocess.run([sys.executable, str(BUILD), str(folder / "demo.src.svg"), "--no-pictures"], capture_output=True)
+    out_file = folder / "demo-dark.svg"
+    found = re.search(r'data-jano-src="([0-9a-f]+)"', out_file.read_text(encoding="utf-8")) if out_file.exists() else None
+    marks.append(found.group(1) if found else None)
+test("a source with Windows line endings has the fingerprint git will see", marks[0] is not None and marks[0] == marks[1], str(marks))
 code, out = repo_with(GOOD, PLAN_OK, SCENES)
 test("readme.py: a README nobody judged fails", code == 1 and "no judges yet" in out, out)
 code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=lambda r, p: {**passing(r, p), "readme": {"sha": "old", "pass": True}})
