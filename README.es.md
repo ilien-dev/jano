@@ -120,11 +120,24 @@ Jano necesita Python 3.9 o posterior en tu computadora. Si tienes [uv](https://d
 
 Abre tu agente en el proyecto y llama a Jano:
 
-| Agente | Escribe |
+| Agente | Llamada |
 |---|---|
 | Claude Code | `/jano` (como plugin: `/jano:jano`) |
 | Codex | `$jano` |
-| Otros | "usa el skill jano en este repositorio" |
+
+y pide lo que quieres. Un hero:
+
+```
+/jano haz un hero para este repositorio
+```
+
+Cuatro para elegir, cada uno un dibujo distinto del mismo proyecto:
+
+```
+/jano haz 4 alternativas para el hero de este repositorio
+```
+
+Las opciones se abren lado a lado en una página. Quédate con una, o di qué tomar de varias ("el dibujo de B con la disposición de C"); el README cambia solo cuando eliges. En Codex, empieza con `$jano`.
 
 Puedes decir lo que quieres ver: `/jano muestra un libro convirtiéndose en EPUB, conserva nuestro amarillo`. Jano nunca se ejecuta si no lo llamas, y no hace commit de nada.
 

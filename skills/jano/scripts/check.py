@@ -532,7 +532,9 @@ class Hero:
         facts = self.byid.get("facts")  # the highlights are optional
         if facts is not None and self.box.get(facts) is None:
             facts = None
-        ticker = self.part("ticker", "along the bottom runs a strip of moving text with more facts from the repository")
+        ticker = self.byid.get("ticker")  # the strip is optional too
+        if ticker is not None and self.box.get(ticker) is None:
+            ticker = None
         backdrop = self.part("backdrop", "the background is a quiet pattern that moves all the time")
         f = self.facts
         if name is not None:
@@ -974,7 +976,8 @@ def mix(fg, bg, alpha):
 
 
 def read_source(raw):
-    """Source text -> (palette, body without the palette comment). Exits when there is no palette."""
+    """Source text -> (palette, body without the palette and brief comments). Exits when there is no palette."""
+    raw = re.sub(r"<!--\s*brief.*?-->", "", raw, flags=re.S)  # a brief may hold "--", which XML does not allow in a comment
     m = re.search(r"<!--\s*palette(.*?)-->", raw, re.S)
     if not m:
         sys.exit("error: no <!--palette ... --> comment in the source")

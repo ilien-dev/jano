@@ -21,8 +21,12 @@ embeds subsets of the fonts (classes .s text, .b bold, .m mono), turns text that
 moves into outlines so it travels without pixel jumps, adds the reduced-motion
 rule, and writes a preview page plus two pictures of it: the loop as eight frozen
 frames, and the finished frame as GitHub shows it in both themes.
+
+An optional <!--brief ... --> comment holds what the hero claims and where each claim
+comes from: the preview page shows it, the outputs leave it out. Several sources at
+once (assets/options/*/hero.src.svg) build each one and add a page with them side by side.
 """
-import base64, hashlib, html, io, os, re, shutil, subprocess, sys, tempfile
+import base64, glob, hashlib, html, io, os, re, shutil, subprocess, sys, tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -31,10 +35,19 @@ import check  # noqa: E402
 from check import FACES, SVG, XMLSPACE, font, num  # noqa: E402
 
 
+_whole = {}
+
+
 def subset_font(face, chars):
     from fontTools import subset
+    from fontTools.ttLib import TTFont
 
-    f = font(face)
+    # subsetting changes the font in place: work on a fresh copy, or the next source of the same run loses letters
+    if face not in _whole:
+        buf = io.BytesIO()
+        font(face).save(buf)
+        _whole[face] = buf.getvalue()
+    f = TTFont(io.BytesIO(_whole[face]))
     opts = subset.Options()
     opts.flavor = "woff2"
     opts.hinting = False
@@ -224,13 +237,15 @@ def take_pictures(shots):
     return False
 
 
-def main():
-    sys.stdout.reconfigure(encoding="utf-8")
-    if len(sys.argv) < 2:
-        sys.exit(__doc__)
-    src = Path(sys.argv[1]).resolve()
+def build(src):
+    """Builds one source. Returns what the options page needs, or None when the source has errors."""
     out = src.parent
-    palette, body = check.read_source(src.read_text(encoding="utf-8"))
+    raw = src.read_text(encoding="utf-8")
+    brief = re.search(r"<!--\s*brief(.*?)-->", raw, re.S)
+    if brief:
+        raw = raw.replace(brief.group(0), "")
+        brief = brief.group(1).strip()
+    palette, body = check.read_source(raw)
     errors, warns = [], []
 
     # ---- what GitHub will not show, or will show wrong
@@ -266,13 +281,14 @@ def main():
     try:
         root = ET.fromstring(body)
     except ET.ParseError as e:
-        sys.exit(f"error: the SVG is not well-formed XML: {e}")
+        print(f"error: the SVG is not well-formed XML: {e}")
+        return None
     hero = check.check(root, palette)
     errors = list(dict.fromkeys(errors + hero.errors))
     warns += hero.warns
     if errors:
         print("\n".join("error: " + e for e in errors))
-        sys.exit(1)
+        return None
 
     # ---- moving text to outlines
     outlined = outline_moving_text(root, warns, lambda el: hero.mover(el) is not None)
@@ -334,6 +350,8 @@ def main():
     (folder / "look.html").write_text(look, encoding="utf-8")
     # the live page, for a person or a browser tool
     page = css.replace("background:#0d1117;color:#f0f6fc", "")
+    if brief:
+        page += f'<section><p>brief: check each claim before the hero goes in the README</p><pre style="white-space:pre-wrap;margin:0">{html.escape(brief)}</pre></section>'
     for f, bg, fg in ((names[0], "#0d1117", "#f0f6fc"), (names[1], "#ffffff", "#1f2328")):
         page += f'<section style="background:{bg};color:{fg}"><p>{f.name} at README width (838px)</p><img src="{f.as_uri()}" width="838"><p>phone (360px)</p><img src="{f.as_uri()}" width="360"><p class="l">logo {logos}</p></section>'
     prev = folder / "index.html"
@@ -348,6 +366,42 @@ def main():
         print(f"no pictures: no Chrome, Chromium or Edge could take them (set JANO_BROWSER to one). Open {folder / 'loop.html'} and {folder / 'look.html'} in a browser instead")
     print(check.summary(hero.facts))
     print("\n".join("warning: " + w for w in dict.fromkeys(warns)) or "checks passed")
+    return {"files": names, "brief": brief}
+
+
+def main():
+    sys.stdout.reconfigure(encoding="utf-8")
+    sources = []
+    for a in (a for a in sys.argv[1:] if not a.startswith("--")):
+        # PowerShell and cmd hand the pattern over as it is written: expand it here
+        found = sorted(glob.glob(a)) if any(c in a for c in "*?[") else [a]
+        if not found:
+            sys.exit(f"error: no file matches {a}")
+        sources += [Path(f).resolve() for f in found]
+    if not sources:
+        sys.exit(__doc__)
+    built = []
+    for src in sources:
+        if len(sources) > 1:
+            print(f"\n== {src}")
+        built.append(build(src))
+    if len(sources) > 1:
+        # the options side by side, each with its brief, so the user can pick one or mix parts of several
+        tag = hashlib.sha1("|".join(map(str, sources)).encode()).hexdigest()[:8]
+        page = Path(tempfile.gettempdir()) / f"hero-options-{tag}.html"
+        body = ("<!doctype html><meta charset=utf-8><title>hero options</title><style>body{margin:0;font:14px system-ui;background:#0d1117;color:#f0f6fc}"
+                "section{padding:20px 32px;border-bottom:1px solid #30363d}h2{margin:0 0 12px;font-size:16px}.r{display:grid;grid-template-columns:1fr 1fr;gap:16px}"
+                "img{width:100%;display:block}pre{white-space:pre-wrap;margin:12px 0 0;color:#9da7b3}</style>")
+        for src, b in zip(sources, built):
+            name = html.escape(src.parent.name)
+            if b is None:
+                body += f"<section><h2>{name}</h2><p>did not build: see its errors above</p></section>"
+                continue
+            body += f'<section><h2>{name}</h2><div class=r><img src="{b["files"][0].as_uri()}"><img src="{b["files"][1].as_uri()}" style="background:#fff"></div>'
+            body += (f"<pre>{html.escape(b['brief'])}</pre>" if b["brief"] else "") + "</section>"
+        page.write_text(body, encoding="utf-8")
+        print(f"\noptions {page}")
+    sys.exit(1 if None in built else 0)
 
 
 if __name__ == "__main__":

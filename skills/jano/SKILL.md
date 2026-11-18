@@ -11,6 +11,18 @@ moves: a person who has read nothing yet looks at it and knows the name of the t
 for, what is worth knowing about it, and sees it doing its job. The hero is the whole job: do not rewrite the README's title, text, badges or links, and do not
 commit.
 
+## Options
+
+When the user asks for options or alternatives, draw that many heroes to choose from (four when
+no number is given). Steps 1 and 2 are done once, and every option shares that text block. Each
+option is its own idea of the picture, not a recolour, and at least one sets text and picture
+in another arrangement. Write them to `assets/options/a/hero.src.svg`, `b`, ... and build them
+together with `build.py assets/options/*/hero.src.svg`, which adds a page that shows them side
+by side; then look at each one as step 4 says. When you can start agents, give each option its
+own, with this file and your notes from step 1. Leave the README alone and show the user that
+page: they keep one, or name what to take from several. Write the result as
+`assets/hero.src.svg`, build it, and go on with step 5. Leave `assets/options/` to the user.
+
 ## 1. Learn the repo
 
 Read the README, docs and code until you can write down six things.
@@ -24,6 +36,11 @@ themselves ("a Kindle book", "a PDF").
 repo: what goes in, what the tool does to it, what comes out.
 `a Kindle book with a lock -> Anzu opens it -> an EPUB any reader takes`. This is what the hero
 will show, so it has to be true: follow it in the code, do not guess it from the name.
+
+**Only what ships.** What the repo marks as unfinished stays out of the hero: the flow, the
+highlights, the strip and the sample content. Look for experimental, beta, preview, planned,
+"coming soon", a flag that turns it on, a roadmap, the Unreleased part of a changelog. When the
+flow itself is unfinished, stop and ask the user before drawing it as done.
 
 **The kind.** How a person meets it: a screen, a terminal, a call from their own code, something
 that works unseen inside another tool, a set of files. The kind decides the picture (step 3).
@@ -56,9 +73,17 @@ to 48% fewer tokens."). The description is one or two lines under it, 8 to 24 wo
 what the phrase leaves out: what kind of thing this is, where it runs, the one detail worth
 knowing. When the repo already has a tagline in plain words, it is the key phrase.
 
-**The strip.** Five to eight more short facts for a line of text that runs along the bottom:
-where it runs, what it works with, what it needs, how it is installed, that it is free. Each is a
-few words, true, and written for the audience above; none repeats the highlights.
+**The strip, or none.** A line of text that runs along the bottom, for facts that are a list by
+nature: where it runs, what it reads or works with, a measured result per case. Write the
+candidates, a few true words each and written for the audience above, then strike what the key phrase, description, highlights,
+badges or install section already say (licence, install command, runtime) and the counts of the
+tool's insides. Keep a strip only when five or more remain and the picture leaves the bottom
+edge free (nothing there travels sideways or runs as text). Otherwise the hero has no strip,
+and the picture and the backdrop run to the bottom edge.
+
+**The brief.** Write down what the hero claims, for the user to check before it goes in the
+README: the sentence; one real input and output from the repo, with the files they come from;
+the file behind each figure and feature; and what you left out as unfinished.
 
 Look for an existing identity (logo, wordmark, `DESIGN.md`, brand folder, site, design tokens,
 badge colors) and reuse its colors, mark and rules. The accent is the one the identity declares;
@@ -110,7 +135,7 @@ Every hero has these parts, marked with these ids so the build can measure them:
 <text id="tagline">...</text>   the key phrase, one or two lines; the second may be in the accent
 <text id="about">...</text>     the description, one or two lines
 <g id="facts">...</g>           the highlights: 1-4 figures with a label each, or 3-5 features taking turns (left out when nothing passes)
-<g id="ticker">...</g>          a strip along the bottom edge where the facts of the strip run without stopping
+<g id="ticker">...</g>          a strip along the bottom edge where the facts of the strip run without stopping (left out when step 1 kept none)
 <g id="stage">...</g>           the picture of the repository doing its job
 ```
 
@@ -152,7 +177,7 @@ does. It comes from the kind of repository and the flow you wrote in step 1:
 
 | The repository is | The stage shows |
 |---|---|
-| an app with a screen | that screen as a skeleton in its real layout and colours, with the one flow a person opens it for playing in it |
+| an app with a screen | that screen as a skeleton in its real layout and colours, where what a person opens it for changes in plain sight: the text before and after, the list that fills, the file that comes out. A cursor may lead the eye; clicks on a toolbar alone show nothing |
 | a command-line tool | a small terminal with the one real command, and beside it what that command does in the world |
 | a service, API or backend | one request followed through the flow: who calls, the steps inside, what it reaches, what comes back |
 | a library or SDK | the shortest real call, and what those lines produce |
@@ -182,7 +207,7 @@ Whatever the kind:
   from nothing. Motion is what goes from one step to the next: a parcel, a cursor, a highlight.
 - **It is alive in layers.** One thing leads (what travels through the flow). Around it, things
   follow (a counter that ticks, a row that lights, a bar that fills), and under it all the
-  ambient layer never stops (the backdrop, the strip, walking dashes, a caret). Five or more
+  ambient layer never stops (the backdrop, the strip if any, walking dashes, a caret). Five or more
   things move in the stage, and no region of it sits still for the whole loop.
 - **Readable at two thirds.** A README shows the hero at 65% of its size. Labels that name a
   step are 16 px or more; sample content is 14 to 16; nothing is under 13; what travels through
@@ -213,6 +238,9 @@ accent #4FD1C5 #0B7A70
 -->
 <svg ...><style>@keyframes ...</style> <rect fill="$bg" .../> ...
 ```
+
+After the palette goes the brief from step 1, as a `<!--brief ... -->` comment in plain
+lines; the preview page shows it and the outputs leave it out.
 
 Roles are `name dark light`, in lowercase letters, digits and `_`; name your own, and repeat the
 value for a color that is the same in both themes. Text uses one class per element: `s` (Space
@@ -286,6 +314,11 @@ When the build says `no pictures`, open the pages it names with a browser tool; 
 looked at is not finished. Repeat until the build is clean and the pictures show the flow. Keep
 the source next to the two outputs.
 
+Then a cold read, once. You know the repo, so you cannot see the hero as a stranger does. When
+you can start a fresh agent, give it only `look.png` and ask what the tool does and for whom.
+When its answer misses your sentence, change the picture, not the words, and build again.
+Without a fresh agent, cover the text block in `look.png` and answer the same question yourself.
+
 ## 5. Put it in the README
 
 Add this as the first thing in `README.md`, and in each translated README. If a hero or banner
@@ -299,3 +332,7 @@ image is already there, replace it and leave its old files where they are. Touch
   </picture>
 </p>
 ```
+
+Then tell the user, briefly: the brief (the sentence, the input and output with their files, the
+source of each claim, what was left out as unfinished), whether the hero has a strip and why,
+what the cold read said, any warning left and why, and the preview page.
