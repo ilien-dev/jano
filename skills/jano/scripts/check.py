@@ -65,7 +65,9 @@ DURATION = (0.4, 60)   # s
 LEAD_TRAVEL = 40       # px: something in the stage travels at least this far
 LEAD_SIZE = 20         # px: and the largest thing that travels is at least this big on its shorter side
 LINE_CONTRAST = 3      # a connector with walking dashes against the background
-ICON_MAX = 40          # px: a pictogram of thin lines smaller than this does not survive README width
+ICON_MAX = 40          # px: thin strokes in a cluster smaller than this are a pictogram, and must say what they mean
+ICON_MIN = 24          # px: an icon's grid on the canvas, 16 px at README width
+ICON_STROKE = 2        # px: the thinnest line an icon may have on the canvas
 # a section scene: a short canvas with a headline that says what the section claims, and a picture that shows it
 TITLE_SIZE = (34, 56)  # the headline of the scene: the largest text on it
 TITLE_WORDS = 8
@@ -662,23 +664,56 @@ class Hero:
         self.check_icons(stage)
 
     def check_icons(self, stage):
-        """A pictogram drawn in thin lines and a few shapes, smaller than a word: at README width it reads as something else."""
-        seen = []
-        for g in stage.iter(f"{{{SVG}}}g"):
-            lines = [s for s in self.shapes if self.inside(s["el"], g)]
-            if len(lines) < 3 or any(self.inside(t["el"], g) for t in self.texts):
+        """Small pictograms: each says what it means (data-icon), is drawn large and thick enough, and the judges read it cold."""
+        declared = [e for e in stage.iter() if e.get("data-icon") is not None]
+        self.facts["icons"] = len(declared)
+        for e in declared:
+            b = self.box.get(e)
+            if b is None:
                 continue
-            stroked = [s for s in lines if self.inherit(s["el"], "fill", "#000") == "none" and self.inherit(s["el"], "stroke", "none") != "none"]
-            if len(stroked) < 3:
+            means = e.get("data-icon").strip()
+            if not means:
+                self.warns.append(f"an icon has an empty data-icon: write what it means here, in a few words (\"cut\", \"read again\")")
+            k = mscale(self.M.get(e, IDENT))
+            m = re.match(r"lucide:", e.get("data-source") or "")
+            size = 24 * k if m else max(b[2] - b[0], b[3] - b[1])
+            if size < ICON_MIN:
+                self.warns.append(f"the icon \"{means}\" is {size:.0f} px; draw it at {ICON_MIN} px or more (its grid, for a set icon), or it is "
+                                  f"{size * README:.0f} px at README width and blurs into something else")
+            widths = [num(self.inherit(s, "stroke-width"), 1) * mscale(self.M.get(s, IDENT)) for s in e.iter() if s in self.M and local(s.tag) in ("path", "circle", "ellipse", "line", "polyline", "rect")]
+            if widths and min(widths) < ICON_STROKE - 0.05:
+                self.warns.append(f"the icon \"{means}\" has strokes of {min(widths):.1f} px; use {ICON_STROKE} or more, thinner lines vanish at README width")
+        # thin strokes that are not frames or connectors, and not inside a declared icon: curves, short lines and rings drawn without fill
+        strokes = []
+        for s in self.shapes:
+            if not self.inside(s["el"], stage) or s["tag"] not in ("path", "circle", "ellipse", "polyline", "line"):
                 continue
+            if any(self.inside(s["el"], e) for e in declared):
+                continue
+            if self.inherit(s["el"], "fill", "#000") != "none" or self.inherit(s["el"], "stroke", "none") in ("none", "transparent"):
+                continue
+            w, h = s["box"][2] - s["box"][0], s["box"][3] - s["box"][1]
+            if max(w, h) > ICON_MAX and min(w, h) <= 4:  # a straight connector or rule passes by, it is not part of a drawing
+                continue
+            strokes.append(s)
+        # strokes that touch and are seen at the same time belong to one drawing; cards that take turns in one place do not add up
+        def layer(el):
+            return next((a for a in self.chain(el) if any("opacity" in x["props"] for x in self.anims(a))), None)
+        groups = []
+        for s in strokes:
+            near = [g for g in groups if layer(g[0]["el"]) is layer(s["el"])
+                    and any(inter(o["box"], (s["box"][0] - 4, s["box"][1] - 4, s["box"][2] + 4, s["box"][3] + 4)) for o in g)]
+            merged = [s] + [x for g in near for x in g]
+            groups = [g for g in groups if g not in near] + [merged]
+        for g in groups:
             b = None
-            for s in lines:
+            for s in g:
                 b = union(b, s["box"])
-            if max(b[2] - b[0], b[3] - b[1]) > ICON_MAX or any(inter(b, o) and area(inter(b, o)) > 0.8 * area(b) for o in seen):
+            if len(g) < 2 or max(b[2] - b[0], b[3] - b[1]) > ICON_MAX:
                 continue
-            seen.append(b)
-            self.warns.append(f"{self.describe(g)} is an icon of {len(lines)} thin shapes, {b[2] - b[0]:.0f}×{b[3] - b[1]:.0f} px: at README width it is "
-                              f"{(b[2] - b[0]) * README:.0f} px and reads as something else. Name the thing in words, or draw it {ICON_MAX + 8} px or more with filled shapes")
+            self.warns.append(f"{self.describe(g[0]['el'])} and {len(g) - 1} more thin stroke(s) draw a small icon ({b[2] - b[0]:.0f}×{b[3] - b[1]:.0f} px "
+                              f"at {b[0]:.0f}, {b[1]:.0f}) that does not say what it means. Wrap it in <g data-icon=\"what it means\">, or take a known one "
+                              f"with `icon.py search <words>`: the judges read every icon cold, at the size a reader sees it")
 
     def check_scene_slots(self):
         """A section scene: eyebrow, title and sub are the text block, the stage shows what the section says."""

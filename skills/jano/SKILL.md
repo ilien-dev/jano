@@ -166,7 +166,8 @@ uv run <this skill>/scripts/build.py assets/hero.src.svg assets/readme/*.src.svg
 ```
 
 Read `loop.png` and `look.png` of each, as `references/hero.md` says for the hero, until each
-builds clean and its pictures show what its claim says.
+builds clean and its pictures show what its claim says. Icons come from `scripts/icon.py` and
+say what they mean in `data-icon` (`references/scenes.md`, Icons).
 
 ## 7. The text
 
@@ -190,6 +191,8 @@ You know the repository, so you cannot read its README as a stranger does. Run
 
 - **blind/**: each scene as a PNG with its eyebrow, title and sub removed, eight moments of its
   loop and its finished frame. The picture has to say its claim without a word of the text block.
+  `icons.png` holds every declared icon, cut out at the size a README shows it; an icon the
+  judge misreads or is unsure of is rebuilt, never removed.
 - **reader/**: the README with every picture as a PNG beside it.
 - **packets.json**: the three prompts and the fingerprint (`sha`) of every item;
   **claims.json**: what each item was meant to say, for the grader only.

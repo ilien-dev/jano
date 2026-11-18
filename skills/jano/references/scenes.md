@@ -59,9 +59,7 @@ develop) take no scene.
 - **Show the cause, and let it rest.** When one thing makes another happen (a right answer moves
   a mistake up, a check turns a card green), the cause is on the canvas while the effect happens
   and stays a second or more. A cause that flies past between two frames is never seen.
-- **No tiny pictograms.** Scissors, an eye, a gear drawn in thin lines under 40 px turn into
-  something else at README width (a pair of scissors became an arrow with two balls). Name the
-  thing in a word, or draw it 48 px or more with filled shapes; the build warns about the rest.
+- **Icons say what they mean, and are read cold.** See Icons, below.
 - **Draw only what exists.** A command, flag or label on a scene is one the repository really has;
   `readme.py check` refuses a picture that shows `<name> <word>` when no Markdown file of the
   repository mentions it.
@@ -79,6 +77,26 @@ a sprite: what changes in steps changes in clear, readable jumps, and rests a se
 
 The rules of `motion.md` hold: the text block is still, loops close, the finished frame with
 motion off shows the whole story at its end state, and nothing flashes.
+
+## Icons
+
+Small icons carry a lot in a scene (cut, redo, a lock, an eye), and a home-made one at 24 px
+easily turns into something else at README width: scissors drawn from scratch read as an arrow
+with two balls, a circular arrow as a ring with a tail. So an icon starts from a known one and
+is checked like everything else.
+
+- **Start from the set.** `icon.py search <words>` finds an icon by what it should mean
+  (`icon.py search undo again`); `icon.py <name> "<what it means>" --x --y --size --color` prints
+  the `<g>` to paste. The set is Lucide, 1,500 icons drawn on a 24 px grid for small sizes.
+- **Draw your own only when the set has nothing that fits**, in the same manner: a 24 px grid, a
+  2 px stroke, round caps, few strokes, the thing's outline rather than its detail.
+- **Every icon says what it means:** its `<g>` carries `data-icon="what it means"`. The build
+  warns about a small drawing of thin strokes that does not, and about an icon under 24 px or
+  with strokes under 2 px.
+- **It is read cold.** `readme.py judge` cuts each declared icon out of its finished frame at the
+  size a README shows it and the blind judge says what it sees. An icon that is misread is
+  rebuilt (another icon from the set, larger, or a clearer drawing), never just removed: the
+  icon is there because the scene needs it.
 
 ## A real screenshot, only when it explains more
 

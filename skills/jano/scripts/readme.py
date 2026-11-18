@@ -596,6 +596,21 @@ def check_repo(repo):
 
 
 # ---- judges
+def icons_of(src):
+    """(what it means, its box on the canvas) for each icon a source declares with data-icon."""
+    if not src.exists():
+        return []
+    try:
+        palette, body = svgcheck.read_source(src.read_text(encoding="utf-8"))
+        root = ET.fromstring(body)
+        kind = svgcheck.kind_of(src)
+        svgcheck.W, svgcheck.H = svgcheck.CANVAS[kind]
+        hero = svgcheck.Hero(root, palette, kind)
+    except (Exception, SystemExit):  # noqa: BLE001
+        return []
+    return [(e.get("data-icon").strip(), hero.box[e]) for e in root.iter() if e.get("data-icon") is not None and hero.box.get(e)]
+
+
 def judge_items(repo, plan):
     """What the judges read, each with a fingerprint of the file it was judged on."""
     items = []
@@ -613,6 +628,14 @@ def judge_items(repo, plan):
                       "heading": s.get("heading")})
         items.append({"id": f"section:{s.get('heading')}", "kind": "section", "sha": sha(pic, body), "file": str(dark), "text": body,
                       "claim": p.get("claim", ""), "heading": s.get("heading")})
+    # every icon that says what it means is read cold too, at the size a reader sees it
+    sources = [repo / s["picture"]["file"] for s in plan.get("sections", []) if s.get("picture")]
+    if (repo / "assets/hero.src.svg").exists():
+        sources.insert(0, repo / "assets/hero.src.svg")
+    for src in sources:
+        for k, (means, box) in enumerate(icons_of(src), 1):
+            items.append({"id": f"icon:{src.name}#{k}", "kind": "icon", "sha": sha(source_bytes(src), str(k)), "claim": means,
+                          "file": str(src.with_name(src.name.replace(".src.svg", "-dark.svg"))), "box": box})
     hero = repo / "assets/hero-dark.svg"
     scenes = [source_bytes(p) for p in sorted(repo.glob("assets/**/*.src.svg"))]
     items.append({"id": "readme", "kind": "readme", "sha": sha(md, *scenes), "file": str(repo / "README.md"), "hero": str(hero),
@@ -625,14 +648,18 @@ PROMPTS = {
               "no repository. They are the PNG files in {folder}, named scene-1.png, scene-2.png and so on. Each one shows eight moments "
               "of an animation and, last and larger, its finished frame. For each picture answer in three short lines: 1) what that "
               "section of the README is about, 2) what happens in it, moment by moment, 3) what you could not make out. Say only what "
-              "the pictures show; do not guess from outside knowledge, and do not open any other file. Reply as JSON: "
-              '[{{"scene": 1, "about": "...", "happens": "...", "unclear": "..."}}, ...]'),
+              "the pictures show; do not guess from outside knowledge, and do not open any other file. When the folder also has "
+              "icons.png, it shows small icons cut out of those pictures at the size a reader sees them, each with a number: for each "
+              "number say what it depicts, what it would mean on a button or a label in a software tool, and whether you are sure. Reply as JSON: "
+              '{{"scenes": [{{"scene": 1, "about": "...", "happens": "...", "unclear": "..."}}], '
+              '"icons": [{{"n": 1, "depicts": "...", "means": "...", "sure": true}}]}}'),
     "readme": ("You are a newcomer reading a project's README from top to bottom: {folder}/README.md. Its pictures are the PNG files "
                "next to it. Open nothing outside that folder. For each ## section answer: what it tells you, whether its picture and its "
                "text say the same thing, and what was unclear or used words you did not know. Then: what the project does and for "
                "whom, in one sentence, and how you would start using it. Reply as JSON: "
                '{{"sections": [{{"heading": "...", "tells": "...", "picture_matches": true, "unclear": "..."}}], "project": "...", "start": "..."}}'),
-    "grade": ("Grade cold reads. {claims} lists, for each id, what the author meant. The judges' answers follow. For each id reply "
+    "grade": ("Grade cold reads. {claims} lists, for each id, what the author meant. The judges' answers follow; an icon:* id is "
+              "answered in the blind judge's icons under the number packets.json gives it, and fails when the judge was not sure. For each id reply "
               'pass when the reader understood the same thing in substance, even in other words, and fail when they missed it, got it '
               'wrong or were unsure. Reply as JSON {{"<id>": {{"pass": true, "why": "..."}}, ...}}.'),
 }
@@ -714,6 +741,24 @@ def judge(repo):
         page.write_text(f'<!doctype html><body style="margin:0;background:#0d1117"><img src="{still.name}" width="1280">', encoding="utf-8")
         shots.append((page, reader / f"picture-{k}.png", 660))
         names[src] = f"picture-{k}.png"
+    # the icons, each cut out of its finished frame at the size a README shows it (65%)
+    icons = [it for it in items if it["kind"] == "icon"]
+    if icons:
+        k, pad, cells = 838 / 1280, 6, []  # as a README shows it on an ordinary screen: the hardest case
+        for i, it in enumerate(icons, 1):
+            src = Path(it["file"])
+            still = work / f"icon-{i}-still.svg"
+            still.write_text(src.read_text(encoding="utf-8").replace("</svg>", "<style>*{animation:none!important}</style></svg>"), encoding="utf-8")
+            x0, y0, x1, y1 = it["box"]
+            w, h = (x1 - x0 + 2 * pad) * k, (y1 - y0 + 2 * pad) * k
+            cells.append(f'<div class=c><b>{i}</b><div style="width:{w:.0f}px;height:{h:.0f}px;overflow:hidden;position:relative">'
+                         f'<img src="{still.name}" style="position:absolute;left:{-(x0 - pad) * k:.0f}px;top:{-(y0 - pad) * k:.0f}px;width:{1280 * k:.0f}px"></div></div>')
+            it["n"] = i
+        page = work / "icons.html"
+        page.write_text('<!doctype html><meta charset=utf-8><style>body{margin:0;padding:16px;background:#0d1117;color:#f0f6fc;font:16px system-ui}'
+                        '.g{display:flex;flex-wrap:wrap;gap:28px;width:1200px}.c{display:flex;align-items:center;gap:10px}</style><div class=g>'
+                        + "".join(cells) + "</div>", encoding="utf-8")
+        shots.append((page, blind / "icons.png", 120 + 70 * (len(icons) // 8 + 1)))
     if not build.take_pictures(shots):
         sys.exit(f"error: the pictures for the judges could not be taken; open the pages in {work} with a browser tool")
 
@@ -729,14 +774,15 @@ def judge(repo):
     claims = {it["id"]: it["claim"] for it in items}
     (folder / "claims.json").write_text(json.dumps(claims, indent=2, ensure_ascii=False), encoding="utf-8")
     packets = {"blind": {"folder": str(blind), "prompt": PROMPTS["blind"].format(folder=blind),
-                         "ids": {it["id"]: it["blind_png"] for it in items if it["kind"] == "picture"}},
+                         "ids": {it["id"]: it["blind_png"] for it in items if it["kind"] == "picture"},
+                         "icons": {it["id"]: it["n"] for it in icons}},
                "reader": {"folder": str(reader), "prompt": PROMPTS["readme"].format(folder=reader),
-                          "ids": [it["id"] for it in items if it["kind"] != "picture"]},
+                          "ids": [it["id"] for it in items if it["kind"] in ("section", "readme")]},
                "grade": {"prompt": PROMPTS["grade"].format(claims=folder / "claims.json")},
                "sha": {it["id"]: it["sha"] for it in items}}
     (folder / "packets.json").write_text(json.dumps(packets, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"packets {folder / 'packets.json'}")
-    print(f"blind judge: {len(packets['blind']['ids'])} scene(s) without their text, in {blind}")
+    print(f"blind judge: {len(packets['blind']['ids'])} scene(s) without their text and {len(icons)} icon(s) at README size, in {blind}")
     print(f"reader judge: the README with its pictures as PNGs, in {reader}")
     print("1. give the blind prompt to one fresh agent, and the reader prompt to another; neither has seen the repository, the plan or this skill")
     print("2. give the grade prompt, claims.json and both answers to a third")
