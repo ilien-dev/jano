@@ -1,47 +1,47 @@
 {
   "picture:coldread.src.svg": {
-    "sha": "c78f6e0472f10729",
+    "sha": "48bba9981f4259a1",
     "pass": true,
-    "why": "The blind judge saw a picture cut out, shown to a reader who describes it, compared with a claim, ending in pass or redraw."
+    "why": "Blind judge saw a picture cut out, shown to a reader, its reading compared to the claim, then pass lit and redraw dimmed: the same check and outcome."
   },
   "section:How it works": {
-    "sha": "c46882cf0e8681de",
+    "sha": "385ef8b650175724",
     "pass": true,
-    "why": "The reader described a picture with words cut away, a blind reader describing it, and a pass or redraw verdict."
+    "why": "Reader says fresh agents read the result cold and that the picture shows a blind reader checking a picture with its words cut away; the gist matches, though terms were called undefined."
   },
   "picture:plan.src.svg": {
     "sha": "d40a702518daa665",
     "pass": true,
-    "why": "The blind judge saw sections listed with a tag, a word budget and a picture slot each, matching job, budget and picture."
+    "why": "Blind judge saw a plan listing sections, each with a word budget and a picture slot or none."
   },
   "section:What you get": {
     "sha": "b907c5e494795b83",
     "pass": true,
-    "why": "The reader understood a README planned section by section with a job, a word budget and a picture mark per section."
+    "why": "Reader got a plan with a job and word budget per section, and pictures over the sections that need one."
   },
   "picture:ask.src.svg": {
-    "sha": "70fb1718bba82037",
+    "sha": "c13366c24eb4e539",
     "pass": true,
-    "why": "The blind judge saw three questions with a suggested answer each, then it works on its own."
+    "why": "Blind judge saw a few questions each with a suggested answer, then it works on its own."
   },
   "section:Use": {
-    "sha": "8a33e9e0ea68dca7",
+    "sha": "88ffe4774f5bdc75",
     "pass": true,
-    "why": "The reader understood it asks a few questions with a suggested answer, then works alone."
+    "why": "Reader understood a few questions with suggested answers, then it works alone."
   },
   "icon:coldread.src.svg#1": {
-    "sha": "b53d21e65cf29703",
+    "sha": "14f04b8bc17b849b",
     "pass": true,
-    "why": "Judge was sure it is scissors meaning cut or crop, matching cut away."
+    "why": "Scissors read as cut or crop, judge sure; matches cut away."
   },
   "icon:coldread.src.svg#2": {
-    "sha": "542f2de191f43664",
+    "sha": "26cea379106d6035",
     "pass": true,
-    "why": "Judge was sure it is a circular arrow meaning redraw or regenerate."
+    "why": "Circular arrow read as redraw, retry or regenerate, judge sure."
   },
   "readme": {
-    "sha": "dabf890e37421fae",
+    "sha": "161079fd17422037",
     "pass": true,
-    "why": "The reader's project sentence has agent skill, repository owner, planned size-limited README, animated pictures and a cold read check."
+    "why": "Reader grasped a skill that writes and draws a repo's README with animated pictures for project owners, and that you call it once and answer a few questions. The cold-read check is covered in the section answers, not the summary sentence."
   }
 }

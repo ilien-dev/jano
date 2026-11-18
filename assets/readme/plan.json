@@ -113,5 +113,12 @@
       "docs": null,
       "picture": null
     }
-  ]
+  ],
+  "assets": {
+    "icons": {
+      "family": "lucide",
+      "variant": null,
+      "why": "Jano's mark and scenes are drawn in 2 px rounded strokes on a 24 px grid, the same line Lucide uses"
+    }
+  }
 }

@@ -450,6 +450,39 @@ def picture_refs(body):
     return (None, img.group(1), "") if img else None
 
 
+def check_assets(r, repo, plan):
+    """Every data-asset in the pictures comes from the family the plan chose for its category, in its variant."""
+    import assets as lib
+    chosen = plan.get("assets") or {}
+    for cat, c in chosen.items():
+        f = lib.family(c.get("family", ""))
+        if cat not in lib.CATEGORIES or not f or f["category"] != cat:
+            r.e(PLAN, f'assets.{cat}: {c.get("family")!r} is not a {cat} family: see `assets.py styles {cat}`')
+        elif len((c.get("why") or "").split()) < 6:
+            r.e(PLAN, f"assets.{cat}: say why {c['family']} fits this repository, in a sentence (the mark's weight, corners, fill)")
+    seen = {}
+    for src in sorted(repo.glob("assets/**/*.src.svg")):
+        for ref in re.findall(r'data-asset="([^"]+)"', src.read_text(encoding="utf-8")):
+            prefix, _, name = ref.partition(":")
+            f = lib.family(prefix)
+            where = src.relative_to(repo).as_posix()
+            if not f:
+                r.e(where, f"data-asset {ref!r} names no family in the library")
+                continue
+            c = chosen.get(f["category"])
+            if not c:
+                r.e(where, f"uses {f['category']} ({ref}) and the plan chose no {f['category']} family: `assets.py choose` one first")
+            elif c["family"] != prefix:
+                r.e(where, f"uses {ref} from {prefix}, and the plan chose {c['family']} for {f['category']}: one family per category keeps one look. "
+                           f"Take it from {c['family']} (`assets.py search`)")
+            elif c.get("variant") and not re.search(f["variants"].get(c["variant"], ""), name):
+                r.e(where, f"{ref} is not in the {c['variant']} variant the plan chose for {prefix}")
+            if prefix not in seen:
+                seen[prefix] = set(lib.names(prefix))
+            if name not in seen[prefix]:
+                r.e(where, f"{prefix} has no icon named {name!r}")
+
+
 def check_repo(repo):
     r = Report()
     pf = repo / PLAN
@@ -538,6 +571,9 @@ def check_repo(repo):
     for src in sorted(set(repo.glob("assets/**/readme/*.src.svg")) | set(repo.glob("assets/**/hero.src.svg"))):
         for name in stale(src):
             r.e(src.relative_to(repo).as_posix(), f"{name} is missing or was built from another version of its source: build it")
+
+    # ---- assets from the library: one family per category, the one the plan names, and names that exist
+    check_assets(r, repo, plan)
 
     # ---- the README and its translations
     md_files = [repo / "README.md"] + sorted(p for p in repo.glob("README.*.md"))

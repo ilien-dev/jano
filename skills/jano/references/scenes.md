@@ -59,7 +59,7 @@ develop) take no scene.
 - **Show the cause, and let it rest.** When one thing makes another happen (a right answer moves
   a mistake up, a check turns a card green), the cause is on the canvas while the effect happens
   and stays a second or more. A cause that flies past between two frames is never seen.
-- **Icons say what they mean, and are read cold.** See Icons, below.
+- **Icons say what they mean, and are read cold.** See Parts, icons and assets, below.
 - **Draw only what exists.** A command, flag or label on a scene is one the repository really has;
   `readme.py check` refuses a picture that shows `<name> <word>` when no Markdown file of the
   repository mentions it.
@@ -78,18 +78,28 @@ a sprite: what changes in steps changes in clear, readable jumps, and rests a se
 The rules of `motion.md` hold: the text block is still, loops close, the finished frame with
 motion off shows the whole story at its end state, and nothing flashes.
 
-## Icons
+## Parts, icons and assets
+
+A scene is built from three kinds of pieces, in this order of preference:
+
+- **Kit parts** (`scripts/kit.py`): window, terminal, card, chip, button, cursor, file, code,
+  progress, toggle, badge, skeleton, device. They are Jano's own, drawn the same way every time,
+  sized to their real text and coloured by palette role. Use them for every interface element
+  instead of drawing one by hand.
+- **Library assets** (`scripts/assets.py`, `references/assets.md`): icons, objects, brand logos,
+  flags and file icons from known sets, one family per category, the one the plan chose.
+- **Your own drawing**, for what neither has: the subject of the scene itself.
 
 Small icons carry a lot in a scene (cut, redo, a lock, an eye), and a home-made one at 24 px
 easily turns into something else at README width: scissors drawn from scratch read as an arrow
 with two balls, a circular arrow as a ring with a tail. So an icon starts from a known one and
 is checked like everything else.
 
-- **Start from the set.** `icon.py search <words>` finds an icon by what it should mean
-  (`icon.py search undo again`); `icon.py <name> "<what it means>" --x --y --size --color` prints
-  the `<g>` to paste. The set is Lucide, 1,500 icons drawn on a 24 px grid for small sizes.
-- **Draw your own only when the set has nothing that fits**, in the same manner: a 24 px grid, a
-  2 px stroke, round caps, few strokes, the thing's outline rather than its detail.
+- **Start from the chosen family.** `assets.py search <repo> icons <words>` finds an icon by what
+  it should mean; `assets.py get <repo> icons <name> "<what it means>" --x --y --size --color`
+  prints the `<g>` to paste. It carries `data-asset` and `data-icon`.
+- **Draw your own only when the family has nothing that fits**, in the family's manner: its
+  grid, its stroke, its caps, few strokes, the thing's outline rather than its detail.
 - **Every icon says what it means:** its `<g>` carries `data-icon="what it means"`. The build
   warns about a small drawing of thin strokes that does not, and about an icon under 24 px or
   with strokes under 2 px.
@@ -97,6 +107,14 @@ is checked like everything else.
   size a README shows it and the blind judge says what it sees. An icon that is misread is
   rebuilt (another icon from the set, larger, or a clearer drawing), never just removed: the
   icon is there because the scene needs it.
+
+**The cursor turns into a pointer.** A cursor shows what a person would see: an arrow while it
+moves, a pointing hand over something clickable (a button, a link, an option, a toggle), a text
+bar over a field being typed in. Mark clickable parts with `data-clickable="true"` (kit buttons
+and toggles already are) and use `kit.py cursor-swap` with the moments the cursor hovers them;
+the build warns about an arrow that crosses a clickable part and never changes. The cursor's
+style is free: draw your own in the scene's manner, keeping `data-kit="cursor"` and
+`data-cursor="arrow|pointer|text"`.
 
 ## A real screenshot, only when it explains more
 

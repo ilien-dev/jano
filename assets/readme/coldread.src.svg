@@ -66,7 +66,7 @@ onacc   #0E1628 #0E1628
 <rect x="72" y="212" width="232" height="38" rx="6" fill="none" stroke="$line" stroke-width="1.5" stroke-dasharray="5 5"/>
 <g class="words" opacity="0"><rect x="76" y="216" width="70" height="7" rx="3" fill="$hot"/><rect x="76" y="232" width="210" height="13" rx="4" fill="$ink"/></g>
 <path d="M68 262H360" stroke="$muted" stroke-width="2" stroke-dasharray="6 6"/>
-<rect x="62" y="248" width="32" height="28" rx="6" fill="$panel"/><g data-icon="cut away" data-source="lucide:scissors" transform="translate(66 250) scale(1)" fill="none" stroke="$muted" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></g>
+<rect x="62" y="248" width="32" height="28" rx="6" fill="$panel"/><g data-asset="lucide:scissors" data-icon="cut away" data-size="24" transform="translate(66 250) scale(1)" color="$muted"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12L12 12m8-8L8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8L20 20"/></g></g>
 <g transform="translate(126 284) scale(1.25)"><use href="#pic"/></g>
 
 <!-- connectors -->
@@ -97,7 +97,7 @@ onacc   #0E1628 #0E1628
 <text class="s" x="902" y="276" font-size="16" fill="$body">You answer a few questions</text>
 <text class="s" x="902" y="300" font-size="16" fill="$body">once, then it works alone.</text>
 <g class="pass"><rect x="888" y="340" width="120" height="44" rx="22" fill="$accent"/><path d="M906 362l6 6 11-12" fill="none" stroke="$onacc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><text class="b" x="934" y="369" font-size="18" fill="$onacc">pass</text></g>
-<g class="dim"><rect x="1024" y="341" width="136" height="42" rx="21" fill="none" stroke="$muted" stroke-width="2"/><g data-icon="redraw" data-source="lucide:rotate-cw" transform="translate(1036 350) scale(1)" fill="none" stroke="$muted" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></g><text class="b" x="1070" y="368" font-size="18" fill="$body">redraw</text></g>
+<g class="dim"><rect x="1024" y="341" width="136" height="42" rx="21" fill="none" stroke="$muted" stroke-width="2"/><g data-asset="lucide:rotate-cw" data-icon="redraw" data-size="24" transform="translate(1036 350) scale(1)" color="$muted"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></g></g><text class="b" x="1070" y="368" font-size="18" fill="$body">redraw</text></g>
 
 <!-- the picture alone, on its way to the reader -->
 <g transform="translate(126 284)"><g class="copy" opacity="0"><use href="#pic"/></g></g>

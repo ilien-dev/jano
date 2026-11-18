@@ -132,4 +132,4 @@ Issues and pull requests are welcome, one change at a time. [CONTRIBUTING.md](CO
 
 ## License
 
-MIT, see [LICENSE](LICENSE). The two bundled fonts are under the SIL Open Font License, with their license files in `skills/jano/assets`.
+MIT, see [LICENSE](LICENSE). The two bundled fonts are under the SIL Open Font License, and the icon, logo and flag sets Jano draws with (Lucide, Tabler, Phosphor, Fluent, Simple Icons and more) are under MIT, ISC or CC0: every set and its notice are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

@@ -132,4 +132,4 @@ Los issues y pull requests son bienvenidos, un cambio a la vez. [CONTRIBUTING.md
 
 ## Licencia
 
-MIT, ver [LICENSE](LICENSE). Las dos tipografías incluidas están bajo la SIL Open Font License, con sus licencias en `skills/jano/assets`.
+MIT, ver [LICENSE](LICENSE). Las dos tipografías incluidas están bajo la SIL Open Font License, y los conjuntos de íconos, logos y banderas con los que dibuja Jano (Lucide, Tabler, Phosphor, Fluent, Simple Icons y más) están bajo MIT, ISC o CC0: cada conjunto y su aviso están en [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
