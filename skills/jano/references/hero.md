@@ -43,7 +43,7 @@ not alike.
 Every hero has these parts, marked with these ids so the build can measure them:
 
 ```
-<g id="backdrop">...</g>        a quiet pattern over the whole canvas that drifts all the time
+<g id="backdrop">...</g>        a quiet pattern over the whole canvas, still or moving (left out when the backdrop is none)
 <g id="logo">...</g>            the mark, drawn inline, its colors as palette roles (left out when the repo has none)
 <text id="name">...</text>      the repository name in class b (a <g> of shapes when the repo ships a wordmark file)
 <text id="tagline">...</text>   the key phrase, one or two lines; the second may be in the accent
@@ -78,7 +78,20 @@ disappears.
 | highlights: figures | number 24-40 px and smaller than the key phrase, label 13-16 px | In a row. The strongest first, in the accent; a thin bar or mark under a number may show its proportion. One line under the row may say what they measure. One figure alone is fine, larger. |
 | highlights: features | 18-24 px, with a small mark or icon | One at a time in one place, each resting 2 s or more, taking turns by sliding up or fading (device I); or a short list where a highlight walks down, lighting one at a time. Never more than five. |
 | strip | 30-44 px tall, text 14-16 px in mono | Text that travels at 40-110 px/s behind a clip, written twice or more so the loop cannot be seen. Names in ink, values in the accent. |
-| backdrop | whole canvas | A dot grid, lines or the brand's own texture, barely darker or lighter than the background, moving 4-10 px/s. Never a second picture. |
+| backdrop | whole canvas | Optional. A pattern that belongs to the subject (`kit.py backdrop`, or the brand's own texture), barely darker or lighter than the background, still or moving 4-10 px/s. Never a second picture. |
+
+**The backdrop is chosen, not assumed.** A dot grid on every hero makes every README look alike,
+so dots are the fallback, never the habit. Decide three things from the repository: whether there
+is a backdrop at all (none, when the picture carries itself or the brand is plain), whether it
+moves (a still pattern is fine; motion is for tools about flow, time or signals), and which
+pattern fits the subject: `kit.py list` says what each one suits (grid for plans and maps, waves
+for sound or streams, scan lines for terminals and text, rings for networks, chevrons for
+pipelines and code...). When nothing fits, take the pick for this repository,
+`kit.py backdrop --kind any --repo <name>`. Propose your choice to the user with its reason (in the
+full run it is a question of step 2 and goes in the plan as `"backdrop"`; when only the hero was
+asked for, ask it then). `kit.py backdrop --kind <kind> --motion <drift|slide|rise|still> --h 640`
+prints the `<g id="backdrop">` and its keyframes; the scenes take the same one with `--h 448`. The
+brand's own texture, drawn by hand, carries `data-backdrop="custom <motion>"` and the plan says the same.
 
 The text block is still: nothing in it travels or fades, so it can be read at any moment. Inside
 it only small things live (the mark moving within itself, a sheen on a figure's bar), and the

@@ -584,7 +584,7 @@ class Hero:
         ticker = self.byid.get("ticker")  # the strip is optional too
         if ticker is not None and self.box.get(ticker) is None:
             ticker = None
-        backdrop = self.part("backdrop", "the background is a quiet pattern that moves all the time")
+        backdrop = self.byid.get("backdrop")  # optional, still or moving: the plan says which (kit.py backdrop)
         f = self.facts
         if name is not None:
             b = self.box[name]
@@ -648,8 +648,6 @@ class Hero:
                 self.errors.append(f"the {label} is animated: it stays still, so it can be read at any moment")
         if ticker is not None and not any(self.inside(t["el"], ticker) and self.mover(t["el"]) is not None for t in self.texts):
             self.warns.append("no text travels in #ticker: it is a strip of text that never stops, behind a clip")
-        if backdrop is not None and not any(self.anims(e) for e in backdrop.iter()):
-            self.warns.append("nothing in #backdrop is animated: the background drifts all the time, slowly")
         self.check_stage(stage, (logo, name, tagline, about, facts), (logo, name, tagline, about, facts, ticker, backdrop))
 
     def check_stage(self, stage, copy_els, separate, share_min=STAGE_SHARE, copy_range=COPY_SHARE, parts_min=STAGE_PARTS, large=STAGE_LARGE):
@@ -770,7 +768,7 @@ class Hero:
         eyebrow, sub = self.byid.get("eyebrow"), self.byid.get("sub")
         eyebrow = eyebrow if eyebrow is not None and self.box.get(eyebrow) else None
         sub = sub if sub is not None and self.box.get(sub) else None
-        backdrop = self.part("backdrop", "the background is a quiet pattern that moves all the time")
+        backdrop = self.byid.get("backdrop")  # optional, still or moving: the plan says which (kit.py backdrop)
         for bad in ("name", "tagline", "about", "facts", "ticker", "logo"):
             if self.byid.get(bad) is not None:
                 self.warns.append(f'id="{bad}" belongs to the hero: a scene has #eyebrow, #title, #sub and #stage, and does not sign itself again')
@@ -806,8 +804,6 @@ class Hero:
         for el, label in ((eyebrow, "eyebrow"), (title, "title"), (sub, "sub")):
             if el is not None and (self.mover(el) is not None or self.fades(el)):
                 self.errors.append(f"the {label} is animated: it stays still, so it can be read at any moment")
-        if backdrop is not None and not any(self.anims(e) for e in backdrop.iter()):
-            self.warns.append("nothing in #backdrop is animated: the background drifts all the time, slowly")
         self.check_stage(stage, (eyebrow, title, sub), (eyebrow, title, sub, backdrop), SCENE_STAGE_SHARE, SCENE_COPY_SHARE, SCENE_PARTS, SCENE_LARGE)
 
     def check_contents(self):

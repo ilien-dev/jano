@@ -1,6 +1,7 @@
 {
   "audience": "general",
   "audience_confirmed": true,
+  "backdrop": "dots drift",
   "sentence": "Someone who made a project asks their AI assistant once, answers a few questions, and gets a GitHub front page that explains itself: plain text and moving pictures, in dark and light, in their own colours.",
   "language": "en",
   "translations": [

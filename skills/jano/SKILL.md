@@ -119,6 +119,12 @@ unfinished, whether the project has a screen, and the questions to ask. Ask them
   section less well than the real screen (a demo of an app the reader will use), and propose
   which section.
 
+- **Backdrop.** Whether the pictures have a background pattern, still or moving, and which
+  one. Propose from what the repository is about (`references/hero.md`, "The backdrop is chosen,
+  not assumed"): none, a still pattern or a moving one, and a pattern that fits the subject; when
+  none fits, the survey's `backdrop_pick` for this repository. Dots are a fallback, not the
+  default.
+
 Record each answer in the plan (step 3). Without answers, the plan does not pass.
 
 ## 3. Plan: `assets/readme/plan.json`
@@ -144,7 +150,8 @@ plan. Then write the plan:
 
 ## 4. Identity
 
-The hero and the scenes share one palette, the skill's fonts and one backdrop. Take colours and
+The hero and the scenes share one palette, the skill's fonts and one backdrop, the one in the
+plan's `"backdrop"` (`"none"` or `"<kind> <motion>"`, pasted from `kit.py backdrop`). Take colours and
 mark from the repository's identity as `references/hero.md` says. Jano draws no characters or
 mascots: what moves in a scene is the thing the section is about. When the user brings a
 character of their own, it is drawn into the stage like any other object.
