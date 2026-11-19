@@ -5,4 +5,4 @@
 - A change to `README.md` goes with the same change in `README.es.md` and its scenes in `assets/es/`; everything else is in English.
 - Never edit the version in `.claude-plugin/plugin.json` or `CHANGELOG.md`; release-please does it.
 - A change to `skills/jano/SKILL.md` is `feat` or `fix`, never `docs`; it ships to users.
-- Before a branch, commit or PR, follow the `uncontributing` skill (branch `feature/<1-4 words>`, one change per PR).
+- Before a branch, commit or PR, follow the `uncontributing` skill (branch `<type>/<1-4 words>` with the title's type, e.g. `feat/`, `fix/`; one change per PR).
