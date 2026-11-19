@@ -511,10 +511,12 @@ if node:
         pr.write_text(text, encoding="utf-8")
         return subprocess.run([node, str(ROOT / ".github/scripts/check-pr.js"), "--branch", branch, "--title", title, "--body-file", str(pr)], capture_output=True, text=True).returncode
 
-    test("a correct pull request passes", check("feature/outline-rotated-text", "fix: outline text inside rotated groups", body) == 0)
-    test("a wrong branch name fails", check("fix/rotated", "fix: outline text", body) == 1)
-    test("an unticked checklist fails", check("feature/outline-rotated-text", "fix: outline text", body.replace("[x]", "[ ]")) == 1)
-    test("a missing section fails", check("feature/outline-rotated-text", "fix: outline text", body.replace("## Why\nA problem.\n", "")) == 1)
+    test("a correct pull request passes", check("fix/outline-rotated-text", "fix: outline text inside rotated groups", body) == 0)
+    test("a feature/ branch fails", check("feature/outline-rotated-text", "fix: outline text", body) == 1)
+    test("a branch with an unknown type fails", check("bugfix/rotated", "fix: outline text", body) == 1)
+    test("a branch of five words fails", check("fix/one-two-three-four-five", "fix: outline text", body) == 1)
+    test("an unticked checklist fails", check("fix/outline-rotated-text", "fix: outline text", body.replace("[x]", "[ ]")) == 1)
+    test("a missing section fails", check("fix/outline-rotated-text", "fix: outline text", body.replace("## Why\nA problem.\n", "")) == 1)
 else:
     print("skip  pull request check (node is not installed)")
 
