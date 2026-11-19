@@ -15,7 +15,7 @@ it, the palette comment first, the same classes `s`, `b`, `m`. The file is
 `assets/readme/<name>.src.svg`; the build writes `<name>-dark.svg` and `<name>-light.svg` beside it.
 
 ```
-<g id="backdrop">...</g>   the hero's backdrop, the same pattern and drift: the README reads as one piece
+<g id="backdrop">...</g>   the hero's backdrop, the same pattern and motion (or none, when the plan says none)
 <text id="eyebrow">        the section's name, 13-18 px, mono or bold, in the accent, letter-spaced (optional)
 <text id="title">          what the section claims, 34-56 px bold, 8 words or fewer: the largest text on the scene
 <text id="sub">            one line under it, 16-24 px, 3 to 18 words (optional)
@@ -83,7 +83,7 @@ motion off shows the whole story at its end state, and nothing flashes.
 A scene is built from three kinds of pieces, in this order of preference:
 
 - **Kit parts** (`scripts/kit.py`): window, terminal, card, chip, button, cursor, file, code,
-  progress, toggle, badge, note, skeleton, device. They are Jano's own, drawn the same
+  progress, toggle, badge, note, skeleton, device, backdrop. They are Jano's own, drawn the same
   way every time, sized to their real text and coloured by palette role. Use them for every
   interface element instead of drawing one by hand. Text in a box comes from one of them: `card
   --text` wraps a quote or a paragraph inside the card's padding and grows the card to fit, and

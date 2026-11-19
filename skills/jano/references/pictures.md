@@ -287,12 +287,14 @@ makes them grow from their left end.
 <rect class="fill" x="700" y="552" width="140" height="18" rx="9" fill="$accent"/>
 ```
 
-### H. A strip of running text and a backdrop that drifts
+### H. A strip of running text, and the backdrop
 
-The backdrop every hero has, and the strip when step 1 kept one. The strip is the same line written three times, one period
+The strip when step 1 kept one, and the backdrop when the plan has one. The strip is the same line written three times, one period
 apart, moved by exactly one period behind a clip: here 80 characters of 14 px mono, 80 x 8.4 =
 672 px, in 12 s (56 px/s). Pad the line with spaces to the length you want (`xml:space`). The
-backdrop is a pattern on a rectangle one tile larger than the canvas, moved by one tile.
+backdrop is a pattern on a rectangle one tile larger than the canvas, still or moved by exactly one
+tile; take it from `kit.py backdrop` (eight patterns, four motions) rather than writing the dots
+below, which are only the shape of it.
 
 ```svg
 <style>

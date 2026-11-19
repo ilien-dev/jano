@@ -67,7 +67,7 @@ Left out as unfinished: nothing in the skill is marked unfinished; the survey's 
 <clipPath id="banclip"><rect x="1020" y="150" width="216" height="104" rx="10"/></clipPath>
 </defs>
 <rect width="1280" height="640" fill="$bg"/>
-<g id="backdrop"><rect class="drift" x="-24" y="-24" width="1328" height="688" fill="url(#grid)"/></g>
+<g id="backdrop" data-backdrop="dots drift"><rect class="drift" x="-24" y="-24" width="1328" height="688" fill="url(#grid)"/></g>
 
 <!-- text block -->
 <g id="logo" transform="translate(72 60) scale(0.21875)"><rect width="256" height="256" rx="56" fill="$tile"/><g transform="translate(25.6 25.6) scale(.8)"><path fill="$door" d="M172 48L176 48A56 56 0 0 1 232 104L232 152A56 56 0 0 1 176 208L80 208A56 56 0 0 1 24 152L24 104A56 56 0 0 1 80 48L104 48L104 92L80 92A12 12 0 0 0 68 104L68 152A12 12 0 0 0 80 164L176 164A12 12 0 0 0 188 152L188 104A12 12 0 0 0 176 92L172 92Z"/><path fill="$mark" d="M114 70A24 24 0 1 0 162 70A24 24 0 1 0 114 70Z"/></g></g>

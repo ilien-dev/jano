@@ -23,7 +23,7 @@ accent #4FD1C5 #0B7A70
 </style>
 <defs><pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="2" fill="$panel"/></pattern></defs>
 <rect width="1280" height="448" fill="$bg"/>
-<g id="backdrop"><rect class="drift" x="-24" y="-24" width="1328" height="496" fill="url(#dots)"/></g>
+<g id="backdrop" data-backdrop="dots drift"><rect class="drift" x="-24" y="-24" width="1328" height="496" fill="url(#dots)"/></g>
 <text id="eyebrow" x="72" y="64" class="m" font-size="15" letter-spacing="3" fill="$accent">THE DEMO</text>
 <text id="title" x="72" y="116" class="b" font-size="44" fill="$ink">Cards go in, done comes out</text>
 <text id="sub" x="72" y="156" class="s" font-size="20" fill="$body">A test scene for the build.</text>

@@ -10,7 +10,7 @@ skill's fonts, so a chip or a button is always as wide as its label. Clickable p
 data-clickable; cursors carry data-cursor, and a cursor that crosses a clickable part turns
 into a pointer there (see cursor-swap). Parts are MIT, part of Jano: nothing to credit.
 """
-import html, re, sys
+import hashlib, html, math, re, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -32,6 +32,7 @@ PARTS = {
     "note": "x y text role(accent) size(14) icon(true) — a callout sized to its text, with room for an icon from the chosen family on its left",
     "skeleton": "x y w lines(3) — grey lines that stand for text",
     "device": "x y kind(phone|laptop|browser) w h — an outline to put a screen in",
+    "backdrop": "kind(dots|grid|hatch|plus|rings|waves|scan|chevrons|any) motion(drift|slide|rise|still) h(640|448) repo — the whole-canvas pattern; any picks one from --repo",
 }
 
 
@@ -215,6 +216,55 @@ def device(x=0, y=0, kind="phone", w=None, h=None):
         "</g>", f'<rect x="{x + 80}" y="{y + 9}" width="{w - 160}" height="16" rx="8" fill="$bg"/></g>', 1)
 
 
+BACKDROPS = {  # kind: (tile width, tile height, what suits it, the motif drawn in one tile of w x h)
+    "dots": (24, 24, "anything; the neutral default, not the first choice",
+             lambda w, h: f'<circle cx="{w / 2:g}" cy="{h / 2:g}" r="1.5" fill="$line"/>'),
+    "grid": (40, 40, "plans, design, layout, maps, spreadsheets, engineering",
+             lambda w, h: f'<path d="M0 0H{w}M0 0V{h}" fill="none" stroke="$line" stroke-width="1"/>'),
+    "hatch": (24, 24, "builds, tooling, construction, compilers, packaging",
+              lambda w, h: f'<path d="M0 {h}L{w} 0M{-w / 4:g} {h / 4:g}L{w / 4:g} {-h / 4:g}M{w * .75:g} {h * 1.25:g}L{w * 1.25:g} {h * .75:g}" fill="none" stroke="$line" stroke-width="1"/>'),
+    "plus": (36, 36, "maths, health, calculators, additions, extensions",
+             lambda w, h: f'<path d="M{w / 2 - 4:g} {h / 2:g}H{w / 2 + 4:g}M{w / 2:g} {h / 2 - 4:g}V{h / 2 + 4:g}" fill="none" stroke="$line" stroke-width="1.5" stroke-linecap="round"/>'),
+    "rings": (56, 56, "networks, signals, radio, sound, sensors, search",
+              lambda w, h: f'<circle cx="{w / 2:g}" cy="{h / 2:g}" r="{w * .3:g}" fill="none" stroke="$line" stroke-width="1.2"/>'),
+    "waves": (64, 24, "audio, water, streams of data, speech, health signals",
+              lambda w, h: f'<path d="M0 {h / 2:g}Q{w / 4:g} {h / 2 - 6:g} {w / 2:g} {h / 2:g}T{w} {h / 2:g}" fill="none" stroke="$line" stroke-width="1.2"/>'),
+    "scan": (8, 12, "terminals, logs, text, reading, retro screens",
+             lambda w, h: f'<rect width="{w}" height="1.5" fill="$line"/>'),
+    "chevrons": (40, 32, "code, pipelines, steps, moving forward, conversions",
+                 lambda w, h: f'<path d="M{w / 2 - 3:g} {h / 2 - 5:g}l5 5-5 5" fill="none" stroke="$line" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>'),
+}
+MOTIONS = {"drift": (1, 1), "slide": (-1, 0), "rise": (0, -1), "still": (0, 0)}
+BACKDROP_SPEED = 6  # px/s: ambient, never asks to be looked at
+
+
+def backdrop(kind="dots", motion="drift", h=640, repo=""):
+    """A quiet pattern over the whole canvas, still or moving by exactly one tile so the loop cannot be seen.
+    `--repo <name>` with kind=any picks a kind from the name, so two repositories rarely share one."""
+    names = list(BACKDROPS)
+    if kind == "any":
+        if not repo:
+            sys.exit("error: kind any needs --repo <name>: the pick follows the name, so the same repository always gets the same backdrop")
+        kind = names[int(hashlib.sha256(str(repo).encode()).hexdigest(), 16) % len(names)]
+    if kind not in BACKDROPS:
+        sys.exit(f"error: no backdrop {kind!r}; kinds: {', '.join(names)}, any (with --repo), or leave #backdrop out for none")
+    if motion not in MOTIONS:
+        sys.exit(f"error: no motion {motion!r}; motions: {', '.join(MOTIONS)}")
+    tw, th, _, draw = BACKDROPS[kind]
+    W, H = 1280, float(h)
+    mx, my = MOTIONS[motion]
+    pid = f"bd-{kind}"
+    pattern = f'<defs><pattern id="{pid}" width="{tw}" height="{th}" patternUnits="userSpaceOnUse">{draw(tw, th)}</pattern></defs>'
+    rect = f'<rect x="{-tw}" y="{-th}" width="{W + 2 * tw:g}" height="{H + 2 * th:g}" fill="url(#{pid})"'
+    if motion == "still":
+        return f'<g id="backdrop" data-backdrop="{kind} still">{pattern}{rect}/></g>'
+    dx, dy = mx * tw, my * th
+    dur = max(3.0, round(math.hypot(dx, dy) / BACKDROP_SPEED, 2))
+    css = f"@keyframes bd{{to{{transform:translate({dx:g}px,{dy:g}px)}}}}.bd{{animation:bd {dur:g}s linear infinite}}"
+    return (f"<!-- add to <style>: {css} -->\n"
+            f'<g id="backdrop" data-backdrop="{kind} {motion}">{pattern}{rect} class="bd"/></g>')
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     args = sys.argv[1:]
@@ -222,6 +272,9 @@ def main():
         print(__doc__)
         for k, v in PARTS.items():
             print(f"  {k:12} {v}")
+        print("\nbackdrop kinds, and what each suits:")
+        for k, v in BACKDROPS.items():
+            print(f"  {k:10} {v[2]}")
         return
     part, opts = args[0], {}
     it = iter(args[1:])

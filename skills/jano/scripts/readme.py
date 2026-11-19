@@ -19,6 +19,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import check as svgcheck  # noqa: E402
+import kit  # noqa: E402
 
 PLAN = "assets/readme/plan.json"
 JUDGES = "assets/readme/judges.json"
@@ -91,6 +92,26 @@ def sha(*parts):
 def source_bytes(path):
     """A source's bytes with line endings as git stores them, so a clone on any system has the same fingerprint."""
     return path.read_bytes().replace(b"\r\n", b"\n") if path.exists() else b""
+
+
+def check_backdrop(r, where, svg, want):
+    """Every picture has the backdrop the plan names: none, or the same pattern and motion, so the README reads as one piece."""
+    if want is None:
+        return
+    tag = re.search(r'<g\b[^>]*\bid="backdrop"[^>]*>', svg)
+    if want == "none":
+        if tag:
+            r.e(where, 'has a #backdrop and the plan says "backdrop": "none": take it out')
+        return
+    if not tag:
+        r.e(where, f'has no #backdrop and the plan says "{want}": paste kit.py backdrop --kind {want.split()[0]} --motion {want.split()[1]}')
+        return
+    got = re.search(r'data-backdrop="([^"]*)"', tag.group())
+    if not got:
+        r.e(where, f'has a #backdrop that does not say which it is: paste kit.py backdrop --kind {want.split()[0]} --motion {want.split()[1]}, '
+                   'or give a texture drawn by hand data-backdrop="custom <motion>" (and the plan "custom <motion>")')
+    elif got.group(1) != want:
+        r.e(where, f'has the backdrop "{got.group(1)}" and the plan says "{want}": every picture uses the one the plan names')
 
 
 def stale(src):
@@ -276,6 +297,12 @@ def survey(repo):
     if screen:
         ask.append(f"real screen: the project has a screen ({', '.join(screen)}). The scenes are drawn SVG; ask whether one section may show a real "
                    "screenshot inside its scene instead, and only where a drawing would explain less")
+    pick = kit.backdrop("any", "still", repo=repo.resolve().name).split('data-backdrop="', 1)[1].split()[0]
+    out["backdrop_pick"] = pick
+    ask.append("backdrop: should the pictures have a background pattern, and should it move? Propose from what the repository is about: "
+               "none (the picture carries itself, or the brand is plain), a still pattern, or a moving one, and the pattern whose subject fits "
+               f"(kit.py list says what each suits). When no subject fits, propose {pick!r}, the pick for this repository (kit.py backdrop --kind any "
+               "--repo <name>), not dots by habit. The answer goes in the plan as \"backdrop\": \"none\" or \"<kind> <motion>\"")
     out["ask_the_user"] = ask
     return out
 
@@ -507,6 +534,14 @@ def check_repo(repo):
         return r
     if not plan.get("audience_confirmed"):
         r.e(PLAN, '"audience_confirmed" is not true: ask the user whether the README is for a general or a technical audience, then set it')
+    backdrop = plan.get("backdrop")
+    if backdrop is None:
+        r.e(PLAN, '"backdrop" is missing: ask the user whether the pictures have a background, still or moving, and which pattern '
+                  '(readme.py survey proposes one), then write "none" or "<kind> <motion>" (kit.py backdrop)')
+    elif backdrop != "none" and (len(str(backdrop).split()) != 2 or str(backdrop).split()[0] not in list(kit.BACKDROPS) + ["custom"]
+                                 or str(backdrop).split()[1] not in kit.MOTIONS):
+        r.e(PLAN, f'"backdrop" is "none" or "<kind> <motion>" with a kind of {", ".join(list(kit.BACKDROPS) + ["custom"])} and a motion of '
+                  f'{", ".join(kit.MOTIONS)}, not {backdrop!r}')
     for x in plan.get("unfinished", []):
         if x.get("decision") not in ("keep", "drop", "not-a-feature"):
             r.e(PLAN, f"unfinished item {x.get('item')!r} has no decision: ask the user, keep or drop")
@@ -578,6 +613,7 @@ def check_repo(repo):
     for src in sorted(set(repo.glob("assets/**/readme/*.src.svg")) | set(repo.glob("assets/**/hero.src.svg"))):
         for name in stale(src):
             r.e(src.relative_to(repo).as_posix(), f"{name} is missing or was built from another version of its source: build it")
+        check_backdrop(r, src.relative_to(repo).as_posix(), src.read_text(encoding="utf-8"), plan.get("backdrop"))
     hero = repo / "assets/hero.src.svg"
     if hero.exists():
         want = hashlib.sha256(source_bytes(hero)).hexdigest()[:16]

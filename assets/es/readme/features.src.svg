@@ -63,7 +63,7 @@ frame  #4A5A80 #9AA7BF
 <clipPath id="ban"><rect x="660" y="80" width="536" height="128" rx="12"/></clipPath>
 </defs>
 <rect width="1280" height="448" fill="$bg"/>
-<g id="backdrop"><rect class="drift" x="-24" y="-24" width="1328" height="496" fill="url(#grid)"/></g>
+<g id="backdrop" data-backdrop="dots drift"><rect class="drift" x="-24" y="-24" width="1328" height="496" fill="url(#grid)"/></g>
 
 <text id="eyebrow" x="72" y="56" class="m" font-size="15" letter-spacing="3" fill="$accent">QUÉ OBTIENES</text>
 <text id="title" x="72" y="108" class="b" font-size="42" fill="$ink">Tu portada, ya terminada</text>

@@ -180,7 +180,10 @@ alone = build(swap(">still title", ">quick wavy jazz"))[1]
 second = run.stdout.split("== ")[2] if run.stdout.count("== ") >= 2 else ""
 test("an option built after another is measured as if built alone", ("checks passed" in alone) == ("checks passed" in second) and "jazz" not in second, second)
 warned("a strip without running text is warned about", re.sub(r'<g clip-path="url\(#strip\)">.*?</g></g></g>', "</g>", FIXTURE, flags=re.S), "no text travels in #ticker")
-warned("a background that stands still is warned about", swap('<rect class="drift" ', "<rect "), "nothing in #backdrop is animated")
+code, out, _ = build(swap('<rect class="drift" ', "<rect "))
+test("a background that stands still is allowed", code == 0 and "backdrop" not in out, out)
+code, out, _ = build(re.sub(r'<g id="backdrop"[^>]*>.*?</g>', "", FIXTURE))
+test("a hero without a background is allowed", code == 0 and "backdrop" not in out, out)
 warned("a text block lost beside the picture is warned about", swap('<g id="stage">', '<g id="stage"><rect x="560" y="0" width="720" height="596" fill="$bg"/>').replace('id="about"', 'id="x"').replace('<g id="facts">', "<g>"), "the text block is too small")
 warned("a bare picture is warned about", re.sub(r'<g id="stage">.*</g>\s*</svg>', '<g id="stage"><rect x="600" y="72" width="608" height="484" rx="16" fill="$panel"/><g transform="translate(700 300)"><rect class="send" opacity="0" width="28" height="28" rx="6" fill="$accent"/></g></g></svg>', FIXTURE, flags=re.S), "it reads as empty")
 warned("SMIL is warned about", swap('rx="6" fill="$accent"/>', 'rx="6" fill="$accent"><animate attributeName="rx" values="6;9;6" dur="2s" repeatCount="indefinite"/></rect>'), "SMIL")
@@ -329,6 +332,23 @@ try:
     test("a kit part refuses a character the fonts lack", False)
 except SystemExit as e:
     test("a kit part refuses a character the fonts lack", "not in the skill's fonts" in str(e), str(e))
+def with_backdrop(source, kind, motion, h):
+    """`source` with its backdrop replaced by the kit's, and the kit's keyframes added to its style."""
+    part = kit_module.backdrop(kind, motion, h)
+    css, g = part.split("\n", 1) if part.startswith("<!--") else ("<!-- add to <style>:  -->", part)
+    return re.sub(r'<g id="backdrop"[^>]*>.*?</g>', lambda m: g, source).replace("</style>", css[len("<!-- add to <style>: "):-len(" -->")] + "</style>")
+
+
+MOTIONS = list(kit_module.MOTIONS)
+for i, kind in enumerate(kit_module.BACKDROPS):
+    m_hero, m_scene = MOTIONS[i % len(MOTIONS)], MOTIONS[(i + 1) % len(MOTIONS)]
+    code, out, _ = build(with_backdrop(FIXTURE, kind, m_hero, 640))
+    code2, out2, _ = build_scene(with_backdrop(SCENE, kind, m_scene, 448))
+    test(f"the {kind} backdrop builds clean on a hero ({m_hero}) and a scene ({m_scene})",
+         code == 0 and "checks passed" in out and code2 == 0 and "checks passed" in out2, out + out2)
+picks = {kit_module.backdrop("any", "still", repo=r).split('data-backdrop="')[1].split()[0] for r in ("anzu", "jano", "proj", "nabu", "muninn", "quiron")}
+test("backdrops picked from repository names differ", len(picks) >= 3, str(picks))
+test("the same repository always gets the same backdrop", kit_module.backdrop("any", "drift", repo="anzu") == kit_module.backdrop("any", "drift", repo="anzu"))
 arrow_only = SCENE.replace("</g>\n</svg>", kit_module.button(1100, 300, "Install") + kit_module.cursor(1130, 310, "arrow") + "</g>\n</svg>")
 code, out, _ = build_scene(arrow_only)
 test("a cursor that never turns into a pointer over something clickable is warned about", "turns into a pointer" in out, out)
@@ -419,7 +439,7 @@ GOOD = ("<h1 align=\"center\">Proj</h1>\n\n**Proj sorts your cards for you.** " 
         "## Who it is for\n\n" + pic("people") + WORDS20 + WORDS20 + "\n\n"
         "## Questions\n\n<details><summary><b>Is it free?</b></summary>\n\nYes.\n\n</details>\n\n" + WORDS20 + WORDS20 + "\n\n"
         "## License\n\nMIT, see the LICENSE file in this folder.\n")
-PLAN_OK = {"audience": "general", "audience_confirmed": True, "sentence": "sorts cards", "unfinished": [],
+PLAN_OK = {"audience": "general", "audience_confirmed": True, "backdrop": "dots drift", "sentence": "sorts cards", "unfinished": [],
            "hero": {"file": "assets/hero.src.svg", "shows": ["lines", "parcel"]},
            "sections": [
                {"heading": "What you get", "role": "features", "picture": {"file": "assets/readme/demo.src.svg", "claim": "cards get sorted", "shows": ["inbox", "done", "card"]}},
@@ -479,6 +499,19 @@ code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=lambda r, p: {**passing(r, p
 test("readme.py: a failed cold read fails the README", code == 1 and "failed its cold read" in out, out)
 code, out = repo_with(GOOD, {**PLAN_OK, "audience_confirmed": False}, SCENES, judges=passing)
 test("readme.py: an audience nobody confirmed fails", code == 1 and "audience_confirmed" in out, out)
+code, out = repo_with(GOOD, {k: v for k, v in PLAN_OK.items() if k != "backdrop"}, SCENES, judges=passing)
+test("readme.py: a plan that does not say which backdrop fails", code == 1 and '"backdrop" is missing' in out, out)
+code, out = repo_with(GOOD, {**PLAN_OK, "backdrop": "confetti drift"}, SCENES, judges=passing)
+test("readme.py: a backdrop the kit does not have fails", code == 1 and '"backdrop" is "none" or' in out, out)
+code, out = repo_with(GOOD, {**PLAN_OK, "backdrop": "none"}, SCENES, judges=passing)
+test("readme.py: pictures with a backdrop when the plan says none fail", code == 1 and 'the plan says "backdrop": "none"' in out, out)
+test("readme.py: the backdrop of every picture is checked against the plan",
+     "".join(readme_module.Report().errors) == "" and (lambda r: (readme_module.check_backdrop(r, "x", '<g id="backdrop" data-backdrop="waves slide">', "dots drift"), r.errors)[1])(readme_module.Report()) != [])
+r = readme_module.Report()
+readme_module.check_backdrop(r, "x", '<g id="backdrop"><rect/></g>', "dots drift")
+test("readme.py: a backdrop drawn by hand that does not say which it is fails", any("does not say which it is" in e for e in r.errors), str(r.errors))
+survey_out = json.dumps(readme_module.survey(ROOT))
+test("readme.py survey asks about the backdrop and proposes a pick for the repository", "backdrop:" in survey_out and "backdrop_pick" in survey_out, survey_out[:300])
 code, out = repo_with(GOOD, {**PLAN_OK, "audience": "technical"}, SCENES, judges=passing)
 test("readme.py: a technical README needs a section on how to use it", code == 1 and "none of use, reference" in out, out)
 code, out = repo_with(GOOD.replace("```bash", "```"), PLAN_OK, SCENES, judges=passing)
