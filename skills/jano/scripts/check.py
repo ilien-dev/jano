@@ -52,7 +52,13 @@ STAGE_LARGE = 140      # px: the shorter side of the object that anchors the pic
 STAGE_SMALL = (48, 6)  # px, count: details whose shorter side is this or less
 STAGE_MOVING = 5       # animated elements in the picture
 EDGE = 24              # still text keeps this far from the canvas edge
-BOX_PAD = 8            # and this far from the sides of the box it sits in
+BOX_PAD = 8            # px: text keeps at least this far from the sides of the box it sits in,
+PILL_PAD = 0.5         # and half its size in a pill (a box under PILL_HIGH times the text's size),
+PANEL_PAD = 1.0        # or its own size in a panel, on the left and right,
+PANEL_PAD_Y = 0.5      # and half its size above and below
+PILL_HIGH = 2.6
+SMALL_BOX_PAD = 0.12   # a shape in a box under BOX_PAD / this px keeps this share of the box's shorter side
+MISSING_EM = 1.25      # a character the fonts lack is drawn by a fallback font of each machine: count it this wide
 STILL_WORDS = 48       # words standing still in the picture
 LABEL_WORDS = 10        # in one still line
 SIZES = 7              # distinct font sizes
@@ -95,6 +101,25 @@ def font(face):
         f = TTFont(ASSETS / file)
         _fonts[face] = instancer.instantiateVariableFont(f, {"wght": wght}) if wght else f
     return _fonts[face]
+
+
+def length(v, size, default=0.0):
+    """A length in px; em is relative to the font size."""
+    return num(v, default) * (size if v and v.strip().endswith("em") else 1)
+
+
+def text_width(text, size, face="s", spacing=0.0):
+    """Width of one line in px with the skill's fonts, and the characters they lack (counted MISSING_EM wide)."""
+    f = font(face)
+    k, cmap, hmtx = size / f["head"].unitsPerEm, f.getBestCmap(), f["hmtx"]
+    w, lost = 0.0, set()
+    for ch in text:
+        if ord(ch) in cmap:
+            w += hmtx[cmap[ord(ch)]][0] * k + spacing
+        elif not ch.isspace():
+            w += MISSING_EM * size + spacing
+            lost.add(ch)
+    return w, lost
 
 
 def local(tag):
@@ -331,7 +356,7 @@ class Hero:
         for t in self.texts:
             if t["el"] is el:
                 return '"' + (t["s"] if len(t["s"]) < 34 else t["s"][:31] + "...") + '"'
-        bits = "".join(f' {a}="{el.get(a)}"' for a in ("id", "class") if el.get(a))
+        bits = "".join(f' {a}="{el.get(a)}"' for a in ("id", "class", "x", "y", "cx", "cy", "data-kit") if el.get(a))
         return f"<{local(el.tag)}{bits}>"
 
     def style(self, el):
@@ -460,14 +485,9 @@ class Hero:
             if own and n.get("dy"):
                 chunks[-1][1] += num(n.get("dy")) * (fs if "em" in n.get("dy") else 1)
                 y = chunks[-1][1]
-            f = font(self.face(n) or "s")
-            k, ls = fs / f["head"].unitsPerEm, num(self.inherit(n, "letter-spacing"))
-            cmap, hmtx = f.getBestCmap(), f["hmtx"]
-            for ch in t:
-                if ord(ch) in cmap:
-                    chunks[-1][3] += hmtx[cmap[ord(ch)]][0] * k + ls
-                elif not ch.isspace():
-                    lost.add(ch)
+            w, miss = text_width(t, fs, self.face(n) or "s", length(self.inherit(n, "letter-spacing"), fs))
+            chunks[-1][3] += w
+            lost |= miss
             chunks[-1][3] += num(n.get("dx")) if own else 0
             chunks[-1][4] = max(chunks[-1][4], fs)
             biggest = max(biggest, fs)
@@ -493,22 +513,37 @@ class Hero:
         mover, best = self.mover(t["el"]), None
         for s in self.shapes:
             b = s["box"]
-            if s["tag"] != "rect" or self.order[s["el"]] > self.order[t["el"]] or (together and self.mover(s["el"]) is not mover):
+            if s["tag"] not in ("rect", "path") or self.order[s["el"]] > self.order[t["el"]] or (together and self.mover(s["el"]) is not mover):
                 continue
+            if s["el"] is t["el"] or self.inside(s["el"], t["el"]):
+                continue  # itself, or a part of it
+            tb = t["box"]
+            if "s" not in t and tb[0] <= b[0] + 0.5 and tb[1] <= b[1] + 0.5 and b[2] <= tb[2] + 0.5 and b[3] <= tb[3] + 0.5:
+                continue  # a shape drawn over a smaller one does not sit in it (text may: a pill too small for it holds it all the same)
             if not (b[0] <= cx <= b[2] and b[1] <= cy <= b[3]) or area(b) > 0.6 * W * H:
                 continue
             if b[3] - b[1] < 0.9 * (t["box"][3] - t["box"][1]):
                 continue
             if self.inherit(s["el"], "fill", "#000") == "none" and self.inherit(s["el"], "stroke", "none") == "none":
                 continue
+            if s["tag"] == "path" and (self.inherit(s["el"], "fill", "#000") == "none" or not re.search(r"[zZ]\s*$", s["el"].get("d") or "")):
+                continue  # a line or an open path is not a box
             if best is None or area(b) < area(best["box"]):
                 best = s
         return best
+
+    def held_in(self, t):
+        """The box this text or shape sits in when the story is complete. What moves is drawn in its finished place (motion.md
+        rule 3), so it is measured there too; what only passes through (opacity 0 at rest) or runs behind a clip is not held."""
+        if any(a.get("opacity") is not None and num(a.get("opacity"), 1) == 0 or a.get("clip-path") for a in self.chain(t["el"])):
+            return self.container(t)
+        return self.container(t, together=False)
 
     # ---- the checks
     def run(self):
         {"hero": self.check_slots, "section": self.check_scene_slots}[self.kind]()
         self.check_text()
+        self.check_contents()
         self.check_contrast()
         self.check_strokes()
         self.check_motion()
@@ -775,6 +810,45 @@ class Hero:
             self.warns.append("nothing in #backdrop is animated: the background drifts all the time, slowly")
         self.check_stage(stage, (eyebrow, title, sub), (eyebrow, title, sub, backdrop), SCENE_STAGE_SHARE, SCENE_COPY_SHARE, SCENE_PARTS, SCENE_LARGE)
 
+    def check_contents(self):
+        """Shapes and icons inside a box keep inside it, with room: a spill or a near miss reads as a mistake."""
+        icons = [e for e in self.root.iter() if e.get("data-icon") is not None and self.box.get(e)]
+        items = [{"el": e, "box": self.box[e]} for e in icons]
+        for sh in self.shapes:
+            el = sh["el"]
+            if sh["tag"] not in ("rect", "circle", "ellipse", "path", "polygon") or any(self.inside(el, e) for e in icons):
+                continue
+            if self.inherit(el, "fill", "#000") in ("none", "transparent"):
+                continue  # a frame, a ring or a connector: lines may meet the edge they point at
+            if sh["tag"] == "path" and not re.search(r"[zZ]\s*$", el.get("d") or ""):
+                continue
+            if any(self.inside(el, self.byid.get(i)) for i in ("backdrop", "ticker")):
+                continue
+            items.append({"el": el, "box": sh["box"]})
+        for it in items:
+            if any(a.get("data-cursor") for a in self.chain(it["el"])):
+                continue  # a cursor points at a box from above it; it is not held in it
+            c = self.held_in(it)
+            if c is None:
+                continue
+            b, cb = it["box"], c["box"]
+            kit = next((a for a in self.chain(it["el"]) if a.get("data-kit")), None)
+            if kit is not None and self.inside(c["el"], kit):
+                continue  # a kit part is drawn to its own measure (a bar's fill, a switch's knob)
+            gaps = (b[0] - cb[0], b[1] - cb[1], cb[2] - b[2], cb[3] - b[3])
+            hit = inter(b, cb)
+            inside = area(hit) / max(area(b), 1e-9) if hit else 0
+            what = (it["el"].get("data-icon") and f'the icon "{it["el"].get("data-icon")}"' or self.describe(it["el"])) + f" at {b[0]:.0f},{b[1]:.0f}"
+            if min(gaps) < -1:
+                if inside >= 0.6:  # mostly in: it spills; a badge set across a corner on purpose is less than that inside
+                    self.errors.append(f"{what} runs {-min(gaps):.0f} px out of the box it sits in: move it in, shrink it or grow the box")
+                continue
+            # flush (a fill, a header) is a choice; almost touching is not. A small box (a mark, a key) keeps a share of its size instead
+            need = min(BOX_PAD, SMALL_BOX_PAD * min(cb[2] - cb[0], cb[3] - cb[1]))
+            near = [g for g in gaps if 0.5 < g < need - 0.5]
+            if near:
+                self.errors.append(f"{what} is {min(near):.0f} px from the edge of the box it sits in; keep {need:.0f} px or more, or set it flush against the edge")
+
     def check_text(self):
         f, canvas = self.facts, (0, 0, W, H)
         apart = [self.byid.get(i) for i in ("name", "tagline", "about", "facts", "eyebrow", "title", "sub")]
@@ -783,7 +857,7 @@ class Hero:
             if not t["classed"]:
                 self.warns.append(f"{self.describe(t['el'])} has no class s, b or m: it falls back to a system font and looks different on every machine")
             if t["lost"]:
-                self.warns.append(f"{self.describe(t['el'])} uses {' '.join(sorted(t['lost']))}, which the fonts do not have: draw it as a shape or use another character")
+                self.errors.append(f"{self.describe(t['el'])} uses {' '.join(sorted(t['lost']))}, which the fonts do not have: each machine draws it in another font and at another width, and outlines drop it. Draw it as a shape (an icon from the chosen family) beside the text, or use another character")
         small = sorted({round(t["fs"], 1) for t in self.texts if t["fs"] < MIN_TEXT})
         if small:
             self.warns.append(f"font-size below {MIN_TEXT} ({small}): unreadable at README width, where the hero is shown at ~65%")
@@ -805,16 +879,22 @@ class Hero:
                 self.warns.append(f"{self.describe(t['el'])} is {-out:.0f} px from the canvas edge; leave {EDGE}")
         # text against the box it sits in
         for t in self.texts:
-            c = self.container(t)
+            c = self.held_in(t)
             if c is None:
                 continue
             b, cb = t["box"], c["box"]
+            fs = t["fs"]
             side = min(b[0] - cb[0], cb[2] - b[2])
             over = max(cb[0] - b[0], b[2] - cb[2], cb[1] - b[1], b[3] - cb[3])
+            pill = cb[3] - cb[1] < PILL_HIGH * fs
+            need = max(BOX_PAD, PILL_PAD * fs) if pill else max(BOX_PAD, PANEL_PAD * fs)
+            need_y = 0 if pill else max(BOX_PAD, PANEL_PAD_Y * fs)
             if over > 1:
-                self.errors.append(f"{self.describe(t['el'])} runs {over:.0f} px out of its box ({cb[2] - cb[0]:.0f} px wide, the text needs {b[2] - b[0]:.0f}): shorten it, shrink it or widen the box")
-            elif side < BOX_PAD:
-                self.warns.append(f"{self.describe(t['el'])} is {max(side, 0):.0f} px from the side of its box; leave {BOX_PAD}")
+                self.errors.append(f"{self.describe(t['el'])} runs {over:.0f} px out of its box ({cb[2] - cb[0]:.0f} px wide, the text needs {b[2] - b[0]:.0f}): shorten it, shrink it, break it into lines or widen the box")
+            elif side < need - 0.5:
+                self.errors.append(f"{self.describe(t['el'])} is {max(side, 0):.0f} px from the side of its box; a {'pill' if pill else 'panel'} keeps {need:.0f} px on both sides of {fs:.0f} px text. Widen the box, break the line or shorten it (kit.py card and note wrap and size themselves)")
+            elif min(b[1] - cb[1], cb[3] - b[3]) < need_y - 0.5:
+                self.errors.append(f"{self.describe(t['el'])} is {max(min(b[1] - cb[1], cb[3] - b[3]), 0):.0f} px from the top or bottom of its panel; keep {need_y:.0f}")
         # text against text
         for i, a in enumerate(self.texts):
             for b in self.texts[i + 1:]:

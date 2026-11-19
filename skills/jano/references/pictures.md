@@ -240,7 +240,7 @@ each one go just before the next arrives, never all together.
 <rect x="720" y="180" width="80" height="10" rx="5" fill="$muted"/><rect x="720" y="206" width="60" height="10" rx="5" fill="$muted"/>
 <rect class="press" x="848" y="180" width="110" height="36" rx="10" fill="$accent"/>
 <g class="arrive"><rect x="848" y="244" width="300" height="64" rx="12" fill="$bg"/><rect x="866" y="262" width="150" height="10" rx="5" fill="$ink"/><rect x="866" y="282" width="210" height="8" rx="4" fill="$muted"/></g>
-<g transform="translate(1060 276)"><path class="cursor" d="M0 0l0 35 10-8 6 16 6-3-6-14 13 0z" fill="$ink" stroke="$bg" stroke-width="2"/></g>
+<g transform="translate(1060 276)" data-cursor="arrow"><path class="cursor" d="M0 0l0 35 10-8 6 16 6-3-6-14 13 0z" fill="$ink" stroke="$bg" stroke-width="2"/></g>
 ```
 
 ### F. A terminal that types its command

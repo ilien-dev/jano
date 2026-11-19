@@ -14,12 +14,12 @@ import html, re, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from check import font  # noqa: E402
+from check import ICON_MIN, PANEL_PAD, text_width  # noqa: E402
 
 PARTS = {
     "window": "x y w h title chrome(dots|plain) — an app window with a title bar",
     "terminal": "x y w h title lines(a|b|c, '$ ' marks a command) — a terminal with real lines",
-    "card": "x y w h title — a panel with an optional heading",
+    "card": "x y w h title text size(15) face(s|m) — a panel with an optional heading and text wrapped inside its padding; h grows to fit when left out",
     "chip": "x y text role(accent) size(14) — a pill sized to its text",
     "button": "x y text variant(primary|ghost) size(16) — a button sized to its text; clickable",
     "cursor": "x y kind(arrow|pointer|text) size(26) color($ink) — the tip is at (x, y)",
@@ -29,15 +29,34 @@ PARTS = {
     "progress": "x y w value(0.6) role(accent) — a bar",
     "toggle": "x y on(true) — a switch",
     "badge": "x y text role(accent) — a small label with a dot",
+    "note": "x y text role(accent) size(14) icon(true) — a callout sized to its text, with room for an icon from the chosen family on its left",
     "skeleton": "x y w lines(3) — grey lines that stand for text",
     "device": "x y kind(phone|laptop|browser) w h — an outline to put a screen in",
 }
 
 
 def width(text, size, face="s"):
-    f = font(face)
-    k, cmap, hmtx = size / f["head"].unitsPerEm, f.getBestCmap(), f["hmtx"]
-    return sum(hmtx[cmap[ord(c)]][0] * k for c in text if ord(c) in cmap)
+    """The width check.py measures. A character the fonts lack stops the part: it has no width anyone can rely on."""
+    w, lost = text_width(str(text), float(size), face)
+    if lost:
+        sys.exit(f"error: {' '.join(sorted(lost))} is not in the skill's fonts: each machine draws it in another font and at another width. "
+                 "Leave it out of the text and draw it as an icon from the chosen family (assets.py get), or use another character")
+    return w
+
+
+def wrap(text, size, face, room):
+    """Lines of `text` no wider than `room` px, broken between words."""
+    lines, cur = [], ""
+    for word in str(text).split():
+        nxt = f"{cur} {word}".strip()
+        if cur and width(nxt, size, face) > room:
+            lines.append(cur)
+            cur = word
+        else:
+            cur = nxt
+        if width(cur, size, face) > room:
+            sys.exit(f"error: the word {word!r} is wider than the card's room ({room:.0f} px at {size:g} px): widen the card or shrink the text")
+    return lines + ([cur] if cur else [])
 
 
 def esc(t):
@@ -65,9 +84,21 @@ def terminal(x=0, y=0, w=520, h=220, title="terminal", lines=""):
     return window(x, y, w, h, title).replace('data-kit="window"', 'data-kit="terminal"', 1).replace("</g>", "".join(out) + "</g>", 1)
 
 
-def card(x=0, y=0, w=240, h=140, title=""):
-    head = f'<text x="{x + 18}" y="{y + 32}" class="b" font-size="18" fill="$ink">{esc(title)}</text>' if title else ""
-    return f'<g data-kit="card"><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="12" fill="$panel" stroke="$line" stroke-width="1.5"/>{head}</g>'
+def card(x=0, y=0, w=240, h=None, title="", text="", size=15, face="s"):
+    size = float(size)
+    pad = max(20, PANEL_PAD * max(size, 18))  # a panel keeps its text's own size on each side
+    head = f'<text x="{x + pad:g}" y="{y + 32}" class="b" font-size="18" fill="$ink">{esc(title)}</text>' if title else ""
+    if title and width(title, 18, "b") > w - 2 * pad:
+        sys.exit(f"error: the card's title is {width(title, 18, 'b'):.0f} px wide and the card leaves {w - 2 * pad:.0f}: widen it or shorten the title")
+    lead, top = round(size * 1.45, 1), y + (52 if title else pad) + size * 0.74
+    lines = wrap(text, size, face, w - 2 * pad) if text else []
+    body = "".join(f'<text x="{x + pad:g}" y="{top + i * lead:.1f}" class="{face}" font-size="{size:g}" fill="$body">{esc(l)}</text>' for i, l in enumerate(lines))
+    need = (top + (len(lines) - 1) * lead + size * 0.2 + pad - y) if lines else (52 if title else 0) + pad
+    if h is None:
+        h = max(need, 80)
+    elif float(h) < need:
+        sys.exit(f"error: the card's text needs {need:.0f} px of height and it has {float(h):.0f}: leave h out, raise it or shorten the text")
+    return f'<g data-kit="card"><rect x="{x}" y="{y}" width="{w}" height="{float(h):g}" rx="12" fill="$panel" stroke="$line" stroke-width="1.5"/>{head}{body}</g>'
 
 
 def chip(x=0, y=0, text="", role="accent", size=14):
@@ -149,6 +180,20 @@ def badge(x=0, y=0, text="", role="accent"):
     w = width(text, 13, "m") + 30
     return (f'<g data-kit="badge"><rect x="{x}" y="{y}" width="{w:.0f}" height="24" rx="6" fill="$panel" stroke="$line" stroke-width="1.5"/>'
             f'<circle cx="{x + 12}" cy="{y + 12}" r="4" fill="${role}"/><text x="{x + 22}" y="{y + 16.5}" class="m" font-size="13" fill="$body">{esc(text)}</text></g>')
+
+
+def note(x=0, y=0, text="", role="accent", size=14, icon="true"):
+    size = float(size)
+    room = max(ICON_MIN, round(size * 1.4)) if str(icon).lower() != "false" else 0
+    pad, h = max(12, size), max(round(size * 2.4), room + 12)
+    gap = 8 if room else 0
+    w = pad + room + gap + width(text, size) + pad
+    tx, ty = x + pad + room + gap, y + h / 2 + size * 0.35
+    if room:  # on stderr, so the part pastes as it is
+        print(f'note: paste after it the icon from the chosen family: assets.py get <repo> icons <name> "<what it means>" '
+              f'--x {x + pad:g} --y {y + (h - room) / 2:g} --size {room} --color ${role}', file=sys.stderr)
+    return (f'<g data-kit="note"><rect x="{x}" y="{y}" width="{w:.0f}" height="{h}" rx="{min(10, h / 2):g}" fill="$panel" stroke="${role}" stroke-width="1.5"/>'
+            f'<text x="{tx:g}" y="{ty:.1f}" class="s" font-size="{size:g}" fill="$ink">{esc(text)}</text></g>')
 
 
 def skeleton(x=0, y=0, w=240, lines=3):
