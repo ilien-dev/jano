@@ -105,6 +105,13 @@ def stale(src):
     return out
 
 
+def social_stamp(card):
+    """The source fingerprint build.py writes into the social preview (its .svg or its .png), or None."""
+    data = card.read_bytes()[:4000] if card.exists() else b""
+    m = re.search(rb'tEXtjano-src\0([0-9a-f]+)|data-jano-src="([0-9a-f]+)"', data)
+    return (m.group(1) or m.group(2)).decode() if m else None
+
+
 # ---- reading Markdown the way GitHub shows it, roughly
 def strip_code(md):
     return re.sub(r"^(```|~~~).*?^\1[ \t]*$", "", md, flags=re.S | re.M)
@@ -571,6 +578,15 @@ def check_repo(repo):
     for src in sorted(set(repo.glob("assets/**/readme/*.src.svg")) | set(repo.glob("assets/**/hero.src.svg"))):
         for name in stale(src):
             r.e(src.relative_to(repo).as_posix(), f"{name} is missing or was built from another version of its source: build it")
+    hero = repo / "assets/hero.src.svg"
+    if hero.exists():
+        want = hashlib.sha256(source_bytes(hero)).hexdigest()[:16]
+        for social in (hero.parent / "social-preview" / f"social-preview-{t}.{x}" for t in ("dark", "light") for x in ("svg", "png")):
+            where = f"assets/social-preview/{social.name}"
+            if not social.exists():
+                r.w(where, "is missing: build the hero (the PNG needs a Chromium-family browser on this machine), then upload one PNG in Settings > General > Social preview")
+            elif social_stamp(social) != want:
+                r.e(where, "was built from another version of the hero: build the hero again and upload the new PNG")
 
     # ---- assets from the library: one family per category, the one the plan names, and names that exist
     check_assets(r, repo, plan)

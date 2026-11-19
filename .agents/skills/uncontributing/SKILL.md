@@ -14,7 +14,7 @@ two disagree, follow `CONTRIBUTING.md` and point out the difference.
 
 - Jano does one job: it makes a repository's README explain itself, its sections and
   text measured by `readme.py`, its hero and section scenes drawn as animated SVG. It does
-  not make GIFs, videos, social cards or other images. If the change does not serve that job, say so and stop: it will be rejected.
+  not make GIFs, videos or other images; its one social card is the preview it cuts from the hero. If the change does not serve that job, say so and stop: it will be rejected.
 - Search for the same work before writing anything:
   ```
   gh pr list --repo ilien-dev/jano --state all --search "<keywords>"

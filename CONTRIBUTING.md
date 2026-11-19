@@ -5,8 +5,8 @@ a clear issue that reports a bug or proposes an improvement is a contribution to
 
 Jano does one job: it makes a repository's README explain itself. It plans the sections
 and writes the text to measured rules, and draws a looping animated SVG hero and a scene
-for the sections that need one, in dark and light. It does not make GIFs, videos, social
-cards or logos for anything else. **A contribution that drifts away from that job
+for the sections that need one, in dark and light, and cuts the repository's social preview
+from that hero. It does not make GIFs, videos, other social cards or logos for anything else. **A contribution that drifts away from that job
 will be rejected**, however well it is made.
 
 ## Nothing is guaranteed
