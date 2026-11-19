@@ -52,17 +52,17 @@ person who runs it. A PR that adds a rule to `SKILL.md` says what went wrong wit
 ### Branch name
 
 ```
-feature/<1 to 4 words>
+<type>/<1 to 4 words>
 ```
 
-All lowercase, words of letters and digits joined by single hyphens, at most four words.
-This holds for every kind of change, fixes and docs included.
+`<type>` is the Conventional Commit type the title starts with: `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build`, `ci`, `chore`, `style` or `revert`. Then 1 to 4 words
+of lowercase letters and digits joined by single hyphens.
 
-- `feature/outline-rotated-text` ✓
-- `feature/fix-contrast-check` ✓
-- `feature/Rotated-Text` ✗ (uppercase)
-- `fix/contrast` ✗ (does not start with `feature/`)
-- `feature/add-the-new-contrast-check` ✗ (five words)
+- `feat/outline-rotated-text` ✓
+- `fix/contrast-check` ✓
+- `feat/Rotated-Text` ✗ (uppercase)
+- `feature/outline-rotated-text` ✗ (the type is `feat`, not `feature`)
+- `feat/add-the-new-contrast-check` ✗ (five words)
 
 ### Title
 
@@ -108,7 +108,7 @@ A CI check verifies the branch name, the title length and the description. You c
 it yourself before opening the PR:
 
 ```
-node .github/scripts/check-pr.js --branch feature/outline-rotated-text \
+node .github/scripts/check-pr.js --branch feat/outline-rotated-text \
   --title "fix: outline text inside rotated groups" --body-file pr.md
 ```
 

@@ -1,6 +1,6 @@
 ---
 name: uncontributing
-description: Use before opening an issue, creating a branch, committing for a pull request, or writing a pull request title or description in the Jano repository. Walks through CONTRIBUTING.md (one change per PR, feature/ branch names, Conventional Commit titles that decide the version, the description format with character limits, evidence) and checks the result with .github/scripts/check-pr.js.
+description: Use before opening an issue, creating a branch, committing for a pull request, or writing a pull request title or description in the Jano repository. Walks through CONTRIBUTING.md (one change per PR, type/ branch names (feat/, fix/, docs/...), Conventional Commit titles that decide the version, the description format with character limits, evidence) and checks the result with .github/scripts/check-pr.js.
 metadata:
   internal: true
 ---
@@ -31,9 +31,10 @@ fixes you notice for later; mention them, do not include them.
 
 ## 3. Branch
 
-`feature/` followed by 1 to 4 lowercase words (letters and digits) joined by single
-hyphens, for every kind of change: `feature/outline-rotated-text`, `feature/fix-contrast-check`.
-Regex: `^feature/[a-z0-9]+(-[a-z0-9]+){0,3}$`.
+The Conventional Commit type the title will use, a slash, and 1 to 4 lowercase words
+(letters and digits) joined by single hyphens: `feat/outline-rotated-text`, `fix/contrast-check`. Use the short
+type, never `feature/`.
+Regex: `^(feat|fix|perf|refactor|docs|test|build|ci|chore|style|revert)/[a-z0-9]+(-[a-z0-9]+){0,3}$`.
 
 ## 4. Code
 
