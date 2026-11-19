@@ -9,8 +9,13 @@ name: Release
 # fix: raises the patch number, feat: the minor one, and a ! after the type the major
 # one; docs, ci, refactor, test and chore release nothing.
 #
-# The merge is made with this workflow's token, so it starts no new run: the second
-# release-please step below is what publishes the release.
+# Everything runs with RELEASE_TOKEN, a fine-grained token of a repository admin
+# (Contents and Pull requests: read and write). With the default token the release pull
+# request was opened by a bot whose checks wait for approval, and the bot could not
+# merge it past the rules of main. The admin token opens it like a person does, so its
+# checks run, and merges it with --admin, which the ruleset lets admins do.
+# The second release-please step publishes the release in this same run; the push of
+# the merge starts one more run, which finds nothing to release.
 
 on:
   push:
@@ -33,14 +38,14 @@ jobs:
       - name: Open or update the release pull request
         uses: googleapis/release-please-action@v4
         with:
-          token: ${{ github.token }}
+          token: ${{ secrets.RELEASE_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
       - name: Merge the release pull request
         id: merge
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
           pr=$(gh pr list --repo "$REPO" --state open --label "autorelease: pending" --json number --jq '.[0].number')
@@ -48,14 +53,14 @@ jobs:
             echo "Nothing to release."
             exit 0
           fi
-          gh pr merge "$pr" --repo "$REPO" --squash --delete-branch
+          gh pr merge "$pr" --repo "$REPO" --squash --admin --delete-branch
           echo "merged=true" >> "$GITHUB_OUTPUT"
 
       - name: Publish the tag and the GitHub Release
         if: steps.merge.outputs.merged == 'true'
         uses: googleapis/release-please-action@v4
         with:
-          token: ${{ github.token }}
+          token: ${{ secrets.RELEASE_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
           skip-github-pull-request: true
