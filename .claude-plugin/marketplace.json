@@ -11,7 +11,7 @@
     {
       "name": "jano",
       "source": "./",
-      "description": "Draws a repository its README hero: a looping animated SVG, in dark and light, that shows what the project does.",
+      "description": "Makes a repository's README explain itself: plans its sections, writes its text, and draws an animated hero and scenes in dark and light.",
       "category": "productivity",
       "tags": ["readme", "svg-animation", "hero"]
     }
