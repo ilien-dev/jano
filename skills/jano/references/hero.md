@@ -253,20 +253,22 @@ was asked for, touch nothing else.
 ## The social preview
 
 Every build of `assets/hero.src.svg` also writes the card GitHub shows when the repository is
-shared, so the two never drift apart:
+shared, so the two never drift apart. All of it goes in `assets/social-preview/`, one pair per
+theme, so the user can choose:
 
-- `assets/social-preview.svg`: the finished frame of the dark hero, still, scaled into the
-  safe area of GitHub's template (80 px from every edge, where other sites crop) on the hero's
-  background. It is the vector the card is made from.
-- `assets/social-preview.png`: that SVG shot at 1280×640, lossless, the size GitHub's template
-  asks for and the format its setting takes (PNG, JPG or GIF under 1 MB).
+- `social-preview-dark.svg` and `social-preview-light.svg`: the finished frame of the hero in
+  that theme, still, scaled into the safe area of GitHub's template (80 px from every edge,
+  where other sites crop) on the hero's background. They are the vectors the cards are made from.
+- `social-preview-dark.png` and `social-preview-light.png`: each SVG shot at 1280×640,
+  lossless, the size GitHub's template asks for and the format its setting takes (PNG, JPG or
+  GIF under 1 MB).
 
-Keep both in `assets/` next to the hero, and never edit them: change the hero and build again.
-The PNG needs the same browser as the pictures; with `--no-pictures` only the SVG is written.
-Look at the PNG once: is the key phrase still the first thing you read at a glance? GitHub has
-no API for this setting, so the user uploads the PNG by hand: **Settings → General → Social
-preview → Edit → Upload an image**. `readme.py check` fails when either file was built from
-another version of the hero.
+Keep the folder next to the hero, and never edit its files: change the hero and build again.
+The PNG files need the same browser as the pictures; with `--no-pictures` only the SVG files
+are written. Look at both PNG files once: is the key phrase still the first thing you read at a
+glance? GitHub takes one card and has no API for it, so the user uploads the one they choose by
+hand: **Settings → General → Social preview → Edit → Upload an image**. `readme.py check` fails
+when any of the four was built from another version of the hero.
 
 Then tell the user, briefly: the brief (the sentence, the input and output with their files, the
 source of each claim, what was left out as unfinished), whether the hero has a strip and why,

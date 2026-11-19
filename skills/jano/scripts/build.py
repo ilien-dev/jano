@@ -25,8 +25,9 @@ embeds subsets of the fonts (classes .s text, .b bold, .m mono), turns text that
 moves into outlines so it travels without pixel jumps, adds the reduced-motion
 rule, and writes a preview page plus two pictures of it: the loop as eight frozen
 frames, and the finished frame as GitHub shows it in both themes. A hero also gives
-its social preview, the card GitHub shows when the repository is shared: a still
-vector (assets/social-preview.svg) and the PNG GitHub takes, shot from it.
+its social preview, the card GitHub shows when the repository is shared, in
+assets/social-preview/: for each theme a still vector (social-preview-dark.svg) and
+the PNG GitHub takes, shot from it (social-preview-dark.png).
 
 An optional <!--brief ... --> comment holds what the hero claims and where each claim
 comes from: the preview page shows it, the outputs leave it out. Several sources at
@@ -46,6 +47,7 @@ RASTER_KB = 400  # a real screenshot inside a scene: past this the README loads 
 SOCIAL = (1280, 640)
 SOCIAL_SAFE = 80
 SOCIAL_BYTES = 1024 * 1024
+SOCIAL_DIR = "social-preview"  # next to the hero: assets/social-preview/
 
 
 LIBRARY = Path(__file__).resolve().parent.parent / "assets" / "library"
@@ -287,7 +289,7 @@ def png_stamp(png, sha):
 
 
 def social_svg(svg, sha):
-    """The social preview as a still vector: the hero's finished frame (dark), scaled into the safe area, on its own background."""
+    """The social preview as a still vector: the hero's finished frame in one theme, scaled into the safe area, on its own background."""
     w, h = SOCIAL
     scale = (w - 2 * SOCIAL_SAFE) / w
     # the background is the fill of the first shape that covers the whole canvas
@@ -445,32 +447,39 @@ def build(src):
     print(f"preview {prev}")
     shots = [(folder / "loop.html", folder / "loop.png", 1480), (folder / "look.html", folder / "look.png", 1290)]
     # the repository's social preview comes from its hero, so the two never drift apart; an option is not the hero yet
-    social = out / "social-preview.png" if kind == "hero" and out.parent.name != "options" else None
-    if social:
-        # the card is drawn as a vector first, so it stays sharp at any size; the PNG GitHub takes is shot from it
-        card = social.with_suffix(".svg")
-        card.write_text(social_svg(themed[0], print_sha) + "\n", encoding="utf-8", newline="\n")
-        print(f"wrote {card} ({len(card.read_bytes()) / 1024:.0f} KB)")
-        page = folder / "social.html"
-        page.write_text(f'<!doctype html><body style="margin:0;overflow:hidden"><img src="{card.as_uri()}" width="{SOCIAL[0]}" height="{SOCIAL[1]}" style="display:block">', encoding="utf-8")
-        shots.append((page, social, SOCIAL[1], SOCIAL[0]))
+    socials = []
+    if kind == "hero" and out.parent.name != "options":
+        # the card is drawn as a vector first, so it stays sharp at any size; the PNG GitHub takes is shot from it.
+        # GitHub takes one card; both themes are written so the user can choose
+        cards = out / SOCIAL_DIR
+        cards.mkdir(exist_ok=True)
+        for theme, svg in zip(("dark", "light"), themed):
+            card = cards / f"social-preview-{theme}.svg"
+            card.write_text(social_svg(svg, print_sha) + "\n", encoding="utf-8", newline="\n")
+            print(f"wrote {card} ({len(card.read_bytes()) / 1024:.0f} KB)")
+            page = folder / f"social-{theme}.html"
+            page.write_text(f'<!doctype html><body style="margin:0;overflow:hidden"><img src="{card.as_uri()}" width="{SOCIAL[0]}" height="{SOCIAL[1]}" style="display:block">', encoding="utf-8")
+            socials.append(card.with_suffix(".png"))
+            shots.append((page, socials[-1], SOCIAL[1], SOCIAL[0]))
     if "--no-pictures" in sys.argv:
-        if social:
-            print(f"no social preview: {social.name} needs the pictures; build without --no-pictures")
+        if socials:
+            print(f"no social preview: the PNG files need the pictures; build without --no-pictures")
     elif take_pictures(shots):
         print(f"pictures {shots[0][1]} {shots[1][1]}")
-        if social:
+        for social in socials:
             png_stamp(social, print_sha)
             size, kb = png_size(social), social.stat().st_size / 1024
             if size != SOCIAL:
                 warns.append(f"{social.name} came out {size[0]}x{size[1]}, not {SOCIAL[0]}x{SOCIAL[1]}: set JANO_BROWSER to another Chromium-family browser")
             if social.stat().st_size >= SOCIAL_BYTES:
                 warns.append(f"{social.name} is {kb:.0f} KB and GitHub takes 1 MB at most: fewer gradients and fine textures in the hero")
-            print(f"social preview {social} ({size[0]}x{size[1]}, {kb:.0f} KB): upload it in Settings > General > Social preview")
+            print(f"social preview {social} ({size[0]}x{size[1]}, {kb:.0f} KB)")
+        if socials:
+            print("upload one of them in Settings > General > Social preview")
     else:
         print(f"no pictures: no Chrome, Chromium or Edge could take them (set JANO_BROWSER to one). Open {folder / 'loop.html'} and {folder / 'look.html'} in a browser instead")
-        if social:
-            print(f"no social preview: {social.name} needs the same browser")
+        if socials:
+            print("no social preview: the PNG files need the same browser")
     print(check.summary(hero.facts))
     print("\n".join("warning: " + w for w in dict.fromkeys(warns)) or "checks passed")
     return {"files": names, "brief": brief}

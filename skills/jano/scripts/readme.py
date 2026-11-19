@@ -581,10 +581,10 @@ def check_repo(repo):
     hero = repo / "assets/hero.src.svg"
     if hero.exists():
         want = hashlib.sha256(source_bytes(hero)).hexdigest()[:16]
-        for social in (hero.with_name("social-preview.svg"), hero.with_name("social-preview.png")):
-            where = f"assets/{social.name}"
+        for social in (hero.parent / "social-preview" / f"social-preview-{t}.{x}" for t in ("dark", "light") for x in ("svg", "png")):
+            where = f"assets/social-preview/{social.name}"
             if not social.exists():
-                r.w(where, "is missing: build the hero (the PNG needs a Chromium-family browser on this machine), then upload the PNG in Settings > General > Social preview")
+                r.w(where, "is missing: build the hero (the PNG needs a Chromium-family browser on this machine), then upload one PNG in Settings > General > Social preview")
             elif social_stamp(social) != want:
                 r.e(where, "was built from another version of the hero: build the hero again and upload the new PNG")
 

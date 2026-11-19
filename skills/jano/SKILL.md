@@ -160,8 +160,8 @@ from that family; `readme.py check` refuses a picture that mixes families.
 
 Follow `references/hero.md`. When `assets/hero.src.svg` already exists and still says what the
 repository is, keep it: rebuild it, and change it only when the plan or the judges say so.
-Every build of the hero also writes the repository's social preview, `assets/social-preview.svg`
-and the `assets/social-preview.png` GitHub takes, from that same hero; both stay in `assets/`.
+Every build of the hero also writes the repository's social preview from that same hero, in
+`assets/social-preview/`: an SVG and the PNG GitHub takes, dark and light.
 
 ## 6. The scenes: `assets/readme/<name>.src.svg`
 
@@ -222,6 +222,6 @@ that the judges did not run; never record a verdict you wrote yourself.
 Tell the user, briefly: the audience and the answers to step 2; the sections, with what moved
 to `docs/`; each scene and its claim; what the judges said, and what you changed after; any
 warning left and why; the preview pages; the social preview, and that they upload
-`assets/social-preview.png` in Settings → General → Social preview, since GitHub has no API for
-it. Leave `assets/readme/plan.json` and the sources next to
+the PNG of the theme they prefer from `assets/social-preview/` in Settings → General → Social
+preview, since GitHub has no API for it. Leave `assets/readme/plan.json` and the sources next to
 their outputs, and do not commit.
