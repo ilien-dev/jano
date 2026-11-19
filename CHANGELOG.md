@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/ilien-dev/jano/compare/v1.1.0...v1.1.1) (2026-11-19)
+
+
+### Bug Fixes
+
+* describe the plugin as the whole readme job, not only the hero ([#32](https://github.com/ilien-dev/jano/issues/32)) ([3214703](https://github.com/ilien-dev/jano/commit/32147036c98a7b41e7968b08f00dc044346c8dfd))
+
 ## [1.1.0](https://github.com/ilien-dev/jano/compare/v1.0.0...v1.1.0) (2026-11-19)
 
 
