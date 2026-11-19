@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.0](https://github.com/ilien-dev/jano/compare/v0.6.0...v1.0.0) (2026-11-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* run the whole readme, not only the hero ([#19](https://github.com/ilien-dev/jano/issues/19))
+
+### Features
+
+* build the repository's social preview from its hero ([#25](https://github.com/ilien-dev/jano/issues/25)) ([354bd03](https://github.com/ilien-dev/jano/commit/354bd03dd48aafeb2ed1e6918750626e53ad3e8d))
+* draw scenes from a chosen asset library and a kit of parts ([#22](https://github.com/ilien-dev/jano/issues/22)) ([11bdb62](https://github.com/ilien-dev/jano/commit/11bdb62d3b5ea91006889ebba041e912800cfa83))
+* run the whole readme, not only the hero ([#19](https://github.com/ilien-dev/jano/issues/19)) ([5f55410](https://github.com/ilien-dev/jano/commit/5f55410f9a1a0e91371ecd2eea50e0e6d0bb5dba))
+
 ## [0.6.0](https://github.com/ilien-dev/jano/compare/v0.5.0...v0.6.0) (2026-11-18)
 
 
