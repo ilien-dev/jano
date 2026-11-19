@@ -101,8 +101,8 @@ then open the PR:
 gh pr create --title "<title>" --body-file <file>
 ```
 Do not merge. Every PR needs an approval from someone with write access, and the
-maintainer decides. Do not merge the `chore(main): release` pull request either: that
-one publishes a version, and only the maintainer does it.
+maintainer decides. Never merge or edit a `chore(main): release` pull request: the
+release workflow merges it by itself and publishes the version.
 
 ## Issues
 

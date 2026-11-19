@@ -1,16 +1,16 @@
 name: Release
 
-# Nobody writes a version number. On every push to main, release-please reads the
-# commits since the last release (each one is the title of a squash-merged pull
-# request) and keeps one pull request open, "chore(main): release X.Y.Z", with the
-# next version in .claude-plugin/plugin.json and the new section of CHANGELOG.md.
-# fix: raises the patch number and feat: the minor one; docs, ci, refactor, test and
-# chore release nothing. Merging that pull request creates the tag and the GitHub
-# Release.
+# Nobody writes a version number, and nobody has to cut a release. On every push to
+# main, release-please reads the commits since the last release (each one is the title
+# of a squash-merged pull request) and opens or updates "chore(main): release X.Y.Z",
+# with the next version in .claude-plugin/plugin.json and the new section of
+# CHANGELOG.md. This workflow then merges that pull request at once and runs
+# release-please again, which creates the tag and the GitHub Release.
+# fix: raises the patch number, feat: the minor one, and a ! after the type the major
+# one; docs, ci, refactor, test and chore release nothing.
 #
-# RELEASE_TOKEN is optional: a fine-grained token with write access to contents and
-# pull requests. With it the checks run on the release pull request. Without it they
-# do not, because GitHub starts no workflow on a pull request opened by a workflow.
+# The merge is made with this workflow's token, so it starts no new run: the second
+# release-please step below is what publishes the release.
 
 on:
   push:
@@ -26,12 +26,36 @@ permissions:
   pull-requests: write
 
 jobs:
-  release-please:
-    name: Release pull request
+  release:
+    name: Release
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
+      - name: Open or update the release pull request
+        uses: googleapis/release-please-action@v4
         with:
-          token: ${{ secrets.RELEASE_TOKEN || github.token }}
+          token: ${{ github.token }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+      - name: Merge the release pull request
+        id: merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          pr=$(gh pr list --repo "$REPO" --state open --label "autorelease: pending" --json number --jq '.[0].number')
+          if [ -z "$pr" ]; then
+            echo "Nothing to release."
+            exit 0
+          fi
+          gh pr merge "$pr" --repo "$REPO" --squash --delete-branch
+          echo "merged=true" >> "$GITHUB_OUTPUT"
+
+      - name: Publish the tag and the GitHub Release
+        if: steps.merge.outputs.merged == 'true'
+        uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ github.token }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          skip-github-pull-request: true
