@@ -146,7 +146,9 @@ Errors stop the build. Warnings are printed with the fix.
 | Things that move in the picture | 5 or more |
 | Text size | 13 px or more, and at most half of the lines under 16 px; 7 sizes or fewer |
 | Text and the canvas | off the canvas: error; closer than 24 px to its edge: warning |
-| Text and its box | out of the box: error; closer than 8 px to its side: warning |
+| Text and its box | out of the box, or closer to its sides than half the text's size in a pill (8 px at least) or its full size in a panel (half above and below): error |
+| Shapes and icons in a box | out of the box (most of it inside): error; 1 to 8 px from an edge (a share of a small box): error; flush is fine |
+| Characters the fonts lack (⚠, ✓, ★) | error: counted 1.25 em wide, and drawn in another font on each machine |
 | Text over text (two texts that take turns by fading are exempt) | error |
 | Contrast of text on what is behind it, both themes | 4.5, or 3 for large text |
 | Words standing still in the picture | 48 in all, 10 in one line |

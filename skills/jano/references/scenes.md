@@ -83,12 +83,22 @@ motion off shows the whole story at its end state, and nothing flashes.
 A scene is built from three kinds of pieces, in this order of preference:
 
 - **Kit parts** (`scripts/kit.py`): window, terminal, card, chip, button, cursor, file, code,
-  progress, toggle, badge, skeleton, device. They are Jano's own, drawn the same way every time,
-  sized to their real text and coloured by palette role. Use them for every interface element
-  instead of drawing one by hand.
+  progress, toggle, badge, note, skeleton, device. They are Jano's own, drawn the same
+  way every time, sized to their real text and coloured by palette role. Use them for every
+  interface element instead of drawing one by hand. Text in a box comes from one of them: `card
+  --text` wraps a quote or a paragraph inside the card's padding and grows the card to fit, and
+  `note` sizes a callout to its text with room for an icon on its left.
 - **Library assets** (`scripts/assets.py`, `references/assets.md`): icons, objects, brand logos,
   flags and file icons from known sets, one family per category, the one the plan chose.
 - **Your own drawing**, for what neither has: the subject of the scene itself.
+
+**Everything in a box stays inside it, with room.** Text keeps half its size from the sides of a
+pill and its full size from the sides of a panel (half above and below); a shape or an icon keeps
+8 px from every edge (a share of the box when the box is small), or sits flush against it on
+purpose. What moves is measured in its finished place. The build refuses text or shapes that run
+out of their box or almost touch its edge. A character the fonts lack (⚠, ✓, ★) is refused too:
+each machine draws it in another font and at another width, so it overflows where you cannot see
+it. Draw it as an icon from the chosen family, beside the text.
 
 Small icons carry a lot in a scene (cut, redo, a lock, an eye), and a home-made one at 24 px
 easily turns into something else at README width: scissors drawn from scratch read as an arrow
