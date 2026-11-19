@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/ilien-dev/jano/compare/v1.0.0...v1.1.0) (2026-11-19)
+
+
+### Features
+
+* choose the backdrop per repository, still, moving or none ([#30](https://github.com/ilien-dev/jano/issues/30)) ([0f9d55b](https://github.com/ilien-dev/jano/commit/0f9d55b590b130c2207b5792ac3931a150928185))
+
+
+### Bug Fixes
+
+* keep text, shapes and icons inside their boxes with padding ([#29](https://github.com/ilien-dev/jano/issues/29)) ([ac1cb35](https://github.com/ilien-dev/jano/commit/ac1cb35717cff8094faac63a0e3f4ee5df1b0242))
+
 ## [1.0.0](https://github.com/ilien-dev/jano/compare/v0.6.0...v1.0.0) (2026-11-19)
 
 
