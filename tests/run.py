@@ -458,6 +458,10 @@ code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=passing)
 test("readme.py: a README that keeps its plan passes", code == 0 and "checks passed" in out, out)
 code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=passing, social=None)
 test("readme.py: a hero without its social preview is warned about", code == 0 and "social-preview/social-preview-light.png: is missing" in out, out)
+stamped = Path(tempfile.mkdtemp()) / "card.png"
+stamped.write_bytes(b"\x89PNG\r\n\x1a\n" + b"tEXtjano-src\0" + b"0123456789abcdef" + b"a\x00\x00\x00")
+test("readme.py: the social preview's fingerprint stops at its 16 digits when the CRC after it starts like a digit",
+     readme_module.social_stamp(stamped) == "0123456789abcdef", str(readme_module.social_stamp(stamped)))
 for kind in ("svg", "png"):
     code, out = repo_with(GOOD, PLAN_OK, SCENES, judges=passing, social=kind)
     test(f"readme.py: a social preview {kind} from another version of the hero fails", code == 1 and f"social-preview-light.{kind}: was built from another version" in out, out)
