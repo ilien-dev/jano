@@ -1,7 +1,7 @@
 {
   "name": "jano",
   "displayName": "Jano",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "Makes a repository's README explain itself: plans its sections, writes its text, and draws an animated hero and scenes in dark and light.",
   "author": {
     "name": "ilien",
