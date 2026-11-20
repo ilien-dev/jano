@@ -4,3 +4,8 @@ __pycache__/
 *.quiron.json
 tests/fixture/assets/hero-*.svg
 tools/library/work/
+reports/
+research_notes/
+brand/
+.claude/settings.json
+.codex/
