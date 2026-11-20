@@ -366,6 +366,42 @@ swap_css, swap_g = kit_module.cursor_swap(1130, 310, on="20-40", dur=8, name="t"
 with_swap = arrow_only.replace(kit_module.cursor(1130, 310, "arrow"), swap_g).replace("</style>", swap_css[len("<!-- add to <style>: "):-len(" -->")] + "</style>")
 code, out, _ = build_scene(with_swap)
 test("a cursor that turns into a pointer is not warned about", "turns into a pointer" not in out, out)
+
+
+def highlight(shift=0):
+    """Three labels and a box that rests on each in turn for 2 s; the second label lights `shift` % of the loop late."""
+    def win(a, b):
+        return f"0%,{a - 1:g}%{{opacity:.5}}{a:g}%,{b:g}%{{opacity:1}}{b + 1:g}%,100%{{opacity:.5}}"
+    css = ("@keyframes hl{0%,30%{transform:translateY(0)}33.3%,63.3%{transform:translateY(40px)}66.6%,96.6%{transform:translateY(80px)}100%{transform:translateY(0)}}"
+           "@keyframes r0{0%,31%{opacity:1}32%,98%{opacity:.5}99%,100%{opacity:1}}"
+           f"@keyframes r1{{{win(33 + shift, 64 + shift)}}}@keyframes r2{{{win(66, 97)}}}"
+           ".hl{animation:hl 6s linear infinite}.r0{animation:r0 6s linear infinite}.r1{animation:r1 6s linear infinite}.r2{animation:r2 6s linear infinite}")
+    rows = "".join(f'<text x="640" y="{200 + 40 * i}" class="s r{i}" font-size="18" fill="$ink">row number {i + 1}</text>' for i in range(3))
+    box = '<rect class="hl" x="624" y="182" width="200" height="28" rx="6" fill="none" stroke="$accent" stroke-width="2"/>'
+    return SCENE.replace("</style>", css + "</style>").replace("</g>\n</svg>", box + rows + "</g>\n</svg>")
+
+
+code, out, _ = build_scene(highlight())
+test("labels that light while the box is on them are not warned about", "out of step with the box" not in out, out)
+delayed = highlight().replace(".r1{animation:r1 6s linear infinite}.r2{animation:r2 6s linear infinite}",
+                              ".r1{animation:r0 6s linear -4s infinite}.r2{animation:r0 6s linear -2s infinite}")
+code, out, _ = build_scene(delayed)
+test("labels that share one keyframe and take turns by negative delays are measured in step", "out of step with the box" not in out, out)
+code, out, _ = build_scene(delayed.replace("-2s infinite}", "-1.4s infinite}"))
+test("a label whose delay puts it out of step with the box is warned about", '"row number 3" is lit' in out, out)
+def sweep(to):
+    css = f"@keyframes scan{{0%{{transform:translateX(0);opacity:0}}5%,90%{{opacity:1}}100%{{transform:translateX({to}px);opacity:0}}}}.scan{{animation:scan 3s linear infinite}}"
+    line = '<text x="640" y="200" class="s" font-size="18" fill="$ink">the words people search</text><rect class="scan" opacity="0" x="640" y="186" width="10" height="18" rx="3" fill="$accent"/>'
+    return SCENE.replace("</style>", css + "</style>").replace("</g>\n</svg>", line + "</g>\n</svg>")
+
+
+width_line = kit_module.width("the words people search", 18)
+code, out, _ = build_scene(sweep(round(width_line) - 10))
+test("a marker that runs along a line and stops where it ends is not warned about", "past where the text ends" not in out, out)
+code, out, _ = build_scene(sweep(round(width_line) + 150))
+test("a marker that runs on past the end of the line is warned about", "past where the text ends" in out, out)
+code, out, _ = build_scene(highlight(10))
+test("a label that lights later than the box reaches it is warned about", '"row number 2" is lit' in out and "out of step with the box" in out, out)
 test("a scene's palette roles are replaced", "$" not in re.sub(r"base64,[^)]+", "", scene_dark))
 test("the scene's figures are printed", "title 44 px, 6 words" in out, out)
 code, out, _ = build_scene(SCENE.replace("0 0 1280 448", "0 0 1280 640"))

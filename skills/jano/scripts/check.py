@@ -70,6 +70,7 @@ STEP_JUMP = 24         # px per step of a steps() animation
 DURATION = (0.4, 60)   # s
 LEAD_TRAVEL = 40       # px: something in the stage travels at least this far
 LEAD_SIZE = 20         # px: and the largest thing that travels is at least this big on its shorter side
+SYNC_SLACK = 0.3      # seconds a lit label may run ahead of or behind the box that highlights it
 LINE_CONTRAST = 3      # a connector with walking dashes against the background
 ICON_CONTRAST = 3      # an icon against what it sits on (WCAG 1.4.11, non-text)
 ICON_MAX = 40          # px: thin strokes in a cluster smaller than this are a pictogram, and must say what they mean
@@ -548,6 +549,8 @@ class Hero:
         self.check_contrast()
         self.check_strokes()
         self.check_motion()
+        self.check_highlight_sync()
+        self.check_sweeps()
         return self
 
     def slot(self, name, what):
@@ -970,6 +973,145 @@ class Hero:
                 if scored and max(scored)[0] < ICON_CONTRAST:
                     ratio, v = max(scored)
                     self.warns.append(f"{theme}: {who} in {v} on {behind} has contrast {ratio:.1f}, below {ICON_CONTRAST}: it is lost against what it sits on")
+
+    # ---- what the picture looks like at a moment of the loop (keyframes joined in straight lines, easing ignored)
+    def at(self, a, prop, base, T):
+        if a["dur"] <= 0 or not a["stops"]:
+            return None
+        k, frac = divmod(T - a["delay"], a["dur"])
+        p = frac / a["dur"] * 100
+        if a["direction"] == "reverse" or (a["direction"] in ("alternate", "alternate-reverse") and (int(k) % 2 == 1) != (a["direction"] == "alternate-reverse")):
+            p = 100 - p
+        pts = self.timeline(a, prop, base)
+        if not pts:
+            return None
+        held = a["timing"].startswith("steps") or a["timing"] in ("step-start", "step-end")
+        for (p0, v0), (p1, v1) in zip(pts, pts[1:]):
+            if p0 <= p <= p1:
+                if prop == "opacity":
+                    v0, v1 = num(v0, 1), num(v1, 1)
+                    return v0 if held or p1 == p0 else v0 + (v1 - v0) * (p - p0) / (p1 - p0)
+                t0, t1 = transform_parts(v0), transform_parts(v1)
+                if t0 is None or t1 is None:
+                    return None
+                f = 0 if held or p1 == p0 else (p - p0) / (p1 - p0)
+                return (t0[0] + (t1[0] - t0[0]) * f, t0[1] + (t1[1] - t0[1]) * f)
+        return None
+
+    def opacity_at(self, el, T, stop=None):
+        """Opacity at T, from el up to (not including) the ancestors it shares with `stop`."""
+        shared = set(self.chain(stop)) if stop is not None else set()
+        o = 1.0
+        for a in self.chain(el):
+            if a in shared:
+                break
+            fading = [x for x in self.anims(a) if "opacity" in x["props"]]
+            v = self.at(fading[0], "opacity", a.get("opacity") or "1", T) if fading else None
+            o *= num(a.get("opacity"), 1) if v is None else v
+        return o
+
+    def shift_at(self, el, T, stop=None):
+        shared = set(self.chain(stop)) if stop is not None else set()
+        dx = dy = 0.0
+        for a in self.chain(el):
+            if a in shared:
+                break
+            for x in self.anims(a):
+                if "transform" in x["props"]:
+                    v = self.at(x, "transform", "none", T)
+                    if v:
+                        k = mscale(self.M.get(self.parent.get(a), IDENT)) if self.parent.get(a) is not None else 1
+                        dx, dy = dx + v[0] * k, dy + v[1] * k
+        return dx, dy
+
+    def check_highlight_sync(self):
+        """A box that steps from label to label lights each one: the label shows lit while the box is on it, and only then."""
+        fading = [t for t in self.texts if self.fades(t["el"])]
+        if not fading:
+            return
+        N = 240
+        for s in self.shapes:
+            el = s["el"]
+            if s["tag"] not in ("rect", "path") or self.mover(el) is None:
+                continue
+            durs = [x["dur"] for a in self.chain(el) for x in self.anims(a) if x["dur"] > 0]
+            if not durs:
+                continue
+            P = max(durs)
+            ts = [P * i / N for i in range(N)]
+            b = s["box"]
+            visits = []
+            for t in fading:
+                if self.inside(t["el"], el) or self.inside(el, t["el"]):
+                    continue
+                th = t["box"][3] - t["box"][1]
+                if b[3] - b[1] < 0.9 * th:
+                    continue
+                # what the two share (a group that slides or fades them together) moves both alike: only the rest counts
+                rel = [(bx - tx, by - ty) for (bx, by), (tx, ty) in zip((self.shift_at(el, T, t["el"]) for T in ts), (self.shift_at(t["el"], T, el) for T in ts))]
+                if max(math.hypot(x0 - x1, y0 - y1) for x0, y0 in rel[::8] for x1, y1 in rel[::8]) < th:
+                    continue  # the box does not travel from label to label
+                cx, cy = (t["box"][0] + t["box"][2]) / 2, (t["box"][1] + t["box"][3]) / 2
+                over = [self.opacity_at(el, T, t["el"]) > 0.5 and b[0] + dx <= cx <= b[2] + dx and b[1] + dy <= cy <= b[3] + dy
+                        for (dx, dy), T in zip(rel, ts)]
+                if sum(over) * P / N >= 0.5 and not all(over):
+                    visits.append((t, over))
+            if len(visits) < 2:
+                continue  # it passes by; a highlight rests on two labels or more
+            for t, over in visits:
+                o = [self.opacity_at(t["el"], T, el) for T in ts]
+                hi, lo = max(o), min(o)
+                if hi - lo < 0.2:
+                    continue
+                lit = [v >= lo + 0.75 * (hi - lo) for v in o]
+                if sum(l and v for l, v in zip(lit, over)) < 0.5 * sum(over):
+                    continue  # it lights to its own rhythm, not with this box: the two are not one highlight
+                run = longest = 0
+                for i in range(2 * N):  # twice round, so a run across the loop's end counts whole
+                    run = run + 1 if lit[i % N] != over[i % N] else 0
+                    longest = max(longest, min(run, N))
+                late = longest * P / N
+                if late > SYNC_SLACK:
+                    self.warns.append(f"{self.describe(t['el'])} is lit {late:.1f} s out of step with the box {self.describe(el)} that highlights it: "
+                                      "give the label and the box the same duration and the same keyframe percentages, so it lights when the box arrives and dims when it leaves")
+
+    def check_sweeps(self):
+        """A marker that runs along a line of text, reading it, stops where the text ends."""
+        N = 120
+        for s in self.shapes:
+            el = s["el"]
+            if s["tag"] not in ("rect", "path", "circle", "ellipse") or self.mover(el) is None:
+                continue
+            if any(a.get("data-kit") == "cursor" for a in self.chain(el)):
+                continue
+            durs = [x["dur"] for a in self.chain(el) for x in self.anims(a) if x["dur"] > 0]
+            if not durs:
+                continue
+            P, b = max(durs), s["box"]
+            for t in self.texts:
+                tb, th = t["box"], t["box"][3] - t["box"][1]
+                if self.inside(t["el"], el) or b[3] - b[1] > 1.6 * th:
+                    continue  # a box that holds the line, not a marker on it
+                ts = [P * i / N for i in range(N)]
+                seen = [(T, self.shift_at(el, T, t["el"])) for T in ts if self.opacity_at(el, T, t["el"]) > 0.3]
+                on = [(b[0] + dx, b[2] + dx) for _, (dx, dy) in seen
+                      if min(b[3] + dy, tb[3]) - max(b[1] + dy, tb[1]) >= 0.5 * min(b[3] - b[1], th)]
+                if not on:
+                    continue
+                left, right = min(x0 for x0, _ in on), max(x1 for _, x1 in on)
+                w = tb[2] - tb[0]
+                if b[2] - b[0] > 0.5 * w or right - left < 0.5 * w or not tb[0] - 0.25 * w <= left <= tb[0] + 0.25 * w:
+                    continue  # not a small marker that runs along this line from its start
+                c = self.container(t, together=False)
+                if self.inherit(el, "fill") == (self.inherit(c["el"], "fill") if c else "$bg"):
+                    continue  # a cover in the colour behind the text, that reveals it as it is typed
+                row = [o["box"][2] for o in self.texts if o["box"][0] <= right and o["box"][2] >= tb[0]
+                       and min(o["box"][3], tb[3]) - max(o["box"][1], tb[1]) >= 0.5 * th]
+                end = max(row + [tb[2]])
+                if right > end + max(16.0, 0.1 * w):
+                    self.warns.append(f"{self.describe(el)} runs along {self.describe(t['el'])} to x={right:.0f}, {right - end:.0f} px past where the text ends "
+                                      f"(x={end:.0f}): stop it at the end of the text, the reader follows it as it reads")
+                    break
 
     def check_strokes(self):
         thin = 0
