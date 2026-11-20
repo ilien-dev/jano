@@ -2,7 +2,7 @@
 # requires-python = ">=3.9"
 # dependencies = ["fonttools", "brotli"]
 # ///
-"""Tests for skills/jano/scripts/build.py, check.py and .github/scripts/check-pr.js.
+"""Tests for skills/jano/scripts/build.py, check.py and .github/scripts/check-pr.cjs.
 
     uv run tests/run.py
 """
@@ -563,17 +563,18 @@ for skill in sorted(ROOT.glob("**/SKILL.md")):
 # ---- the pull request check
 node = shutil.which("node")
 if node:
-    body = "## What\nOne change.\n## Why\nA problem.\n## How\nAn approach.\n## Evidence\nTests.\n## Checklist\n- [x] one thing\n"
+    body = "## What\nOne change.\n## Why\nA problem.\n## How\nAn approach.\n## Risk\nNone: a test.\n## Evidence\nTests.\n## Checklist\n- [x] one thing\n"
     pr = Path(tempfile.mkdtemp()) / "pr.md"
 
     def check(branch, title, text):
         pr.write_text(text, encoding="utf-8")
-        return subprocess.run([node, str(ROOT / ".github/scripts/check-pr.js"), "--branch", branch, "--title", title, "--body-file", str(pr)], capture_output=True, text=True).returncode
+        return subprocess.run([node, str(ROOT / ".github/scripts/check-pr.cjs"), "--branch", branch, "--title", title, "--body-file", str(pr)], capture_output=True, text=True).returncode
 
     test("a correct pull request passes", check("fix/outline-rotated-text", "fix: outline text inside rotated groups", body) == 0)
     test("a feature/ branch fails", check("feature/outline-rotated-text", "fix: outline text", body) == 1)
     test("a branch with an unknown type fails", check("bugfix/rotated", "fix: outline text", body) == 1)
-    test("a branch of five words fails", check("fix/one-two-three-four-five", "fix: outline text", body) == 1)
+    test("a branch of five words passes", check("fix/one-two-three-four-five", "fix: outline text", body) == 0)
+    test("a branch of six words fails", check("fix/one-two-three-four-five-six", "fix: outline text", body) == 1)
     test("an unticked checklist fails", check("fix/outline-rotated-text", "fix: outline text", body.replace("[x]", "[ ]")) == 1)
     test("a missing section fails", check("fix/outline-rotated-text", "fix: outline text", body.replace("## Why\nA problem.\n", "")) == 1)
 else:

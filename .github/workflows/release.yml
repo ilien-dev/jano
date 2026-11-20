@@ -1,21 +1,19 @@
 name: Release
 
-# Nobody writes a version number, and nobody has to cut a release. On every push to
-# main, release-please reads the commits since the last release (each one is the title
-# of a squash-merged pull request) and opens or updates "chore(main): release X.Y.Z",
-# with the next version in .claude-plugin/plugin.json and the new section of
-# CHANGELOG.md. This workflow then merges that pull request at once and runs
-# release-please again, which creates the tag and the GitHub Release.
-# fix: raises the patch number, feat: the minor one, and a ! after the type the major
-# one; docs, ci, refactor, test and chore release nothing.
+# Nobody writes a version number and nobody cuts a release by hand. On every push to
+# main, release-please reads the commits since the last release (each one the title of
+# a squash-merged pull request) and opens or updates "chore(main): release X.Y.Z" with the
+# next version in every file of release-please-config.json and the new section of
+# CHANGELOG.md. This workflow merges that pull request at once and runs release-please again,
+# which creates the tag and the GitHub Release.
+# feat: raises the minor number, fix:, perf: and revert: the patch one, and a ! after the type the major one; docs, test, ci, chore, refactor, build and style release nothing.
 #
-# Everything runs with RELEASE_TOKEN, a fine-grained token of a repository admin
-# (Contents and Pull requests: read and write). With the default token the release pull
-# request was opened by a bot whose checks wait for approval, and the bot could not
-# merge it past the rules of main. The admin token opens it like a person does, so its
-# checks run, and merges it with --admin, which the ruleset lets admins do.
-# The second release-please step publishes the release in this same run; the push of
-# the merge starts one more run, which finds nothing to release.
+# Everything runs with RELEASE_TOKEN, a fine-grained token of a repository admin (Contents
+# and Pull requests: read and write). With the default token the release pull request is
+# opened by a bot whose checks wait for approval and which cannot merge past the ruleset; the
+# admin token opens it like a person does and merges it with --admin, which the ruleset lets
+# admins do. token-check.yml warns before it expires.
+# Managed by Nabu (https://github.com/ilien-dev/nabu); do not edit by hand.
 
 on:
   push:
@@ -34,8 +32,13 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    outputs:
+      created: ${{ steps.publish.outputs.release_created }}
+      tag: ${{ steps.publish.outputs.tag_name }}
+      version: ${{ steps.publish.outputs.version }}
     steps:
       - name: Open or update the release pull request
+        id: rp
         uses: googleapis/release-please-action@v4
         with:
           token: ${{ secrets.RELEASE_TOKEN }}
@@ -47,8 +50,16 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           REPO: ${{ github.repository }}
+          RP_PR: ${{ steps.rp.outputs.pr }}
         run: |
-          pr=$(gh pr list --repo "$REPO" --state open --label "autorelease: pending" --json number --jq '.[0].number')
+          # The PR release-please just opened or updated. Its label can take a few seconds to
+          # be searchable, so the label lookup is only a fallback, retried.
+          pr=$(printf '%s' "$RP_PR" | jq -r '.number // empty' 2>/dev/null || true)
+          for attempt in 1 2 3 4 5 6; do
+            [ -n "$pr" ] && break
+            pr=$(gh pr list --repo "$REPO" --state open --label "autorelease: pending" --json number --jq '.[0].number')
+            [ -n "$pr" ] || sleep 5
+          done
           if [ -z "$pr" ]; then
             echo "Nothing to release."
             exit 0
@@ -57,6 +68,7 @@ jobs:
           echo "merged=true" >> "$GITHUB_OUTPUT"
 
       - name: Publish the tag and the GitHub Release
+        id: publish
         if: steps.merge.outputs.merged == 'true'
         uses: googleapis/release-please-action@v4
         with:

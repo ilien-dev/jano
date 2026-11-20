@@ -6,12 +6,12 @@ body:
     attributes:
       value: |
         One problem per issue. Search the [existing issues](https://github.com/ilien-dev/jano/issues?q=is%3Aissue) first.
+        Never paste tokens, keys, passwords or private data.
   - type: textarea
     id: steps
     attributes:
       label: What you did
-      description: The agent and model you used, how you called the skill, and on what kind of repository.
-      placeholder: "Claude Code with Opus, /jano on a Rust CLI"
+      description: The steps, command or prompt that lead to the problem.
     validations:
       required: true
   - type: textarea
@@ -24,22 +24,21 @@ body:
     id: actual
     attributes:
       label: What happened
-      description: The output of build.py if it failed. For a hero that looks or moves wrong, a screenshot or a GIF, and the hero.src.svg if you can share it.
+      description: The message or output word for word, and a screenshot if it helps.
     validations:
       required: true
   - type: input
     id: version
     attributes:
-      label: Jano version
-      description: The release you installed, or the commit.
-      placeholder: "0.2.0"
+      label: Version
+      description: The Jano version you use.
     validations:
       required: true
   - type: input
-    id: where
+    id: environment
     attributes:
-      label: Where you looked at the hero
-      placeholder: "github.com in Chrome on Windows"
+      label: Environment
+      description: Operating system, and anything else that matters here (runtime, agent, device).
   - type: checkboxes
     id: searched
     attributes:
