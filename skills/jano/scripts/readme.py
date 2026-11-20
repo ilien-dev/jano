@@ -129,7 +129,8 @@ def stale(src):
 def social_stamp(card):
     """The source fingerprint build.py writes into the social preview (its .svg or its .png), or None."""
     data = card.read_bytes()[:4000] if card.exists() else b""
-    m = re.search(rb'tEXtjano-src\0([0-9a-f]+)|data-jano-src="([0-9a-f]+)"', data)
+    # 16 hex digits exactly: in the PNG the chunk's binary CRC follows, and its first byte can read as one more digit
+    m = re.search(rb'tEXtjano-src\0([0-9a-f]{16})|data-jano-src="([0-9a-f]{16})"', data)
     return (m.group(1) or m.group(2)).decode() if m else None
 
 
