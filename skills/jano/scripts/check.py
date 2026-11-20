@@ -548,6 +548,7 @@ class Hero:
         self.check_contents()
         self.check_contrast()
         self.check_centring()
+        self.check_knockouts()
         self.check_strokes()
         self.check_motion()
         self.check_highlight_sync()
@@ -1146,6 +1147,19 @@ class Hero:
             if abs(off) > max(2.0, 0.1 * h):
                 self.warns.append(f"{self.describe(t['el'])} sits {abs(off):.0f} px {'low' if off > 0 else 'high'} in its {h:.0f} px box: put its baseline "
                                   f"at the box's middle + 0.35 × font-size ({(b[1] + b[3]) / 2 + 0.35 * fs:.1f})")
+    def check_knockouts(self):
+        """A shape outlined in the background colour, to cut it out of what it crosses, shows that outline as a frame while it fades over something drawn."""
+        for sh in self.shapes:
+            el = sh["el"]
+            if self.inherit(el, "stroke", "none") != "$bg" or not self.fades(el):
+                continue
+            if any(a.get("data-kit") == "cursor" for a in self.chain(el)):
+                continue  # a cursor's outline is meant to show: it keeps the arrow readable on any colour
+            under = self.container({"el": el, "box": sh["box"]}, together=False)
+            if under is None or self.inherit(under["el"], "fill") == "$bg":
+                continue  # over the background the outline cannot be seen
+            self.warns.append(f"{self.describe(el)} is outlined in $bg and fades over {self.describe(under['el'])}: while it is see-through the outline "
+                              "shows as a dark frame. Drop the stroke, or make it appear and leave at once")
 
     def check_strokes(self):
         thin = 0
