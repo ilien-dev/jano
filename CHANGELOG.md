@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.6](https://github.com/ilien-dev/jano/compare/v1.1.5...v1.1.6) (2026-11-20)
+
+
+### Bug Fixes
+
+* warn when a background-coloured outline shows during a fade ([#45](https://github.com/ilien-dev/jano/issues/45)) ([86ae874](https://github.com/ilien-dev/jano/commit/86ae874612b0800f689cbdd0185d2caee34b288e))
+
 ## [1.1.5](https://github.com/ilien-dev/jano/compare/v1.1.4...v1.1.5) (2026-11-20)
 
 
