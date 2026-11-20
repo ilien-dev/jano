@@ -963,7 +963,7 @@ class Hero:
                 continue
             who = f'the icon "{e.get("data-icon").strip()}"'
             c = self.container({"el": e, "box": self.box[e]}, together=False)
-            behind = self.inherit(c["el"], "fill") if c else "$bg"
+            behind = self.inherit(c["el"], "fill") if c else "$bg"  # its name, for the message
             inks, loose = [], False
             for s in e.iter():
                 if s not in self.M or local(s.tag) not in ("path", "circle", "ellipse", "line", "polyline", "polygon", "rect"):
@@ -983,7 +983,7 @@ class Hero:
             if loose:
                 self.warns.append(f"{who} is painted in currentColor: some viewers ignore color= and draw it black. Write the $role in its fill= and stroke=")
             for ti, theme in enumerate(("dark", "light")):
-                bg = self.color(behind, ti) or self.color("$bg", ti)
+                bg = self.backdrop(c, ti)
                 scored = [(contrast(mix(fg, bg, o) if o < 1 else fg, bg), v) for v, o in inks if bg and (fg := self.color(v, ti))]
                 if scored and max(scored)[0] < ICON_CONTRAST:
                     ratio, v = max(scored)
