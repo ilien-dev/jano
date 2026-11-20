@@ -280,6 +280,16 @@ test("an icon from the library, declared, builds clean", code == 0 and "checks p
 built_icon = (folder / "demo-dark.svg").read_text(encoding="utf-8") if code == 0 else ""
 test("a picture that uses a set carries its notice as invisible metadata", "<metadata>" in built_icon and "Lucide" in built_icon and "ISC" in built_icon)
 test("a picture without assets carries no notice", "<metadata>" not in scene_dark)
+test("an icon from the library carries its role in its paint, not in color= and currentColor",
+     "currentColor" not in known and 'stroke="$muted"' in known and "color=" not in known, known)
+loose = '<g data-icon="done" transform="translate(300 368)" color="$muted"><path fill="currentColor" d="M0 0h24v24H0z"/></g>'
+code, out, _ = build_scene(SCENE.replace("</g>\n</svg>", loose + "</g>\n</svg>"))
+test("an icon painted in currentColor is warned about", 'the icon "done" is painted in currentColor' in out, out)
+faint = '<g data-icon="done" transform="translate(300 368)"><path fill="$line" d="M0 0h24v24H0z"/></g>'
+code, out, _ = build_scene(SCENE.replace("</g>\n</svg>", faint + "</g>\n</svg>"))
+test("an icon too close to what it sits on is warned about", 'the icon "done" in $line' in out and "below 3" in out, out)
+code, out, _ = build_scene(SCENE.replace("</g>\n</svg>", faint.replace("$line", "$accent") + "</g>\n</svg>"))
+test("an icon that stands out is not warned about", 'the icon "done"' not in out, out)
 code, out, _ = build_scene(SCENE.replace("</g>\n</svg>", assets_module.snippet("lucide", "scissors", "cut", 300, 368, 16) + "</g>\n</svg>"))
 test("an icon under its grid size is warned about", 'the icon "cut" is 16 px' in out, out)
 code, out, _ = build_scene(SCENE.replace("</g>\n</svg>", assets_module.snippet("heroicons", "document-text", "a page", 300, 360) + "</g>\n</svg>"))

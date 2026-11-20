@@ -71,6 +71,7 @@ DURATION = (0.4, 60)   # s
 LEAD_TRAVEL = 40       # px: something in the stage travels at least this far
 LEAD_SIZE = 20         # px: and the largest thing that travels is at least this big on its shorter side
 LINE_CONTRAST = 3      # a connector with walking dashes against the background
+ICON_CONTRAST = 3      # an icon against what it sits on (WCAG 1.4.11, non-text)
 ICON_MAX = 40          # px: thin strokes in a cluster smaller than this are a pictogram, and must say what they mean
 ICON_MIN = 24          # px: an icon's grid on the canvas, 16 px at README width
 ICON_STROKE = 2        # px: the thinnest line an icon may have on the canvas
@@ -935,6 +936,40 @@ class Hero:
                 if ratio < need:
                     seen.add((fill, behind, theme))
                     self.warns.append(f"{theme}: {self.describe(t['el'])} in {fill} on {behind} has contrast {ratio:.1f}, below {need}")
+        self.check_icon_contrast()
+
+    def check_icon_contrast(self):
+        """An icon is read by its strongest ink: it needs ICON_CONTRAST against what it sits on, in both themes."""
+        for e in self.root.iter():
+            if e.get("data-icon") is None or self.box.get(e) is None:
+                continue
+            who = f'the icon "{e.get("data-icon").strip()}"'
+            c = self.container({"el": e, "box": self.box[e]}, together=False)
+            behind = self.inherit(c["el"], "fill") if c else "$bg"
+            inks, loose = [], False
+            for s in e.iter():
+                if s not in self.M or local(s.tag) not in ("path", "circle", "ellipse", "line", "polyline", "polygon", "rect"):
+                    continue
+                opacity = 1.0
+                for a in self.chain(s):
+                    if not any("opacity" in x["props"] for x in self.anims(a)):
+                        opacity *= num(a.get("opacity"), 1)
+                for attr in ("fill", "stroke"):
+                    v = (self.inherit(s, attr, "#000000" if attr == "fill" else "none") or "").strip()
+                    if v in ("none", "transparent") or v.startswith("url"):
+                        continue
+                    if v == "currentColor":
+                        loose = True
+                        v = self.inherit(s, "color", "#000000")  # with no color= above it, currentColor is black
+                    inks.append((v, opacity * num(self.inherit(s, f"{attr}-opacity"), 1)))
+            if loose:
+                self.warns.append(f"{who} is painted in currentColor: some viewers ignore color= and draw it black. Write the $role in its fill= and stroke=")
+            for ti, theme in enumerate(("dark", "light")):
+                bg = self.color(behind, ti) or self.color("$bg", ti)
+                scored = [(contrast(mix(fg, bg, o) if o < 1 else fg, bg), v) for v, o in inks if bg and (fg := self.color(v, ti))]
+                if scored and max(scored)[0] < ICON_CONTRAST:
+                    ratio, v = max(scored)
+                    self.warns.append(f"{theme}: {who} in {v} on {behind} has contrast {ratio:.1f}, below {ICON_CONTRAST}: it is lost against what it sits on")
 
     def check_strokes(self):
         thin = 0
