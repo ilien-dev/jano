@@ -915,6 +915,20 @@ class Hero:
             if t["words"] > LABEL_WORDS:
                 self.warns.append(f"{self.describe(t['el'])} is a sentence of {t['words']} words: a label names a thing in {LABEL_WORDS} words or fewer")
 
+    def backdrop(self, box, theme, depth=0):
+        """The colour a reader sees inside this box: its fill, made translucent by fill-opacity and opacity, over what lies behind it."""
+        if box is None or depth > 8:
+            return self.color("$bg", theme)
+        under = self.backdrop(self.container(box, together=False), theme, depth + 1)
+        own = self.color(self.inherit(box["el"], "fill"), theme)
+        if not own:
+            return under
+        alpha = num(self.inherit(box["el"], "fill-opacity"), 1)
+        for a in self.chain(box["el"]):
+            if not any("opacity" in x["props"] for x in self.anims(a)):
+                alpha *= num(a.get("opacity"), 1)
+        return mix(own, under, alpha) if alpha < 1 and under else own
+
     def check_contrast(self):
         seen = set()
         for t in self.texts:
@@ -931,7 +945,7 @@ class Hero:
             opacity *= num(t["el"].get("fill-opacity"), 1)
             need = 3 if t["fs"] * README >= 24 or (t["fs"] * README >= 18.5 and self.face(t["el"]) == "b") else 4.5
             for ti, theme in enumerate(("dark", "light")):
-                fg, bg = self.color(fill, ti), self.color(behind, ti) or self.color("$bg", ti)
+                fg, bg = self.color(fill, ti), self.backdrop(c, ti)
                 if not fg or not bg or (fill, behind, theme) in seen:
                     continue
                 if opacity < 1:
