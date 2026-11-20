@@ -123,6 +123,14 @@ code, out, _ = build(swap('<rect x="600" y="72" width="200" height="484" rx="16"
 test("a label on a faint tint of a light colour is measured on the tint, not on the full colour", code == 0 and "contrast" not in out, out)
 code, out, _ = build(swap('<rect x="600" y="72" width="200" height="484" rx="16" fill="$panel"/>', '<rect x="600" y="72" width="200" height="484" rx="16" fill="$ink" fill-opacity="0.9"/>'))
 test("a label on a nearly solid tint is still warned about", "on $ink has contrast" in out, out)
+warned("a shape outlined in $bg that fades over a panel is warned about",
+       swap('<rect class="pulse" x="920" y="372" width="80" height="32" rx="8" fill="$accent"/>',
+            '<rect class="pulse" x="920" y="372" width="80" height="32" rx="8" fill="$accent" stroke="$bg" stroke-width="3"/>'), "outlined in $bg and fades over")
+code, out, _ = build(swap('<rect class="send" opacity="0" width="28" height="28" rx="6" fill="$accent"/>',
+                          '<rect class="send" opacity="0" width="28" height="28" rx="6" fill="$accent" stroke="$bg" stroke-width="3"/>'))
+test("a shape outlined in $bg that fades over the background is not warned about", "outlined in $bg" not in out, out)
+code, out, _ = build(FIXTURE)
+test("a fading shape with no outline is not warned about", "outlined in $bg" not in out, out)
 warned("a positive delay is warned about", swap(".pulse{", ".pulse{animation-delay:1s;"), "animation-delay")
 warned("text as large as the key phrase is warned about", swap('class="b" font-size="32"', 'class="b" font-size="56"'), "the tagline is the largest text")
 warned("a name that shouts is warned about", swap('class="b" font-size="36"', 'class="b" font-size="120"'), "it signs the poster")
@@ -414,6 +422,7 @@ code, out, _ = build_scene(sweep(round(width_line) + 150))
 test("a marker that runs on past the end of the line is warned about", "past where the text ends" in out, out)
 code, out, _ = build_scene(highlight(10))
 test("a label that lights later than the box reaches it is warned about", '"row number 2" is lit' in out and "out of step with the box" in out, out)
+test("a kit cursor that fades over a button keeps its outline without a warning", "outlined in $bg" not in out, out)
 test("a scene's palette roles are replaced", "$" not in re.sub(r"base64,[^)]+", "", scene_dark))
 test("the scene's figures are printed", "title 44 px, 6 words" in out, out)
 code, out, _ = build_scene(SCENE.replace("0 0 1280 448", "0 0 1280 640"))
