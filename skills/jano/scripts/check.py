@@ -547,6 +547,7 @@ class Hero:
         self.check_text()
         self.check_contents()
         self.check_contrast()
+        self.check_centring()
         self.check_strokes()
         self.check_motion()
         self.check_highlight_sync()
@@ -1112,6 +1113,25 @@ class Hero:
                     self.warns.append(f"{self.describe(el)} runs along {self.describe(t['el'])} to x={right:.0f}, {right - end:.0f} px past where the text ends "
                                       f"(x={end:.0f}): stop it at the end of the text, the reader follows it as it reads")
                     break
+
+    def check_centring(self):
+        """A one-line label in a box about its own height (a chip, a button, a highlight) sits in the middle of it, top to bottom."""
+        for t in self.texts:
+            fs, tb = t["fs"], t["box"]
+            if tb[3] - tb[1] > 1.3 * fs:
+                continue  # more than one line: a card, not a label
+            c = self.container(t, together=False)
+            if c is None or c["tag"] != "rect":
+                continue
+            b = c["box"]
+            h = b[3] - b[1]
+            if not 1.2 * fs <= h <= 2.8 * fs:
+                continue
+            ink = tb[3] - 0.55 * fs  # the middle of the capitals: baseline minus 0.35 em
+            off = ink - (b[1] + b[3]) / 2
+            if abs(off) > max(2.0, 0.1 * h):
+                self.warns.append(f"{self.describe(t['el'])} sits {abs(off):.0f} px {'low' if off > 0 else 'high'} in its {h:.0f} px box: put its baseline "
+                                  f"at the box's middle + 0.35 × font-size ({(b[1] + b[3]) / 2 + 0.35 * fs:.1f})")
 
     def check_strokes(self):
         thin = 0
