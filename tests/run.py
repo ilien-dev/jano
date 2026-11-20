@@ -317,6 +317,14 @@ test("families that fit equally are not always listed in the same order", len(se
 chip = kit_module.chip(0, 0, "features")
 width = float(re.search(r'width="([\d.]+)"', chip).group(1))
 test("a kit chip is as wide as its text and its padding", width >= kit_module.width("features", 14) + 20)
+box = '<rect x="600" y="300" width="240" height="36" rx="8" fill="$panel"/><text x="616" y="{y}" class="s" font-size="18" fill="$ink">Tracks your position</text>'
+END = "</g>\n</svg>"
+code, out, _ = build_scene(SCENE.replace(END, box.format(y=324.3) + END))
+test("a label in the middle of its box is not warned about", "in its 36 px box" not in out, out)
+code, out, _ = build_scene(SCENE.replace(END, box.format(y=330) + END))
+test("a label that sits low in its box is warned about", "px low in its 36 px box" in out, out)
+code, out, _ = build_scene(SCENE.replace(END, kit_module.chip(600, 300, "features") + kit_module.button(800, 300, "Install") + END))
+test("kit chips and buttons centre their labels", "px box" not in out, out)
 card = kit_module.card(600, 100, 220, None, "README.md", "«A plugin that names a product and draws its logo, from the repository it reads.»")
 code, out, _ = build_scene(SCENE.replace("</g>\n</svg>", card + "</g>\n</svg>"))
 test("a kit card wraps its text inside its padding", code == 0 and "box" not in out and card.count("<text") >= 4, out)
