@@ -278,7 +278,11 @@ def snippet(prefix, name, means, x=0.0, y=0.0, size=None, color="$muted", tint=N
     if tint and f["recolor"] != "never":
         body = re.sub(r'(fill|stroke|stop-color)="(?!none|url)[^"]+"', lambda m: f'{m.group(1)}="{tint}"', body)
         body = re.sub(r'(fill|stroke|stop-color):\s*(?!none|url)[^;"]+', lambda m: f"{m.group(1)}:{tint}", body)
-    colour = f' color="{color}"' if f["recolor"] == "mono" else ""
+    colour = ""
+    if f["recolor"] == "mono":
+        # the role goes into the paint itself: some viewers ignore color= and draw currentColor black
+        body = body.replace("currentColor", color)
+        colour = f' fill="{color}"'  # what a path with no fill of its own is painted in
     means = re.sub(r'["<>&]', "", means)
     return (f'<g data-asset="{prefix}:{name}" data-icon="{means}" data-size="{size:g}" transform="translate({x:g} {y:g}) scale({k:.4g})"{colour}>'
             f"{body}</g>")

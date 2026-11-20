@@ -37,8 +37,10 @@ assets.py get <repo> <category> <name> "<what it means here>" --x --y --size --c
 
 ## Colour
 
-- **`takes a $role`** (one-colour families): pass `--color $role`; the drawing uses
-  `currentColor`, so the palette's dark and light values both work.
+- **`takes a $role`** (one-colour families): pass `--color $role`; the role is written into
+  every fill and stroke, so the palette's dark and light values both work. Never paint an icon in
+  `currentColor`: some viewers ignore `color=` and draw it black. An icon needs contrast 3 against
+  what it sits on, in both themes; `check.py` measures it.
 - **`keeps its own`** (colour families): drawn in their own colours; `--tint $role` repaints every
   fill in one role when the colours clash with the palette.
 - **`never changes`** (flags): a flag's colours are the flag. Theme the frame around it, never
