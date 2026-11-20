@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.8](https://github.com/ilien-dev/jano/compare/v1.1.7...v1.1.8) (2026-11-20)
+
+
+### Bug Fixes
+
+* let the agent load the jano skill ([#55](https://github.com/ilien-dev/jano/issues/55)) ([d69726a](https://github.com/ilien-dev/jano/commit/d69726a577721096b092df2b37fadda4e4a02bf4))
+
 ## [1.1.7](https://github.com/ilien-dev/jano/compare/v1.1.6...v1.1.7) (2026-11-20)
 
 
