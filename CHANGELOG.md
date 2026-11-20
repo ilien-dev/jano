@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/ilien-dev/jano/compare/v1.1.1...v1.1.2) (2026-11-20)
+
+
+### Bug Fixes
+
+* name ilien as the plugin author ([#34](https://github.com/ilien-dev/jano/issues/34)) ([0b62221](https://github.com/ilien-dev/jano/commit/0b62221d72ea00b3d4c8ae60a95a0db13333cd5d))
+
 ## [1.1.1](https://github.com/ilien-dev/jano/compare/v1.1.0...v1.1.1) (2026-11-19)
 
 
