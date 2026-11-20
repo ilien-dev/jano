@@ -1,6 +1,6 @@
 <!--
-Title: a Conventional Commit of at most 72 characters, e.g. "fix: outline text inside rotated groups".
-Branch: the title's type + / + 1 to 4 lowercase words joined by hyphens, e.g. feat/outline-rotated-text.
+Title: a Conventional Commit of at most 72 characters, e.g. "feat: export the cover image".
+Branch: the same type + / + 1 to 5 lowercase words joined by hyphens, e.g. feat/export-cover-image.
 One PR = one change. Read CONTRIBUTING.md before opening it.
 Comments like this one are removed before the limits are counted.
 -->
@@ -14,16 +14,19 @@ Comments like this one are removed before the limits are counted.
 ## How
 <!-- At most 500 characters. The approach, and the main files it touches. -->
 
+## Risk
+<!-- At most 200 characters. What could break, and how to undo it. "None: <reason>" when nothing can. -->
+
 ## Evidence
 <!--
 At most 300 characters of text; images, GIFs and links do not count.
-A change to how heroes look or move: a GIF or screenshot of a hero built with it,
-before and after if something changed. Drag the files into this box on GitHub to upload them.
-Other changes: the tests that cover it, or how you checked it by hand.
+How you checked it, and how a reviewer can check it in a minute (a command, a page, a step).
+Screenshots are optional and always welcome; for a visual change, before and after.
+Capture only that window or page, never the whole screen. Drag the files into this box on GitHub.
 -->
 
 ## Checklist
 - [ ] This PR does one thing, and nothing else is mixed in
 - [ ] I searched open PRs and issues and nobody is already doing this
 - [ ] `uv run tests/run.py` passes
-- [ ] I did not edit the version in `.claude-plugin/plugin.json` or `CHANGELOG.md`
+- [ ] I did not edit any version number or CHANGELOG.md

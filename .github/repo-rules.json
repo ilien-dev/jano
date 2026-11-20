@@ -1,0 +1,67 @@
+{
+  "name": "Jano",
+  "repo": "ilien-dev/jano",
+  "defaultBranch": "main",
+  "purpose": "makes a repository's README explain itself: it plans the sections, writes the text to measured rules, draws a looping animated SVG hero and scenes in dark and light, and cuts the social preview from that hero.",
+  "shipped": [
+    "skills/**",
+    ".claude-plugin/**"
+  ],
+  "issueFirst": false,
+  "measured": {
+    "enabled": false,
+    "types": [
+      "feat",
+      "fix",
+      "perf"
+    ],
+    "methods": []
+  },
+  "commands": [
+    "uv run tests/run.py"
+  ],
+  "ci": {
+    "requiredChecks": [
+      "Build test"
+    ]
+  },
+  "release": {
+    "kind": "claude-plugin",
+    "currentVersion": "1.1.1",
+    "versionFiles": [
+      {
+        "path": ".claude-plugin/plugin.json",
+        "jsonpath": "$.version"
+      }
+    ],
+    "build": [],
+    "buildSecrets": [],
+    "npmPrepare": []
+  },
+  "standard": 1,
+  "branch": {
+    "types": [
+      "feat",
+      "fix",
+      "perf",
+      "refactor",
+      "docs",
+      "test",
+      "build",
+      "ci",
+      "chore",
+      "style",
+      "revert"
+    ],
+    "maxWords": 5
+  },
+  "title": {
+    "max": 72
+  },
+  "releaseTypes": [
+    "feat",
+    "fix",
+    "perf",
+    "revert"
+  ]
+}

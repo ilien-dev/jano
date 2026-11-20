@@ -1,141 +1,133 @@
 # Contributing to Jano
 
-Thanks for wanting to help. Contributing to Jano does not only mean pull requests:
-a clear issue that reports a bug or proposes an improvement is a contribution too.
+Thanks for wanting to help. A contribution does not have to be a pull request: a clear issue
+that reports a bug or proposes an improvement is a contribution too.
 
-Jano does one job: it makes a repository's README explain itself. It plans the sections
-and writes the text to measured rules, and draws a looping animated SVG hero and a scene
-for the sections that need one, in dark and light, and cuts the repository's social preview
-from that hero. It does not make GIFs, videos, other social cards or logos for anything else. **A contribution that drifts away from that job
-will be rejected**, however well it is made.
+Jano makes a repository's README explain itself: it plans the sections, writes the text to measured rules, draws a looping animated SVG hero and scenes in dark and light, and cuts the social preview from that hero. **A contribution that drifts away from that purpose will be rejected**,
+however well it is made.
+
+<!-- This file is generated from .github/repo-rules.json by Nabu (https://github.com/ilien-dev/nabu).
+     Project-specific notes go in .github/contributing-notes.md, which is copied below. -->
 
 ## Nothing is guaranteed
 
 Opening an issue or a pull request does not guarantee that it will be accepted or merged.
-Every change is reviewed before it goes in, with no exceptions, including the
-maintainer's own. A change can be declined for its scope, its approach or the cost of
-maintaining it.
+Every change is reviewed before it goes in, the maintainer's own included. A change can be
+declined for its scope, its approach or the cost of maintaining it.
 
 ## Before you start
 
-- **Search first.** Look through the [open pull requests](https://github.com/ilien-dev/jano/pulls)
-  and the [issues](https://github.com/ilien-dev/jano/issues), open and closed. Someone may
-  already be working on the same thing, or it may have been discussed and declined.
-  If you find it, add to that conversation instead of starting a new one.
-- **For anything bigger than a small fix, open an issue first** and wait for an answer.
-  It is the cheapest way to find out whether the change fits before you write it.
+- **Search first.** Look through the [pull requests](https://github.com/ilien-dev/jano/pulls?q=is%3Apr)
+  and the [issues](https://github.com/ilien-dev/jano/issues?q=is%3Aissue), open and closed. If someone
+  already works on it, or it was declined, add to that conversation instead.
+- **For anything bigger than a small fix, open an issue first** and wait for an answer. It is the
+  cheapest way to find out whether the change fits before you write it.
 
 ## Issues
 
-Use the templates: **Bug report** or **Feature request**. One issue per problem or idea.
+Use the forms: **Bug report** or **Feature request**. One issue per problem or idea. A bug report
+says what you did, what you expected and what happened; a feature request says the problem
+first and the solution after. Never paste tokens, keys or private data.
 
-- A bug report says what you did, what you expected, what happened, and which agent,
-  model and Jano version you used. For a hero that looks or moves wrong, attach a
-  screenshot or a GIF.
-- A feature request says the problem first, and only then the solution you have in mind.
+## One change per pull request
 
-## Pull requests
+Each pull request does **one thing**. A new feature comes alone: no settings change, no visual
+tweak elsewhere, no unrelated cleanup. Those go in their own pull requests. The smaller and more
+focused a PR is, the faster it can be reviewed and merged; a PR that mixes changes will be asked
+to split, or closed.
 
-### One thing at a time
-
-Each pull request does **one thing**. If you want the build to outline text inside
-rotated groups, the PR does that and nothing else: no new rule in the skill, no README
-edit, no unrelated cleanup. Those go in their own pull requests.
-
-Keep it as simple as possible. The smaller and more focused a PR is, the easier it is to
-see what it is about and to decide whether it can go in. A PR that mixes several changes
-will be asked to split, or closed.
-
-The skill's instructions are short on purpose, because every line costs context to each
-person who runs it. A PR that adds a rule to `SKILL.md` says what went wrong without it.
-
-### Branch name
+## Branch name
 
 ```
-<type>/<1 to 4 words>
+<type>/<1 to 5 words>
 ```
 
-`<type>` is the Conventional Commit type the title starts with: `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build`, `ci`, `chore`, `style` or `revert`. Then 1 to 4 words
-of lowercase letters and digits joined by single hyphens.
+`<type>` is the Conventional Commit type of the change, the same one the title starts with:
+`feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build`, `ci`, `chore`, `style` or `revert`. Then 1 to 5 words of lowercase letters and digits joined by single
+hyphens.
 
-- `feat/outline-rotated-text` ✓
-- `fix/contrast-check` ✓
-- `feat/Rotated-Text` ✗ (uppercase)
-- `feature/outline-rotated-text` ✗ (the type is `feat`, not `feature`)
-- `feat/add-the-new-contrast-check` ✗ (five words)
+- `feat/export-cover-image` ✓
+- `fix/progress-bar-width` ✓
+- `feat/Export-Cover` ✗ (uppercase)
+- `feature/export-cover-image` ✗ (the type is `feat`)
+- `fix/add-a-new-progress-bar-width` ✗ (more than 5 words)
 
-### Title
+## Title and versions
 
-The title is a [Conventional Commit](https://www.conventionalcommits.org/) of at most 72
-characters, lowercase after the type and with no final period. PRs are squash-merged, the
-title becomes the commit on `main`, and it becomes a line of the changelog, so it has to
-describe the change exactly.
+The title is a [Conventional Commit](https://www.conventionalcommits.org/) of at most
+72 characters, with the same type as the branch: `feat: export the cover image`. Pull
+requests are squash-merged, so the title becomes the commit on `main`, and it decides
+the next version:
 
-The type decides the next version. Nobody writes a version number.
+| Title | Version |
+|---|---|
+| `feat: ...` | new minor version (1.4.0 → 1.5.0) |
+| `fix: ...`, `perf: ...`, `revert: ...` | new patch version (1.4.0 → 1.4.1) |
+| `feat!: ...` or any type with `!` | new major version (1.4.0 → 2.0.0) |
+| `docs`, `test`, `ci`, `chore`, `refactor`, `build`, `style` | no new version |
 
-| Type | Use it for | Release |
-|---|---|---|
-| `feat:` | The skill or the build can do something new | minor, 0.2.0 → 0.3.0 |
-| `fix:` | The skill or the build did something wrong | patch, 0.2.0 → 0.2.1 |
-| `docs:` | README, CONTRIBUTING, comments | none |
-| `refactor:` `test:` `ci:` `chore:` | No change in what a user gets | none |
+**Nobody writes a version number.** A workflow publishes the version, the changelog and the
+release after every merge. Do not edit version numbers or `CHANGELOG.md`.
+A change to what users install (`skills/**` and `.claude-plugin/**`) has to publish a version, or they never get it:
+its title must be `feat`, `fix`, `perf` or `revert`. The check rejects any other type for those files.
 
-A change to `skills/jano/SKILL.md` changes what users get, so it is a `feat` or a `fix`,
-never `docs`. A change that breaks existing heroes or sources gets a `!` after the type
-(`feat!:`).
+## Description
 
-### Description
-
-Start from the template GitHub fills in for you
-([`.github/pull_request_template.md`](.github/pull_request_template.md)). Every section is
-required and has a limit:
+Start from the template GitHub fills in
+([`.github/pull_request_template.md`](.github/pull_request_template.md)). It is short on purpose:
+it holds what a reviewer needs to decide quickly, and nothing else.
 
 | Section | Limit | What goes in it |
 |---|---|---|
 | **What** | 280 characters | The one change this PR makes. |
 | **Why** | 280 characters | The problem it solves. Link the issue (`Closes #12`). |
 | **How** | 500 characters | The approach, and the main files it touches. |
-| **Evidence** | 300 characters of text | A GIF or screenshot; how you checked it. |
+| **Risk** | 200 characters | What could break, and how to undo it. |
+| **Evidence** | 300 characters of text | How you checked it, how a reviewer can check it; screenshots. |
 | **Checklist** | — | Every box ticked. |
 
-**Evidence.** A change to how heroes look or move needs a GIF or a screenshot of a hero
-built with it, before and after when something changed. Drag the files into the
-description box on GitHub to upload them. Images, GIFs and links do not count toward the
-limit. For a change with nothing to see, name the tests that cover it or say how you
-checked it.
+**Screenshots** are optional and always welcome, one or as many as it takes to make the change
+easy to understand; for a visual change, before and after. Take them yourself
+or ask your agent to; capture only that window or page, never the whole screen. Drag the files
+into the description box on GitHub. Images, GIFs and links do not count toward the limit.
 
-A CI check verifies the branch name, the title length and the description. You can run
-it yourself before opening the PR:
+A check verifies the branch, the title and the description. Run it before opening the PR:
 
 ```
-node .github/scripts/check-pr.js --branch feat/outline-rotated-text \
-  --title "fix: outline text inside rotated groups" --body-file pr.md
+node .github/scripts/check-pr.cjs --branch feat/export-cover-image \
+  --title "feat: export the cover image" --body-file pr.md --files-from-git main
 ```
 
-### Code
+## Before you push
 
-- `uv run tests/run.py` must pass. CI runs it on every PR. A change to `build.py` comes
-  with a test in `tests/run.py`.
-- Code, comments and docs are in English. `README.es.md` is the only Spanish file, and a
-  change to `README.md` goes with the same change there.
-- Do not edit the version in `.claude-plugin/plugin.json` or `CHANGELOG.md`; the release
-  workflow does it.
+```
+uv run tests/run.py
+```
 
-### Review
+Every command must pass; CI runs them again on the pull request.
 
-A pull request is merged only after an approval from someone with write access to the
-repository (for now, the maintainer) and with every check green. Answer review comments
-in the PR; keep extra changes for another PR.
+## Review
 
-## How releases happen
-
-Every merge to `main` that holds a `feat` or a `fix` publishes a version by itself. A
-workflow computes the next number from the titles merged since the last release, writes
-it with the new section of `CHANGELOG.md` in a `chore(main): release X.Y.Z` pull request,
-merges that pull request at once, and creates the tag and the GitHub Release. So the
-title of your pull request decides the version: pick its type with care.
+A pull request is merged after an approval from someone with write access to the repository and
+with every check green. A new push dismisses an earlier approval. Answer review comments in the
+PR; keep extra changes for another PR.
 
 ## Working with an AI agent
 
-The rules are the same. Agents that read `.claude/skills` or `.agents/skills` have a
-`uncontributing` skill that walks through them step by step.
+The rules are the same. Agents that read `.claude/skills` or `.agents/skills` have an
+`uncontributing` skill that walks through them step by step and checks the result.
+
+## Project notes
+
+## Notes for Jano
+
+- **Evidence for heroes.** A change to how heroes look or move needs a GIF or a screenshot of a
+  hero built with it, before and after when something changed. Build one with
+  `uv run skills/jano/scripts/build.py tests/fixture/assets/hero.src.svg`.
+- **`skills/jano/SKILL.md` is short on purpose.** It is loaded whole every time someone runs the
+  skill, so a PR that adds a rule says what went wrong without it. A change to it is a `feat` or
+  a `fix`, never `docs`.
+- **Tests.** A change to a script in `skills/jano/scripts/` comes with a test in `tests/run.py`.
+- **Languages.** Code, comments and docs are in English. A change to `README.md` goes with the
+  same change in `README.es.md` and its scenes in `assets/es/`.
+

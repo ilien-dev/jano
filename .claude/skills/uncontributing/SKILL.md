@@ -1,21 +1,18 @@
 ---
 name: uncontributing
-description: Use before opening an issue, creating a branch, committing for a pull request, or writing a pull request title or description in the Jano repository. Walks through CONTRIBUTING.md (one change per PR, type/ branch names (feat/, fix/, docs/...), Conventional Commit titles that decide the version, the description format with character limits, evidence) and checks the result with .github/scripts/check-pr.js.
-metadata:
-  internal: true
+description: Use before opening an issue, creating a branch, committing for a pull request, or writing a pull request title or description in the Jano repository (ilien-dev/jano), even when the user only says "open a PR", "send this upstream" or "make a branch". Walks through CONTRIBUTING.md (one change per PR, <type>/ branch names, Conventional Commit titles that decide the version, the short PR format, screenshots) and checks the result with .github/scripts/check-pr.cjs.
 ---
 
 # Contributing to Jano
 
-`CONTRIBUTING.md` is the source of truth; this skill is the order to apply it in. If the
-two disagree, follow `CONTRIBUTING.md` and point out the difference.
+`CONTRIBUTING.md` is the source of truth and `.github/repo-rules.json` holds every limit;
+this skill is the order to apply them in. If they disagree, follow `CONTRIBUTING.md` and point
+out the difference. The check script decides, not this text: run it.
 
-## 1. Is it in scope, and is it new?
+## 1. In scope, and new?
 
-- Jano does one job: it makes a repository's README explain itself, its sections and
-  text measured by `readme.py`, its hero and section scenes drawn as animated SVG. It does
-  not make GIFs, videos or other images; its one social card is the preview it cuts from the hero. If the change does not serve that job, say so and stop: it will be rejected.
-- Search for the same work before writing anything:
+- Jano makes a repository's README explain itself: it plans the sections, writes the text to measured rules, draws a looping animated SVG hero and scenes in dark and light, and cuts the social preview from that hero. If the change does not serve that, say so and stop: it will be rejected.
+- Search before writing anything:
   ```
   gh pr list --repo ilien-dev/jano --state all --search "<keywords>"
   gh issue list --repo ilien-dev/jano --state all --search "<keywords>"
@@ -24,89 +21,54 @@ two disagree, follow `CONTRIBUTING.md` and point out the difference.
 
 ## 2. One thing only
 
-Name the single change in one sentence. If the sentence needs an "and", it is two PRs:
-for example a fix in `build.py` **and** a new rule in `SKILL.md` **and** a README edit are
-three pull requests. Propose the split to the user and do the first one. Leave unrelated
-fixes you notice for later; mention them, do not include them.
+Name the single change in one sentence. If it needs an "and", it is two PRs. Propose the split
+to the user and do the first one. Unrelated fixes you notice: mention them, leave them out.
 
-## 3. Branch
+## Branch and title
 
-The Conventional Commit type the title will use, a slash, and 1 to 4 lowercase words
-(letters and digits) joined by single hyphens: `feat/outline-rotated-text`, `fix/contrast-check`. Use the short
-type, never `feature/`.
-Regex: `^(feat|fix|perf|refactor|docs|test|build|ci|chore|style|revert)/[a-z0-9]+(-[a-z0-9]+){0,3}$`.
+- Pick the Conventional Commit type that tells the truth: `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build`, `ci`, `chore`, `style` or `revert`.
+- Branch: that type, a slash, 1 to 5 lowercase words joined by hyphens
+  (`feat/export-cover-image`). Never `feature/`.
+- Title: the same type, at most 72 characters, lowercase after the type, no final period
+  (`feat: export the cover image`). It becomes the commit on `main` and decides the
+  version: `feat` minor, `fix`/`perf`/`revert` patch, `!` major, the rest none.
+- A change to `skills/**` and `.claude-plugin/**` reaches users, so it must be `feat`, `fix`, `perf` or `revert`.
+- Never edit a version number or `CHANGELOG.md`: the release workflow writes them.
 
-## 4. Code
+## Before committing
 
-- `skills/jano/SKILL.md` is loaded whole every time someone runs the skill. Add a line
-  only for a failure you saw, and say it in as few words as the rest of the file does.
-- A change to `skills/jano/scripts/build.py` comes with a test in `tests/run.py`.
-- A change to `README.md` goes with the same change in `README.es.md`.
-- Never edit the version in `.claude-plugin/plugin.json`, `.release-please-manifest.json`
-  or `CHANGELOG.md`: the release workflow writes them.
-
-Before committing:
 ```
 uv run tests/run.py
 ```
-It must pass; report a failure with its output.
 
-## 5. Title
+Every command must pass; CI runs them again on the pull request.
 
-A Conventional Commit of at most 72 characters, lowercase after the type, no final
-period. It becomes the squash commit on `main` and a line of the changelog, and its type
-decides the next version, so pick the type that tells the truth about the change:
+Report failures with their output; do not open the PR while one fails.
 
-- `feat:` the skill or the build can do something new (minor release).
-- `fix:` the skill or the build did something wrong (patch release).
-- `docs:` README, CONTRIBUTING, comments. `refactor:`, `test:`, `ci:`, `chore:` for the
-  rest. None of these release anything.
-- A change to `skills/jano/SKILL.md` is a `feat` or a `fix`, never `docs`.
-- `!` after the type (`feat!:`) when existing heroes or sources stop working.
+## Description
 
-## 6. Description
+Copy `.github/pull_request_template.md` and fill every section, deleting the comments. Plain
+sentences: what changed, not how hard it was. No other headings, no summary at the end.
 
-Copy `.github/pull_request_template.md` and fill every section. Limits are counted
-after HTML comments are removed; delete the template comments anyway.
+- **What** (280): the one change. **Why** (280): the problem; `Closes #N`.
+- **How** (500): the approach and main files. **Risk** (200): what could break, how to undo it.
+- **Evidence** (300 of text): how you checked it and how the reviewer can, in a minute.
+- **Checklist**: tick only what is true; if one is not, say why instead of ticking it.
 
-| Section | Limit | Content |
-|---|---|---|
-| `## What` | 280 chars | The one change, one or two sentences. |
-| `## Why` | 280 chars | The problem for users. `Closes #N` when there is an issue. |
-| `## How` | 500 chars | The approach and the main files. |
-| `## Evidence` | 300 chars of text | Images, GIFs and links do not count. |
-| `## Checklist` | — | Every box ticked, honestly. Untick and explain if one is not true. |
+**Screenshots** are optional. Never take them unasked: ask the user "Do you want screenshots
+for this PR?" and take them only on a yes; for a visual change, propose before and after. On a
+no, take none. Capture only that window or page (a headless
+browser screenshot of the URL, or the window by its handle), never the whole screen. Save them
+in a temporary folder, not the repository. GitHub has no API to attach images to a PR: open the
+PR, give the user the absolute paths and ask them to drag the files into the description; put
+`Screenshots: to be attached.` in Evidence meanwhile.
 
-Write plainly: what changed, not how hard it was. No headings beyond these, no summary
-at the end.
+## Check, then open
 
-**Evidence.**
-- A change to how heroes look or move: build a hero with it (run the skill on a
-  repository, or build `tests/fixture/assets/hero.src.svg`) and capture the preview page,
-  before and after when something changed. A GIF shows motion; a screenshot does not.
-  Save the files in a temporary folder, not in the repository.
-- GitHub has no API to upload images into a PR description. Open the PR, then give the
-  user the absolute paths of the files and ask them to drag them into the description.
-  Put a placeholder line in Evidence meanwhile, e.g. `GIF: to be attached.`
-- Non-visual change: name the tests that cover it, or the exact steps used to check it.
-
-## 7. Check before opening
-
-Write the description to a temporary file and run:
 ```
-node .github/scripts/check-pr.js --branch <branch> --title "<title>" --body-file <file>
-```
-The same check runs in CI as `Branch name and description`. Fix every problem it lists,
-then open the PR:
-```
+node .github/scripts/check-pr.cjs --branch <branch> --title "<title>" --body-file <file> --files-from-git main
 gh pr create --title "<title>" --body-file <file>
 ```
-Do not merge. Every PR needs an approval from someone with write access, and the
-maintainer decides. Never merge or edit a `chore(main): release` pull request: the
-release workflow merges it by itself and publishes the version.
 
-## Issues
-
-Issues are contributions too. Use the forms in `.github/ISSUE_TEMPLATE/` (blank issues
-are disabled): one bug or one idea per issue, the problem before the solution, and
-search first.
+Fix every problem the check lists before opening; CI runs the same check as `PR rules`. Do not
+merge: every PR needs an approval from someone with write access.
