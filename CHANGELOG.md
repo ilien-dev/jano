@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/ilien-dev/jano/compare/v1.1.4...v1.1.5) (2026-11-20)
+
+
+### Bug Fixes
+
+* measure text contrast on translucent boxes as they are seen ([#44](https://github.com/ilien-dev/jano/issues/44)) ([614f8d7](https://github.com/ilien-dev/jano/commit/614f8d7ddb8ee6db1d16ebe3706bae8944c0ea79))
+
 ## [1.1.4](https://github.com/ilien-dev/jano/compare/v1.1.3...v1.1.4) (2026-11-20)
 
 
