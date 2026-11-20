@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.7](https://github.com/ilien-dev/jano/compare/v1.1.6...v1.1.7) (2026-11-20)
+
+
+### Bug Fixes
+
+* measure icon contrast on translucent boxes as they are seen ([#52](https://github.com/ilien-dev/jano/issues/52)) ([85d452a](https://github.com/ilien-dev/jano/commit/85d452ab2ccccc5a30226aea3571bbfb4f0bbc51))
+
 ## [1.1.6](https://github.com/ilien-dev/jano/compare/v1.1.5...v1.1.6) (2026-11-20)
 
 
