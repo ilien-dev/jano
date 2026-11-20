@@ -549,6 +549,7 @@ class Hero:
         self.check_strokes()
         self.check_motion()
         self.check_highlight_sync()
+        self.check_sweeps()
         return self
 
     def slot(self, name, what):
@@ -1038,6 +1039,44 @@ class Hero:
                 if late > SYNC_SLACK:
                     self.warns.append(f"{self.describe(t['el'])} is lit {late:.1f} s out of step with the box {self.describe(el)} that highlights it: "
                                       "give the label and the box the same duration and the same keyframe percentages, so it lights when the box arrives and dims when it leaves")
+
+    def check_sweeps(self):
+        """A marker that runs along a line of text, reading it, stops where the text ends."""
+        N = 120
+        for s in self.shapes:
+            el = s["el"]
+            if s["tag"] not in ("rect", "path", "circle", "ellipse") or self.mover(el) is None:
+                continue
+            if any(a.get("data-kit") == "cursor" for a in self.chain(el)):
+                continue
+            durs = [x["dur"] for a in self.chain(el) for x in self.anims(a) if x["dur"] > 0]
+            if not durs:
+                continue
+            P, b = max(durs), s["box"]
+            for t in self.texts:
+                tb, th = t["box"], t["box"][3] - t["box"][1]
+                if self.inside(t["el"], el) or b[3] - b[1] > 1.6 * th:
+                    continue  # a box that holds the line, not a marker on it
+                ts = [P * i / N for i in range(N)]
+                seen = [(T, self.shift_at(el, T, t["el"])) for T in ts if self.opacity_at(el, T, t["el"]) > 0.3]
+                on = [(b[0] + dx, b[2] + dx) for _, (dx, dy) in seen
+                      if min(b[3] + dy, tb[3]) - max(b[1] + dy, tb[1]) >= 0.5 * min(b[3] - b[1], th)]
+                if not on:
+                    continue
+                left, right = min(x0 for x0, _ in on), max(x1 for _, x1 in on)
+                w = tb[2] - tb[0]
+                if b[2] - b[0] > 0.5 * w or right - left < 0.5 * w or not tb[0] - 0.25 * w <= left <= tb[0] + 0.25 * w:
+                    continue  # not a small marker that runs along this line from its start
+                c = self.container(t, together=False)
+                if self.inherit(el, "fill") == (self.inherit(c["el"], "fill") if c else "$bg"):
+                    continue  # a cover in the colour behind the text, that reveals it as it is typed
+                row = [o["box"][2] for o in self.texts if o["box"][0] <= right and o["box"][2] >= tb[0]
+                       and min(o["box"][3], tb[3]) - max(o["box"][1], tb[1]) >= 0.5 * th]
+                end = max(row + [tb[2]])
+                if right > end + max(16.0, 0.1 * w):
+                    self.warns.append(f"{self.describe(el)} runs along {self.describe(t['el'])} to x={right:.0f}, {right - end:.0f} px past where the text ends "
+                                      f"(x={end:.0f}): stop it at the end of the text, the reader follows it as it reads")
+                    break
 
     def check_strokes(self):
         thin = 0

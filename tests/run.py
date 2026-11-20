@@ -379,6 +379,17 @@ code, out, _ = build_scene(delayed)
 test("labels that share one keyframe and take turns by negative delays are measured in step", "out of step with the box" not in out, out)
 code, out, _ = build_scene(delayed.replace("-2s infinite}", "-1.4s infinite}"))
 test("a label whose delay puts it out of step with the box is warned about", '"row number 3" is lit' in out, out)
+def sweep(to):
+    css = f"@keyframes scan{{0%{{transform:translateX(0);opacity:0}}5%,90%{{opacity:1}}100%{{transform:translateX({to}px);opacity:0}}}}.scan{{animation:scan 3s linear infinite}}"
+    line = '<text x="640" y="200" class="s" font-size="18" fill="$ink">the words people search</text><rect class="scan" opacity="0" x="640" y="186" width="10" height="18" rx="3" fill="$accent"/>'
+    return SCENE.replace("</style>", css + "</style>").replace("</g>\n</svg>", line + "</g>\n</svg>")
+
+
+width_line = kit_module.width("the words people search", 18)
+code, out, _ = build_scene(sweep(round(width_line) - 10))
+test("a marker that runs along a line and stops where it ends is not warned about", "past where the text ends" not in out, out)
+code, out, _ = build_scene(sweep(round(width_line) + 150))
+test("a marker that runs on past the end of the line is warned about", "past where the text ends" in out, out)
 code, out, _ = build_scene(highlight(10))
 test("a label that lights later than the box reaches it is warned about", '"row number 2" is lit' in out and "out of step with the box" in out, out)
 test("a scene's palette roles are replaced", "$" not in re.sub(r"base64,[^)]+", "", scene_dark))
