@@ -1,7 +1,6 @@
 ---
 name: jano
 description: "Make a repository's README explain itself: plan its sections and write its text to measured rules, and draw an animated SVG hero and a scene for each section that needs one, in dark and light."
-disable-model-invocation: true
 ---
 
 # jano
