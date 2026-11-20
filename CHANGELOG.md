@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.4](https://github.com/ilien-dev/jano/compare/v1.1.3...v1.1.4) (2026-11-20)
+
+
+### Bug Fixes
+
+* warn when a highlight box and the label it lights drift apart ([#47](https://github.com/ilien-dev/jano/issues/47)) ([4592a04](https://github.com/ilien-dev/jano/commit/4592a04b581f42360552ec9f87b2a62ac48a4ca1))
+* warn when a label sits off-centre in its box ([#46](https://github.com/ilien-dev/jano/issues/46)) ([db215a1](https://github.com/ilien-dev/jano/commit/db215a1d1589fa33dcf20cef414299fd0a98d65c))
+
 ## [1.1.3](https://github.com/ilien-dev/jano/compare/v1.1.2...v1.1.3) (2026-11-20)
 
 
